@@ -1,6 +1,6 @@
 {
  "updated": "2026-11-18",
- "branch": "m0",
+ "branch": "main",
  "tests": {
   "commit": "14abc4a",
   "compilers": "MSVC 14.44 and clang-cl 21",
@@ -213,14 +213,11 @@
     {
      "id": "M0-gate",
      "title": "gate: VAL-12 parity",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M0-10"
      ],
-     "note": "sweep, cost cases and interleaved parity runs at 256^3 on the RTX 5050",
-     "stage": "measurements",
-     "since": "2026-11-18",
-     "rounds": 0
+     "note": "passed: throughput 1.016 (32-bit) and 1.005 (16-bit storage) times the baseline at 256^3, required 0.95; memory 93 and 55 bytes per cell; host work 0.6 % of wall time"
     }
    ]
   },
