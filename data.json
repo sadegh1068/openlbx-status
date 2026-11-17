@@ -2,30 +2,30 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-2b",
+  "commit": "m1 after M1-10",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 441,
-    "assertions": 32822,
+    "cases": 452,
+    "assertions": 164701,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 118,
-    "assertions": 52476,
+    "cases": 124,
+    "assertions": 85312,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 118,
-    "assertions": 52686,
+    "cases": 124,
+    "assertions": 85522,
     "failed": 0,
     "skipped": 0
    },
@@ -294,12 +294,11 @@
     {
      "id": "M1-10",
      "title": "f16c accessor",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M0-gate"
      ],
-     "stage": "fixes",
-     "since": "2026-11-18"
+     "note": "the second 16-bit storage format (f16c) is available: one integer-only codec shared by host and device, checked against the specification on every 32-bit pattern by the reviewer and against its 31 published vectors on both devices; two injected faults prove that a broken codec stops the run"
     },
     {
      "id": "M1-3a",
