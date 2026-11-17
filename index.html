@@ -340,7 +340,7 @@ const INLINE = {
      "deps": [
       "M1-1"
      ],
-     "stage": "implementation",
+     "stage": "fixes",
      "since": "2026-11-18"
     },
     {
@@ -376,7 +376,7 @@ const INLINE = {
       "M0-gate"
      ],
      "note": "added after a device compiler was found to misplace memory writes; the backend now probes for it and switches optimisation off on an affected device",
-     "stage": "implementation",
+     "stage": "debugging",
      "since": "2026-11-18"
     },
     {
@@ -408,14 +408,23 @@ const INLINE = {
      ]
     },
     {
-     "id": "M1-5",
-     "title": "TRT, MRT, subgrid",
+     "id": "M1-5a",
+     "title": "TRT, subgrid model, eddy viscosity",
      "status": "running",
      "deps": [
       "M1-4a"
      ],
-     "stage": "design",
+     "stage": "tests",
      "since": "2026-11-18"
+    },
+    {
+     "id": "M1-5b",
+     "title": "MRT",
+     "status": "pending",
+     "deps": [
+      "M1-4a",
+      "M1-5a"
+     ]
     },
     {
      "id": "M1-6",
@@ -463,7 +472,7 @@ const INLINE = {
      "status": "pending",
      "deps": [
       "M1-3",
-      "M1-5",
+      "M1-5b",
       "M1-6",
       "M1-7"
      ]
@@ -481,7 +490,7 @@ const INLINE = {
      "title": "measurements",
      "status": "pending",
      "deps": [
-      "M1-5"
+      "M1-5b"
      ]
     },
     {
@@ -691,6 +700,10 @@ const INLINE = {
  ],
  "decisions": [
   {
+   "id": "D-064",
+   "text": "M1-5 is split into M1-5a (TRT, Smagorinsky model, `subgrid.nu_t`, shared test rig) and M1-5b (MRT). TRT derives its second rate per cell from the local rate; the MRT collision matrix is computed on..."
+  },
+  {
    "id": "D-063",
    "text": "L1 tests keep their per-process temporary kernel cache by default; when the environment variable `OLBX_TEST_CACHE_DIR` is set, that directory is used and kept. The verification before a merge runs..."
   },
@@ -717,44 +730,40 @@ const INLINE = {
   {
    "id": "D-051",
    "text": "Scope of forced inlining made exact: every generated function that takes a cell coordinate or is called from a streaming function carries `__attribute__((always_inline))`: the streaming functions,..."
-  },
-  {
-   "id": "D-049",
-   "text": "The generated streaming functions are preceded by `__attribute__((always_inline))`. The scope of the rule (these functions only, or every generated helper through one macro of the portability heade..."
   }
  ],
  "findings": [
   {
-   "id": "IMPL-M1-24",
-   "text": "03 section 1.5 forbids a split along z only for a two-dimensional set, but the block geometry (M0-4, `geometry.cpp`) refuses a z split of any block... Fix: open, decided with the partitioner (M2-1): either the refusal moves to the lattice-aware check, or the spec states a least owned extent on a split..."
+   "id": "IMPL-M1-35",
+   "text": "the 32-bit MRT matrix has column sums up to 7.5e-8 off zero, so mass moves by that times the non-equilibrium part per step Fix: open, judged with VAL-7 at M1-12"
   },
   {
-   "id": "IMPL-M1-23",
-   "text": "the `[[pass]]` row ordered a `finalise` pass before every pass of a step and said nothing of `geometry` passes Fix: a pass without `step` in its phases never interleaves with a step and is ordered against every step pass and fused instance"
+   "id": "IMPL-M1-34",
+   "text": "CORE-28 and CORE-30 make presets and the bulk viscosity user-selectable, but there is no string parameter type, the matrix must follow `omega`, and... Fix: open in part: the host function `mrt_collision_matrix` (M1-5b) computes the run parameter `mrt_q`; the driver binds array parameters and refuses a..."
   },
   {
-   "id": "IMPL-M1-22",
-   "text": "the spec assumed that a device compiler translates valid device code correctly; the Intel UHD 770 compiler (driver 32.0.101.6129) sends stores thro... Fix: new requirement ARCH-49: probe kernels at device open; a failing device is used with optimisation off or refused; stated in the capability report (..."
+   "id": "IMPL-M1-33",
+   "text": "`f32[n]` fixes the array length per manifest, but the MRT matrix has q x q entries Fix: `n` is a literal; one MRT module per lattice with identical fragment files (a test compares them). Revisit when a second module needs a lattice-siz..."
   },
   {
-   "id": "IMPL-M1-21",
-   "text": "ARCH-35 does not say what a cycle of `after` / `before` entries means; the first implementation took two passes that name each other as ordered and... Fix: a cycle orders nothing; the scheduler (M1-2a) reports the cycle itself"
+   "id": "IMPL-M1-32",
+   "text": "section 8.4 says \"accepted range 0 to 0.3 (warning outside)\", but a manifest range is an error, not a warning Fix: range [0, 1] is the error bound; above 0.3 a warning (M1-11)"
   },
   {
-   "id": "IMPL-M1-20",
-   "text": "ARCH-42 says nothing about preprocessor lines in a fragment; `#define R f.rho` followed by `R = 1.0f;` hides a write from the lexical comparison Fix: a hand-written fragment may not define or undefine a macro, include a file or use a pragma (the second look of the review showed that a macro witho..."
+   "id": "IMPL-M1-31",
+   "text": "02-UNIT-2 asks that $C_S = 0$ returns $\\tau_0$ exactly; on a device this needs a correctly rounded square root Fix: exact on the host and on such a device, relative 1e-6 otherwise"
   },
   {
-   "id": "IMPL-M1-19",
-   "text": "CORE-6 says only \"analogous sequences\" for the other components and sets; which member of a pair comes first when the odd index has the component -... Fix: pairs in ascending order of their odd index, the direction with component +1 first"
+   "id": "IMPL-M1-30",
+   "text": "CORE-27 puts the $\\nu_t$ write into the subgrid module's fragment, but a `when` condition takes one capability, so the forcing variants and the out... Fix: companion module `subgrid.nu_t` with the field and its own stage-9 fragment; $\\nu_t$ from the two rates (rounding below 2e-7, checked by the designer)"
   },
   {
-   "id": "IMPL-M1-18",
-   "text": "a writing step serves samples of time t while the driver is at t + 1; \"at the end of `run()`\" does not say whether the `moments-only` pass always r... Fix: consumers read by `valid_time`; a consumer whose fields are already valid at t is served before the step, which stays lean; the end-of-run pass run..."
+   "id": "IMPL-M1-29",
+   "text": "CORE-26 sums four tensor entries in two dimensions; the fragment's six-entry sum agrees only when the force has no z component, and nothing forbade... Fix: a z force on a two-dimensional set is a configuration error of the force modules (implemented in M1-6; M1-5 tests use a zero z force)"
   },
   {
-   "id": "IMPL-M1-17",
-   "text": "reads of a pass carry a stencil in section 8 but the scheduler had no source for it Fix: the access records of M1-1 (`[[uses]]` with `by`, plus the reads the generators supply) are the single source for the scheduler; no second declarat..."
+   "id": "IMPL-M1-28",
+   "text": "CORE-8 gives no range for $\\Lambda$; $\\Lambda \\le 0$ gives $\\tau^- \\le 1/2$ Fix: $\\Lambda > 0$; the module accepts $0 < \\Lambda < 100$ (the upper bound is a sanity bound, not physics)"
   }
  ]
 };
