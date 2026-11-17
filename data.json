@@ -250,7 +250,7 @@
      "deps": [
       "M1-2a"
      ],
-     "stage": "implementation",
+     "stage": "review",
      "since": "2026-11-18"
     },
     {
@@ -278,7 +278,7 @@
       "M0-gate"
      ],
      "note": "added after a device compiler was found to misplace memory writes; the backend now probes for it and switches optimisation off on an affected device",
-     "stage": "debugging",
+     "stage": "fixes",
      "since": "2026-11-18"
     },
     {
@@ -290,7 +290,7 @@
       "M1-15"
      ],
      "note": "passes on the CPU runtime and the NVIDIA card; the failures on the Intel integrated GPU were traced to a defect of that device compiler, which the new self-test package works around",
-     "stage": "fixes",
+     "stage": "waiting for M1-15",
      "since": "2026-11-18"
     },
     {
@@ -316,7 +316,7 @@
      "deps": [
       "M1-4a"
      ],
-     "stage": "implementation",
+     "stage": "fixes",
      "since": "2026-11-18"
     },
     {
@@ -602,6 +602,10 @@
  ],
  "decisions": [
   {
+   "id": "D-065",
+   "text": "Replaces the workaround half of D-062: a device whose compiler fails a probe is refused when it is opened; nothing is built with `-cl-opt-disable`. The device tests run on the Intel CPU runtime and..."
+  },
+  {
    "id": "D-064",
    "text": "M1-5 is split into M1-5a (TRT, Smagorinsky model, `subgrid.nu_t`, shared test rig) and M1-5b (MRT). TRT derives its second rate per cell from the local rate; the MRT collision matrix is computed on..."
   },
@@ -628,13 +632,21 @@
   {
    "id": "D-052",
    "text": "Kernels of the program tail (tag, init, view) are told apart from fused kernels by reserved instance names (`wall_adjacent_tag`, `init`, `view`), which a configuration may not use for a fused-pass..."
-  },
-  {
-   "id": "D-051",
-   "text": "Scope of forced inlining made exact: every generated function that takes a cell coordinate or is called from a streaming function carries `__attribute__((always_inline))`: the streaming functions,..."
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M1-38",
+   "text": "the spec did not say whether $\\nu_t \\ge 0$ holds on a device without a correctly rounded square root, nor how accurate $\\nu_t$ is when it is formed... Fix: exact non-negativity only with a correctly rounded square root, else bounded below by -4e-6; absolute error about 2e-7 (relative 2e-4 at 1e-4). Acc..."
+  },
+  {
+   "id": "IMPL-M1-37",
+   "text": "the default of the fragment key `flavours` was not stated; the parser of M0-3 took `lean` and `writing`, so no existing fragment was in the `moment... Fix: a fragment without `flavours` belongs to every flavour. The implementer had made the assembler treat the pair `lean`, `writing` as all three; refus..."
+  },
+  {
+   "id": "IMPL-M1-36",
+   "text": "ARCH-49 answered a failed probe with optimisation off. On the Intel UHD 770 (driver 32.0.101.6129) that breaks other programs: the unoptimised comp... Fix: a device that fails a probe is refused at open; no workaround option. The Intel CPU runtime and the RTX 5050 remain as device-test devices; the UHD..."
+  },
   {
    "id": "IMPL-M1-35",
    "text": "the 32-bit MRT matrix has column sums up to 7.5e-8 off zero, so mass moves by that times the non-equilibrium part per step Fix: open, judged with VAL-7 at M1-12"
@@ -654,18 +666,6 @@
   {
    "id": "IMPL-M1-31",
    "text": "02-UNIT-2 asks that $C_S = 0$ returns $\\tau_0$ exactly; on a device this needs a correctly rounded square root Fix: exact on the host and on such a device, relative 1e-6 otherwise"
-  },
-  {
-   "id": "IMPL-M1-30",
-   "text": "CORE-27 puts the $\\nu_t$ write into the subgrid module's fragment, but a `when` condition takes one capability, so the forcing variants and the out... Fix: companion module `subgrid.nu_t` with the field and its own stage-9 fragment; $\\nu_t$ from the two rates (rounding below 2e-7, checked by the designer)"
-  },
-  {
-   "id": "IMPL-M1-29",
-   "text": "CORE-26 sums four tensor entries in two dimensions; the fragment's six-entry sum agrees only when the force has no z component, and nothing forbade... Fix: a z force on a two-dimensional set is a configuration error of the force modules (implemented in M1-6; M1-5 tests use a zero z force)"
-  },
-  {
-   "id": "IMPL-M1-28",
-   "text": "CORE-8 gives no range for $\\Lambda$; $\\Lambda \\le 0$ gives $\\tau^- \\le 1/2$ Fix: $\\Lambda > 0$; the module accepts $0 < \\Lambda < 100$ (the upper bound is a sanity bound, not physics)"
   }
  ]
 }
