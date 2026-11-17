@@ -260,7 +260,7 @@
      "deps": [
       "M1-2b"
      ],
-     "stage": "fixes",
+     "stage": "verification",
      "since": "2026-11-18"
     },
     {
@@ -360,7 +360,7 @@
      "deps": [
       "M1-2b"
      ],
-     "stage": "tests",
+     "stage": "implementation",
      "since": "2026-11-18"
     },
     {
