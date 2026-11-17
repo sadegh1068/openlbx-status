@@ -324,7 +324,7 @@
       "M1-4a",
       "M1-5a"
      ],
-     "stage": "implementation",
+     "stage": "fixes",
      "since": "2026-11-18"
     },
     {
@@ -635,6 +635,14 @@
  ],
  "findings": [
   {
+   "id": "IMPL-M1-44",
+   "text": "section 4.3 says that setup prints the ratio of bulk to shear viscosity for an MRT operator; no package owned it Fix: the line is part of `describe()` (M1-2c), from `mrt_bulk_ratio`; nothing is printed by the model layer"
+  },
+  {
+   "id": "IMPL-M1-43",
+   "text": "CORE-20 asks for agreement of MRT and SRT to a relative 1e-6 without saying relative to what; a per-population relative difference is unbounded whe... Fix: relative to the largest absolute SRT population of the cell, which is what the test measures (worst observed 9.4e-8)"
+  },
+  {
    "id": "IMPL-M1-42",
    "text": "IO-14 as amended by IMPL-M1-40 covers derived fields only. A `read_field` of the populations inside the callback of a sample that was served after... Fix: a field that is not derived is readable inside a callback only when the driver time equals the sample time; otherwise invalid-argument. Fields that..."
   },
@@ -657,14 +665,6 @@
   {
    "id": "IMPL-M1-36",
    "text": "ARCH-49 answered a failed probe with optimisation off. On the Intel UHD 770 (driver 32.0.101.6129) that breaks other programs: the unoptimised comp... Fix: a device that fails a probe is refused at open; no workaround option. The Intel CPU runtime and the RTX 5050 remain as device-test devices; the UHD..."
-  },
-  {
-   "id": "IMPL-M1-35",
-   "text": "the 32-bit MRT matrix has column sums up to 7.5e-8 off zero, so mass moves by that times the non-equilibrium part per step Fix: open, judged with VAL-7 at M1-12"
-  },
-  {
-   "id": "IMPL-M1-34",
-   "text": "CORE-28 and CORE-30 make presets and the bulk viscosity user-selectable, but there is no string parameter type, the matrix must follow `omega`, and... Fix: open in part: the host function `mrt_collision_matrix` (M1-5b) computes the run parameter `mrt_q`; the driver binds array parameters and refuses a..."
   }
  ]
 }
