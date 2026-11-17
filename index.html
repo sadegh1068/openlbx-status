@@ -331,18 +331,33 @@ const INLINE = {
      "deps": [
       "M0-gate"
      ],
-     "stage": "design",
+     "stage": "tests",
      "since": "2026-11-18"
     },
     {
-     "id": "M1-2",
-     "title": "scheduler",
-     "status": "running",
+     "id": "M1-2a",
+     "title": "scheduler: graph and exchange placement",
+     "status": "pending",
      "deps": [
-      "M0-gate"
+      "M1-1"
      ],
-     "stage": "design",
-     "since": "2026-11-18"
+     "note": "design accepted; starts after the access checks are merged"
+    },
+    {
+     "id": "M1-2b",
+     "title": "scheduler: consumers and validity",
+     "status": "pending",
+     "deps": [
+      "M1-2a"
+     ]
+    },
+    {
+     "id": "M1-2c",
+     "title": "scheduler: finalisation and describe",
+     "status": "pending",
+     "deps": [
+      "M1-2b"
+     ]
     },
     {
      "id": "M1-4a",
@@ -351,7 +366,7 @@ const INLINE = {
      "deps": [
       "M0-gate"
      ],
-     "stage": "tests",
+     "stage": "implementation",
      "since": "2026-11-18"
     },
     {
@@ -393,7 +408,7 @@ const INLINE = {
      "title": "force field, forcing",
      "status": "pending",
      "deps": [
-      "M1-2"
+      "M1-2c"
      ]
     },
     {
@@ -401,7 +416,7 @@ const INLINE = {
      "title": "sparse fields, boundaries",
      "status": "pending",
      "deps": [
-      "M1-2"
+      "M1-2c"
      ]
     },
     {
@@ -696,36 +711,36 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-18",
+   "text": "a writing step serves samples of time t while the driver is at t + 1; \"at the end of `run()`\" does not say whether the `moments-only` pass always r... Fix: accepted in principle: consumers read by `valid_time`; the end-of-run pass runs only when a consumer is due; tables are piecewise linear and consta..."
+  },
+  {
+   "id": "IMPL-M1-17",
+   "text": "reads of a pass carry a stencil in section 8 but the scheduler had no source for it Fix: the access records of M1-1 (`[[uses]]` with `by`, plus the reads the generators supply) are the single source for the scheduler; no second declarat..."
+  },
+  {
+   "id": "IMPL-M1-16",
+   "text": "the plain-flow list of DEV-17 exchanges the tag bits and sends boundary inputs with the cell types, which the rule of ARCH-20 does not produce (no... Fix: the list follows the rule: no tag-bit exchange, boundary inputs travel with the prepared moments. M2-2 re-examines whether a pack or unpack kernel..."
+  },
+  {
+   "id": "IMPL-M1-15",
+   "text": "the meaning of a kernel's parity argument and the type of a step argument were not fixed (IMPL-M0-36) Fix: parity of the next load, `(t + shift + phase) mod 2`, stores use the complement; the step argument is an unsigned 64-bit integer"
+  },
+  {
+   "id": "IMPL-M1-14",
+   "text": "a `[[pass]]` had no key saying when it runs, population accesses of a pass had no spelling, and `after` / `before` could not name the fused pass Fix: key `phase` (default `[\"finalise\"]`); spellings `<s>`, `<s>:incoming`, `<s>:outgoing`, `<s>:raw`; token `fused`; a `finalise` pass is ordered befor..."
+  },
+  {
+   "id": "IMPL-M1-13",
+   "text": "ARCH-20 places an exchange \"immediately before the first pass that reads\", MEM-19 and chapter 06 section 3 \"after the fused pass\"; nothing said wha... Fix: the end of a sequence reads every population set, so a due `ddf` exchange is placed there and all other parts stay lazy; exchange points are record..."
+  },
+  {
    "id": "IMPL-M1-12",
    "text": "remedy (a) of ARCH-32 names `double_buffer = true`, which is not among the key spellings Fix: open: the key is added with the first module that needs it; until then a manifest with it is refused as an unknown key"
   },
   {
    "id": "IMPL-M1-11",
    "text": "no manifest key restricts the cells in which a fragment writes a field, so the write class of a fused pass was undefined Fix: `updated(s)` less the input classes of the field; a pass: its mask less the input classes. Open: a per-fragment write class may be needed for the b..."
-  },
-  {
-   "id": "IMPL-M1-10",
-   "text": "ARCH-35 says \"exactly one pass\" and then \"without a declared order\"; what a declared order is was not said Fix: configuration order of fused instances; `after` / `before` chains between passes; the second sentence governs"
-  },
-  {
-   "id": "IMPL-M1-8",
-   "text": "generated text depends on the configuration, so a two-way lexical comparison with a fixed declaration cannot hold (a field write for `rho` only nev... Fix: stages 2 and 12 are checked by contract; other generated fragments one way; neighbour reads of generated text are supplied as declarations by the g..."
-  },
-  {
-   "id": "IMPL-M1-7",
-   "text": "ARCH-42 (b) omitted the component macros `FIELD_READ_C`, `FIELD_WRITE_C`, and (e) did not say whether a name declared only under `writes` may be re... Fix: both macros are reserved forms and name the component as the part; a name under `writes` may be read"
-  },
-  {
-   "id": "IMPL-M1-6",
-   "text": "section 6.1 and ARCH-32 did not fix the syntax of cell-class predicates, stencils and masks in `[[uses]]` and `[[pass]]` Fix: grammar with `!`, `&`, `"
-  },
-  {
-   "id": "IMPL-M1-5",
-   "text": "chapter 02 lists q in {9, 15, 19, 27} and excludes D3Q7 from the core while MEM-2 compiles D2Q5 and D3Q7; no chapter says what the initial store of... Fix: tables and streaming of the scalar sets exist from M1; moments, equilibrium and initialisation come with chapter 05, and until then their initial s..."
-  },
-  {
-   "id": "IMPL-M1-4",
-   "text": "section 1.5 gives one cell along z in two dimensions but not what happens when a two-dimensional set meets a thicker block or a split along z Fix: configuration error (MEM-22); a three-dimensional set on a block one cell thick stays valid"
   }
  ]
 };
