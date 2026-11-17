@@ -2,43 +2,43 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "14abc4a",
+  "commit": "3fa2554",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 292,
-    "assertions": 21036,
+    "cases": 303,
+    "assertions": 22958,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 71,
-    "assertions": 38852,
+    "cases": 72,
+    "assertions": 43087,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 71,
-    "assertions": 39059,
+    "cases": 72,
+    "assertions": 43294,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel UHD 770",
-    "cases": 71,
-    "assertions": 38856,
+    "cases": 72,
+    "assertions": 43091,
     "failed": 0,
     "skipped": 0
    }
   ],
-  "note": "The generated solver now runs through the driver: rest state, the 30-step box with walls and the mass test agree with the numpy check scripts on all three devices. One GPU-only case (loop accounting at 128^3) is skipped on the CPU runtime."
+  "note": "The velocity sets D2Q9, D3Q15 and D3Q27 now have device modules whose density, momentum and equilibrium agree bit for bit with a host evaluation on all three devices; the program text of the D3Q19 solver measured at the M0 gate is unchanged (42 hashes)."
  },
  "milestones": [
   {
@@ -263,13 +263,11 @@
     {
      "id": "M1-4a",
      "title": "lattice tables and modules",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M0-gate"
      ],
-     "stage": "fixes after review",
-     "since": "2026-11-18",
-     "rounds": 1
+     "note": "five more velocity sets (two- and three-dimensional) with their device modules; tables and moment identities recomputed independently in review"
     },
     {
      "id": "M1-4b",
@@ -278,8 +276,7 @@
      "deps": [
       "M1-4a"
      ],
-     "note": "tests and oracles written; implementation starts when the lattice tables are merged",
-     "stage": "tests",
+     "stage": "implementation",
      "since": "2026-11-18"
     },
     {
