@@ -169,8 +169,8 @@
      "deps": [
       "M0-7b"
      ],
-     "note": "tests written; coordinate type change done; implementation in progress",
-     "stage": "implementation",
+     "note": "implemented; 236 host and 53 device tests pass on three devices; the 30-step box agrees with the check script to float rounding; review running",
+     "stage": "in review",
      "since": "2026-11-17",
      "rounds": 0
     },
@@ -181,7 +181,7 @@
      "deps": [
       "M0-5b"
      ],
-     "note": "merged; assembled-program test passes; 2 device tests wait for M0-7c and M0-9a (D-043)"
+     "note": "merged; its device tests (rest state, 30-step box) pass on the M0-7c branch; accepted when that branch merges"
     },
     {
      "id": "M0-9a",
