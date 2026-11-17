@@ -101,43 +101,43 @@ const INLINE = {
  "updated": "2026-11-17",
  "branch": "m0",
  "tests": {
-  "commit": "66a1941",
+  "commit": "8161e54",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 222,
-    "assertions": 9989,
+    "cases": 230,
+    "assertions": 13651,
     "failed": 0,
-    "skipped": 1
+    "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 33,
-    "assertions": 34260,
+    "cases": 44,
+    "assertions": 35725,
     "failed": 0,
     "skipped": 1
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 33,
-    "assertions": 34260,
+    "cases": 44,
+    "assertions": 35725,
     "failed": 0,
     "skipped": 1
    },
    {
     "level": "L1 device",
     "device": "Intel UHD 770",
-    "cases": 33,
-    "assertions": 34260,
+    "cases": 44,
+    "assertions": 35725,
     "failed": 0,
     "skipped": 1
    }
   ],
-  "note": "Skipped cases are the end-to-end tests of M0-8 (assembled program, rest state, 30-step box); they wait for M0-7b, M0-7c and M0-9a."
+  "note": "The skipped case holds the two device tests of M0-8 (rest state, 30-step box); they wait for M0-7c and M0-9a. The assembled-program test of M0-8 is active and passes."
  },
  "milestones": [
   {
@@ -253,16 +253,13 @@ const INLINE = {
     {
      "id": "M0-7b",
      "title": "streaming generator",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M0-7a",
       "M0-5a",
       "M0-6"
      ],
-     "note": "review: every slot rule re-derived and confirmed, no defect in the generated text; test gaps being closed; a small reproducer of the CPU-runtime miscompile is pending",
-     "stage": "review fixes",
-     "since": "2026-11-17",
-     "rounds": 1
+     "note": "merged; the inline workaround for the CPU runtime awaits a small reproducer (D-049)"
     },
     {
      "id": "M0-7c",
@@ -271,8 +268,8 @@ const INLINE = {
      "deps": [
       "M0-7b"
      ],
-     "note": "tests written; implementation starts when M0-7b is merged",
-     "stage": "tests written",
+     "note": "tests written; implementation started",
+     "stage": "implementation",
      "since": "2026-11-17",
      "rounds": 0
     },
@@ -283,7 +280,7 @@ const INLINE = {
      "deps": [
       "M0-5b"
      ],
-     "note": "merged; 3 end-to-end tests wait for M0-9a (D-043)"
+     "note": "merged; assembled-program test passes; 2 device tests wait for M0-7c and M0-9a (D-043)"
     },
     {
      "id": "M0-9a",
@@ -653,6 +650,10 @@ const INLINE = {
  ],
  "decisions": [
   {
+   "id": "D-049",
+   "text": "The generated streaming functions are preceded by `__attribute__((always_inline))`. The scope of the rule (these functions only, or every generated helper through one macro of the portability heade..."
+  },
+  {
    "id": "D-045",
    "text": "A test that crashes the Intel CPU runtime is not moved to a GPU; the cause is found first"
   },
@@ -679,10 +680,6 @@ const INLINE = {
   {
    "id": "D-037",
    "text": "Cell-type layout is canonical (descending width, then name); wall-like and not-updated kinds are declared in the manifest of the module that owns the group, not hard-coded in the registry"
-  },
-  {
-   "id": "D-035",
-   "text": "All project exceptions derive from `olbx::Error`; modules are found by recursive search for `module.toml`, the name comes from the manifest"
   }
  ],
  "findings": [
