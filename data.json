@@ -312,11 +312,13 @@
     {
      "id": "M1-3b",
      "title": "production equals the check variant bit for bit",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-3a",
       "M1-5b"
-     ]
+     ],
+     "stage": "tests",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-5a",
