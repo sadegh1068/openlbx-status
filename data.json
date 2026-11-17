@@ -160,10 +160,10 @@
       "M0-5a",
       "M0-6"
      ],
-     "note": "implemented; 219 host and 39 device tests pass on the CPU runtime and both GPUs; review running; the CPU-runtime crash is being cross-checked by a second analysis",
-     "stage": "in review",
+     "note": "review: every slot rule re-derived and confirmed, no defect in the generated text; test gaps being closed; a small reproducer of the CPU-runtime miscompile is pending",
+     "stage": "review fixes",
      "since": "2026-11-17",
-     "rounds": 0
+     "rounds": 1
     },
     {
      "id": "M0-7c",
