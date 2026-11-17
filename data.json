@@ -2,40 +2,41 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-5a",
+  "commit": "m1 after M1-15",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 400,
-    "assertions": 25914,
+    "cases": 403,
+    "assertions": 26256,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 78,
-    "assertions": 43555,
+    "cases": 83,
+    "assertions": 43574,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 78,
-    "assertions": 43762,
+    "cases": 83,
+    "assertions": 43781,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel UHD 770",
-    "cases": 78,
-    "assertions": 43559,
+    "cases": 0,
+    "assertions": 0,
     "failed": 0,
-    "skipped": 0
+    "skipped": 0,
+    "note": "refused at open: the device compiler fails the store-address probe (ARCH-49)"
    }
   ],
   "note": "The assembler checks declared access, ownership and races for every module set; the program text of the solver measured at the M0 gate is unchanged. A defect of the Intel integrated GPU compiler found by the tests of the next package is documented and gets a self-test at device open."
@@ -273,13 +274,11 @@
     {
      "id": "M1-15",
      "title": "compiler self-tests at device open",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M0-gate"
      ],
-     "note": "added after a device compiler was found to misplace memory writes; the backend now probes for it and refuses an affected device when it is opened",
-     "stage": "fixes",
-     "since": "2026-11-18"
+     "note": "every device is tested when it is opened: a small program with a known exact result is compiled and run, and a device whose compiler gets it wrong is refused with a message that names the test; the Intel UHD 770 with its present driver is refused, the RTX 5050 and the Intel CPU runtime pass"
     },
     {
      "id": "M1-4b",
@@ -290,7 +289,7 @@
       "M1-15"
      ],
      "note": "passes on the CPU runtime and the NVIDIA card; the failures on the Intel integrated GPU were traced to a defect of that device compiler, which the new self-test package works around",
-     "stage": "waiting for M1-15",
+     "stage": "final check",
      "since": "2026-11-18"
     },
     {
@@ -602,6 +601,10 @@
  ],
  "decisions": [
   {
+   "id": "D-066",
+   "text": "Inside a consumer callback a field that is not a derived output (populations, cell types, force field) can be read only when the driver time equals the sample time; otherwise the read is refused. T..."
+  },
+  {
    "id": "D-065",
    "text": "Replaces the workaround half of D-062: a device whose compiler fails a probe is refused when it is opened; nothing is built with `-cl-opt-disable`. The device tests run on the Intel CPU runtime and..."
   },
@@ -628,13 +631,17 @@
   {
    "id": "D-053",
    "text": "The stepping loop bounds its lead over the device: one launch event is kept every 64 steps and the driver waits on the one that is 256 steps old before going further; that wait is reported as `wait..."
-  },
-  {
-   "id": "D-052",
-   "text": "Kernels of the program tail (tag, init, view) are told apart from fused kernels by reserved instance names (`wall_adjacent_tag`, `init`, `view`), which a configuration may not use for a fused-pass..."
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M1-42",
+   "text": "IO-14 as amended by IMPL-M1-40 covers derived fields only. A `read_field` of the populations inside the callback of a sample that was served after... Fix: a field that is not derived is readable inside a callback only when the driver time equals the sample time; otherwise invalid-argument. Fields that..."
+  },
+  {
+   "id": "IMPL-M1-41",
+   "text": "the manifest of the generated module `output.fields` declares writes of `rho` and `u`, the generator emits only the configured derived outputs. Wit... Fix: the declared access of a generated fragment is an upper bound that the generator narrows to the configuration; everything downstream uses the narro..."
+  },
   {
    "id": "IMPL-M1-39",
    "text": "with every fragment in every flavour by default (IMPL-M1-37), a fragment of a stage up to 8 that writes a field which is not derived would enter th... Fix: the assembler refuses such a kernel, naming fragment and field; the module then gives the fragment the list `lean`, `writing` or supplies a read-on..."
@@ -658,14 +665,6 @@
   {
    "id": "IMPL-M1-34",
    "text": "CORE-28 and CORE-30 make presets and the bulk viscosity user-selectable, but there is no string parameter type, the matrix must follow `omega`, and... Fix: open in part: the host function `mrt_collision_matrix` (M1-5b) computes the run parameter `mrt_q`; the driver binds array parameters and refuses a..."
-  },
-  {
-   "id": "IMPL-M1-33",
-   "text": "`f32[n]` fixes the array length per manifest, but the MRT matrix has q x q entries Fix: `n` is a literal; one MRT module per lattice with identical fragment files (a test compares them). Revisit when a second module needs a lattice-siz..."
-  },
-  {
-   "id": "IMPL-M1-32",
-   "text": "section 8.4 says \"accepted range 0 to 0.3 (warning outside)\", but a manifest range is an error, not a warning Fix: range [0, 1] is the error bound; above 0.3 a warning (M1-11)"
   }
  ]
 }
