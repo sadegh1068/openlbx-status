@@ -357,10 +357,12 @@ const INLINE = {
     {
      "id": "M1-4b",
      "title": "streaming on every lattice",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-4a"
-     ]
+     ],
+     "stage": "tests",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-10",
@@ -694,24 +696,36 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-12",
+   "text": "remedy (a) of ARCH-32 names `double_buffer = true`, which is not among the key spellings Fix: open: the key is added with the first module that needs it; until then a manifest with it is refused as an unknown key"
+  },
+  {
+   "id": "IMPL-M1-11",
+   "text": "no manifest key restricts the cells in which a fragment writes a field, so the write class of a fused pass was undefined Fix: `updated(s)` less the input classes of the field; a pass: its mask less the input classes. Open: a per-fragment write class may be needed for the b..."
+  },
+  {
+   "id": "IMPL-M1-10",
+   "text": "ARCH-35 says \"exactly one pass\" and then \"without a declared order\"; what a declared order is was not said Fix: configuration order of fused instances; `after` / `before` chains between passes; the second sentence governs"
+  },
+  {
+   "id": "IMPL-M1-8",
+   "text": "generated text depends on the configuration, so a two-way lexical comparison with a fixed declaration cannot hold (a field write for `rho` only nev... Fix: stages 2 and 12 are checked by contract; other generated fragments one way; neighbour reads of generated text are supplied as declarations by the g..."
+  },
+  {
+   "id": "IMPL-M1-7",
+   "text": "ARCH-42 (b) omitted the component macros `FIELD_READ_C`, `FIELD_WRITE_C`, and (e) did not say whether a name declared only under `writes` may be re... Fix: both macros are reserved forms and name the component as the part; a name under `writes` may be read"
+  },
+  {
+   "id": "IMPL-M1-6",
+   "text": "section 6.1 and ARCH-32 did not fix the syntax of cell-class predicates, stencils and masks in `[[uses]]` and `[[pass]]` Fix: grammar with `!`, `&`, `"
+  },
+  {
    "id": "IMPL-M1-5",
    "text": "chapter 02 lists q in {9, 15, 19, 27} and excludes D3Q7 from the core while MEM-2 compiles D2Q5 and D3Q7; no chapter says what the initial store of... Fix: tables and streaming of the scalar sets exist from M1; moments, equilibrium and initialisation come with chapter 05, and until then their initial s..."
   },
   {
    "id": "IMPL-M1-4",
    "text": "section 1.5 gives one cell along z in two dimensions but not what happens when a two-dimensional set meets a thicker block or a split along z Fix: configuration error (MEM-22); a three-dimensional set on a block one cell thick stays valid"
-  },
-  {
-   "id": "IMPL-M1-3",
-   "text": "the momentum and velocity locals have three components and nothing says what their third component holds on a two-dimensional set; an undefined val... Fix: exactly zero, written by the moment and velocity fragments"
-  },
-  {
-   "id": "IMPL-M1-2",
-   "text": "the CORE-1/CORE-2 row of the test table says D3Q27 equals D3Q19 in entries 0 to 18 in \"vectors and weights\"; table 2.4 gives different weights and... Fix: the row reads \"vectors and opposite indices; the weights differ\""
-  },
-  {
-   "id": "IMPL-M1-1",
-   "text": "CORE-3 asks the four moment identities for every compiled set, but D2Q5 and D3Q7, which MEM-2 compiles, cannot satisfy the fourth-order identity (t... Fix: CORE-3 holds for the four hydrodynamic sets; the scalar sets are checked for the pairing, unit weight sum, vanishing first and third moments and th..."
   }
  ]
 };
