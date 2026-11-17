@@ -101,43 +101,43 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m0",
  "tests": {
-  "commit": "d70c7b4",
+  "commit": "af21651",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 239,
-    "assertions": 17530,
+    "cases": 257,
+    "assertions": 19367,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 54,
-    "assertions": 36489,
+    "cases": 65,
+    "assertions": 36604,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 54,
-    "assertions": 36489,
+    "cases": 65,
+    "assertions": 36608,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel UHD 770",
-    "cases": 54,
-    "assertions": 36489,
+    "cases": 65,
+    "assertions": 36608,
     "failed": 0,
     "skipped": 0
    }
   ],
-  "note": "First end-to-end runs of the generated solver are in: rest state and a 30-step periodic box with random walls agree with the numpy check script to float rounding on all three devices."
+  "note": "The generated solver now runs through the driver: rest state, the 30-step box with walls and the mass test agree with the numpy check scripts on all three devices. One GPU-only case (loop accounting at 128^3) is skipped on the CPU runtime."
  },
  "milestones": [
   {
@@ -282,28 +282,22 @@ const INLINE = {
     {
      "id": "M0-9a",
      "title": "program integration",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M0-7b",
       "M0-7c",
       "M0-8"
      ],
-     "note": "review fixes applied on the driver branch (D-052); merges together with the driver",
-     "stage": "merging with the driver",
-     "since": "2026-11-17",
-     "rounds": 1
+     "note": "merged; the program now carries the tag, init and view kernels after the fused kernels"
     },
     {
      "id": "M0-9b",
      "title": "prototype driver",
-     "status": "running",
+     "status": "partial",
      "deps": [
       "M0-9a"
      ],
-     "note": "driver passes 257 host and 60 device tests on three devices; long mass run within the bound, one seed at half the bound is being analysed; review running",
-     "stage": "in review",
-     "since": "2026-11-17",
-     "rounds": 1
+     "note": "merged; host work is 2 % of wall time at 128^3 and first throughput 1886 MLUPs (not a gate figure); acceptance waits for the analysis of one mass-drift outlier (within the bound)"
     },
     {
      "id": "M0-10",
@@ -313,10 +307,10 @@ const INLINE = {
       "M0-9b",
       "M0-R"
      ],
-     "note": "26 tests written; harness being implemented",
-     "stage": "implementation",
+     "note": "harness implemented; test correction for the GPU query and the new wait-time field in progress",
+     "stage": "fixes",
      "since": "2026-11-18",
-     "rounds": 0
+     "rounds": 1
     },
     {
      "id": "M0-gate",
@@ -654,6 +648,10 @@ const INLINE = {
  ],
  "decisions": [
   {
+   "id": "D-053",
+   "text": "The stepping loop bounds its lead over the device: one launch event is kept every 64 steps and the driver waits on the one that is 256 steps old before going further; that wait is reported as `wait..."
+  },
+  {
    "id": "D-052",
    "text": "Kernels of the program tail (tag, init, view) are told apart from fused kernels by reserved instance names (`wall_adjacent_tag`, `init`, `view`), which a configuration may not use for a fused-pass..."
   },
@@ -680,13 +678,21 @@ const INLINE = {
   {
    "id": "D-042",
    "text": "The 30-step box oracle of M0-8 uses force (1e-3, -2e-4, 0), tolerance 1e-6 unchanged"
-  },
-  {
-   "id": "D-039",
-   "text": "The portability header of ARCH-6 is emitted as two adjacent blocks at the top of every program: the backend prologue (qualifiers, `FMA`, contraction pragma) and the storage block of the accessor ge..."
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M0-36",
+   "text": "the type of a `step` kernel argument (32 or 64 bit) is stated nowhere; a 32-bit step wraps after 4.3e9 steps Fix: open: decided with the scheduler (M1-2); no M0 kernel has a step argument; the driver accepts both and checks the type at construction"
+  },
+  {
+   "id": "IMPL-M0-35",
+   "text": "ARCH-46 does not say what initialisation means after steps were run Fix: initialisation sets the time to 0"
+  },
+  {
+   "id": "IMPL-M0-34",
+   "text": "ARCH-24 counts all time outside device kernels as host work; with an asynchronous queue this includes time blocked on a full queue (measured: 0.66... Fix: host work is the time preparing and submitting; blocked time is measured and reported separately (D-053)"
+  },
   {
    "id": "IMPL-M0-33",
    "text": "brief M0-9: the section call before the tail parts has no effect; the source kind of the view output buffer is undefined; `parity` of the view had... Fix: rulings 8 to 12 of the brief; `ArgSource::Kind::output`"
@@ -706,18 +712,6 @@ const INLINE = {
   {
    "id": "IMPL-M0-29",
    "text": "MEM-5 and condition 4 of 03 section 3.2 forbid a pass to write a slot outside its cell's set, but item 3 of the initialisation of section 2.5 (`imp... Fix: the initialisation write of section 2.5 item 3 is named as allowed in MEM-5 and in condition 4"
-  },
-  {
-   "id": "IMPL-M0-28",
-   "text": "ARCH-33 gives s = 82 for a bound of 10^-6; the stated formula 62 - ceil(log2(bound)) gives 81 Fix: example corrected to 81 (checked numerically)"
-  },
-  {
-   "id": "IMPL-M0-26",
-   "text": "no format for the schedule record; no place in the program for the tag, init and view kernels; VAL-7 names no generator or seeds and fixes TRT, whi... Fix: provisional record in brief M0-9 (confirmed by the M1-2 design note); kernels appended by a tail hook after the fused kernels; fixed seeds, SRT at..."
-  },
-  {
-   "id": "IMPL-M0-25",
-   "text": "`range` was checked for manifest defaults only; a configured value outside it reached the kernel Fix: configured values are checked against `range` and `range_open`"
   }
  ]
 };
