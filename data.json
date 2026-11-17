@@ -2,30 +2,30 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-4b",
+  "commit": "m1 after M1-5b",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 412,
-    "assertions": 31352,
+    "cases": 430,
+    "assertions": 32077,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 92,
-    "assertions": 50959,
+    "cases": 96,
+    "assertions": 51737,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 92,
-    "assertions": 51166,
+    "cases": 96,
+    "assertions": 51944,
     "failed": 0,
     "skipped": 0
    },
@@ -293,10 +293,12 @@
     {
      "id": "M1-10",
      "title": "f16c accessor",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M0-gate"
-     ]
+     ],
+     "stage": "design",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-3a",
@@ -328,13 +330,11 @@
     {
      "id": "M1-5b",
      "title": "MRT",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-4a",
       "M1-5a"
-     ],
-     "stage": "fixes",
-     "since": "2026-11-18"
+     ]
     },
     {
      "id": "M1-6",
