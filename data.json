@@ -260,7 +260,7 @@
      "deps": [
       "M1-2b"
      ],
-     "stage": "tests",
+     "stage": "implementation",
      "since": "2026-11-18"
     },
     {
@@ -307,7 +307,7 @@
      "deps": [
       "M1-4b"
      ],
-     "stage": "fixes",
+     "stage": "verification",
      "since": "2026-11-18"
     },
     {
@@ -347,10 +347,12 @@
     {
      "id": "M1-7",
      "title": "sparse fields, boundaries",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-2c"
-     ]
+     ],
+     "stage": "design",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-8",
