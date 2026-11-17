@@ -232,7 +232,7 @@
      "deps": [
       "M0-gate"
      ],
-     "stage": "implementation",
+     "stage": "review",
      "since": "2026-11-18"
     },
     {
