@@ -297,7 +297,7 @@
      "deps": [
       "M0-gate"
      ],
-     "stage": "design",
+     "stage": "tests",
      "since": "2026-11-18"
     },
     {
@@ -610,6 +610,10 @@
  ],
  "decisions": [
   {
+   "id": "D-068",
+   "text": "The `f16c` storage format gets one integer-only accessor and two test-only faults; a failed `f16c` self-test stops the run with an error naming device and driver. Its exhaustive host test covers th..."
+  },
+  {
    "id": "D-066",
    "text": "Inside a consumer callback a field that is not a derived output (populations, cell types, force field) can be read only when the driver time equals the sample time; otherwise the read is refused. T..."
   },
@@ -636,13 +640,33 @@
   {
    "id": "D-054",
    "text": "The mass loss of 1.0e-6 in one seed of the VAL-7 test is accepted as 32-bit rounding and the generated solver is not changed at M0. The test keeps the 2.0e-6 bound and gains a per-step mass balance..."
-  },
-  {
-   "id": "D-053",
-   "text": "The stepping loop bounds its lead over the device: one launch event is kept every 64 steps and the driver waits on the one that is 256 steps old before going further; that wait is reported as `wait..."
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M1-55",
+   "text": "MEM-13 asks for an exhaustive encoder sweep over the non-negative FP32 values below 4; values from 4 upward, infinity and NaN are covered by vector... Fix: the sweep of MEM-13 is kept as specified; the rest of the 2^32 patterns (saturation, NaN, the sign rule) is sampled with a prime stride. A full swe..."
+  },
+  {
+   "id": "IMPL-M1-54",
+   "text": "chapter 03 describes a cross-check that `checks/r2_03_fp16_vectors.py` no longer runs (the transcription it compared with was removed in IMPL-M0-1)... Fix: the sentence is marked as historical; the output file is regenerated (the vector tables are unchanged)"
+  },
+  {
+   "id": "IMPL-M1-53",
+   "text": "the storage self-tests have no caller: nothing runs them before the first pass of a run, `describe()` and the run manifest do not exist yet, and `o... Fix: open: M1-11 (start-up checks) calls the self-test of every 16-bit format in use before the first pass and reports the variant and the failed vector..."
+  },
+  {
+   "id": "IMPL-M1-52",
+   "text": "ARCH-36 defines accessor variants for `f16s` only and does not say whether an `f16c` accessor may use floating-point operations Fix: one integer-only accessor from the same token source as the host codec; no variant, nothing new in the cache key"
+  },
+  {
+   "id": "IMPL-M1-51",
+   "text": "the content of the error that stops a run after a failed storage self-test is not specified Fix: the `f16c` error names device, driver and the failed vectors, like the refusal of ARCH-49; the existing `f16s` text is left as it is"
+  },
+  {
+   "id": "IMPL-M1-50",
+   "text": "VAL-18 names fault injection for the `f16s` hardware accessor only, while MEM-13 says that a failing `f16c` self-test stops the run; that path had... Fix: two test-only `f16c` faults (ties to even in the encoder, a decoder that flushes subnormal patterns); the designer checked that the section 6.3 vec..."
+  },
   {
    "id": "IMPL-M1-47",
    "text": "MEM-14 (a') and the VAL-3 rows with moving walls and pressure cells need boundary modules of M1-7; MEM-14 (e) on blocks and with a force that varie... Fix: M1-3 runs those cell kinds as plain wall-like cells, one block, a uniform force, and the scalar lattices at slot level; M1-7 adds its modules to th..."
@@ -650,30 +674,6 @@
   {
    "id": "IMPL-M1-44",
    "text": "section 4.3 says that setup prints the ratio of bulk to shear viscosity for an MRT operator; no package owned it Fix: the line is part of `describe()` (M1-2c), from `mrt_bulk_ratio`; nothing is printed by the model layer"
-  },
-  {
-   "id": "IMPL-M1-43",
-   "text": "CORE-20 asks for agreement of MRT and SRT to a relative 1e-6 without saying relative to what; a per-population relative difference is unbounded whe... Fix: relative to the largest absolute SRT population of the cell, which is what the test measures (worst observed 9.4e-8)"
-  },
-  {
-   "id": "IMPL-M1-42",
-   "text": "IO-14 as amended by IMPL-M1-40 covers derived fields only. A `read_field` of the populations inside the callback of a sample that was served after... Fix: a field that is not derived is readable inside a callback only when the driver time equals the sample time; otherwise invalid-argument. Fields that..."
-  },
-  {
-   "id": "IMPL-M1-41",
-   "text": "the manifest of the generated module `output.fields` declares writes of `rho` and `u`, the generator emits only the configured derived outputs. Wit... Fix: the declared access of a generated fragment is an upper bound that the generator narrows to the configuration; everything downstream uses the narro..."
-  },
-  {
-   "id": "IMPL-M1-39",
-   "text": "with every fragment in every flavour by default (IMPL-M1-37), a fragment of a stage up to 8 that writes a field which is not derived would enter th... Fix: the assembler refuses such a kernel, naming fragment and field; the module then gives the fragment the list `lean`, `writing` or supplies a read-on..."
-  },
-  {
-   "id": "IMPL-M1-38",
-   "text": "the spec did not say whether $\\nu_t \\ge 0$ holds on a device without a correctly rounded square root, nor how accurate $\\nu_t$ is when it is formed... Fix: exact non-negativity only with a correctly rounded square root, else bounded below by -4e-6; absolute error about 2e-7 (relative 2e-4 at 1e-4). Acc..."
-  },
-  {
-   "id": "IMPL-M1-37",
-   "text": "the default of the fragment key `flavours` was not stated; the parser of M0-3 took `lean` and `writing`, so no existing fragment was in the `moment... Fix: a fragment without `flavours` belongs to every flavour. The implementer had made the assembler treat the pair `lean`, `writing` as all three; refus..."
   }
  ]
 }
