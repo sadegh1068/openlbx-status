@@ -359,7 +359,7 @@ const INLINE = {
      "deps": [
       "M1-2b"
      ],
-     "stage": "review",
+     "stage": "fixes",
      "since": "2026-11-18"
     },
     {
@@ -445,14 +445,40 @@ const INLINE = {
      ]
     },
     {
-     "id": "M1-7",
-     "title": "sparse fields, boundaries",
-     "status": "running",
+     "id": "M1-7a",
+     "title": "sparse fields, host step of finalisation",
+     "status": "pending",
      "deps": [
       "M1-2c"
+     ]
+    },
+    {
+     "id": "M1-7b",
+     "title": "fragment support for boundary modules",
+     "status": "running",
+     "deps": [
+      "M1-2b"
      ],
-     "stage": "design",
+     "stage": "tests",
      "since": "2026-11-18"
+    },
+    {
+     "id": "M1-7c",
+     "title": "equilibrium boundary, moving walls",
+     "status": "pending",
+     "deps": [
+      "M1-7a",
+      "M1-7b",
+      "M1-3b"
+     ]
+    },
+    {
+     "id": "M1-7d",
+     "title": "pressure boundary",
+     "status": "pending",
+     "deps": [
+      "M1-7c"
+     ]
     },
     {
      "id": "M1-8",
@@ -467,7 +493,7 @@ const INLINE = {
      "title": "exact reductions, force pass",
      "status": "pending",
      "deps": [
-      "M1-7"
+      "M1-7d"
      ]
     },
     {
@@ -486,7 +512,7 @@ const INLINE = {
       "M1-3b",
       "M1-5b",
       "M1-6",
-      "M1-7"
+      "M1-7d"
      ]
     },
     {
@@ -712,6 +738,10 @@ const INLINE = {
  ],
  "decisions": [
   {
+   "id": "D-069",
+   "text": "A constant set with `set_parameter` at driver time T is used from step T on; when the value changes, derived fields already formed for time T are invalidated and formed again on demand. `set_parame..."
+  },
+  {
    "id": "D-068",
    "text": "The `f16c` storage format gets one integer-only accessor and two test-only faults; a failed `f16c` self-test stops the run with an error naming device and driver. Its exhaustive host test covers th..."
   },
@@ -738,44 +768,40 @@ const INLINE = {
   {
    "id": "D-058",
    "text": "The lattice modules `lattice.d2q9`, `lattice.d3q15`, `lattice.d3q27` are rendered from the host velocity table by one function and checked in as files; an L0 test requires every file of the four hy..."
-  },
-  {
-   "id": "D-054",
-   "text": "The mass loss of 1.0e-6 in one seed of the VAL-7 test is accepted as 32-bit rounding and the generated solver is not changed at M0. The test keeps the 2.0e-6 bound and gains a per-step mass balance..."
   }
  ],
  "findings": [
   {
-   "id": "IMPL-M1-60",
-   "text": "with `f16c` storage a NaN or an infinity saturates to the largest magnitude (MEM-13), so a diverging run keeps finite populations and a finite dens... Fix: open, for M1-11 (health checks): the candidate rule is that a stored pattern of largest magnitude counts as the stop condition for `f16c`, since a..."
+   "id": "IMPL-M1-81",
+   "text": "the host step of finalisation visits every owned cell (and up to q - 1 neighbours for the cells of the class); nothing bounds its cost Fix: it runs once per `setup()`, never in a step; single thread in M1; the implementer reports the time for a 256^3 box, and M1-14 adds threads if it ex..."
   },
   {
-   "id": "IMPL-M1-59",
-   "text": "ruling 1 of the M1-2c brief asked to refuse a time table on `omega` while an MRT module is enabled; an MRT program has no parameter `omega`, so the... Fix: the special refusal is dropped (the ordinary unknown-parameter error applies); a time table on an array parameter is a configuration error in miles..."
+   "id": "IMPL-M1-80",
+   "text": "the probe loop of `sparse_find` ends only at a match or an empty slot; with a damaged table it would not end, and a kernel that does not end resets... Fix: the loop is bounded by the capacity and returns -1 after it (orchestrator ruling; one compare per probe)"
   },
   {
-   "id": "IMPL-M1-58",
-   "text": "finalisation ends with a `moments-only` pass that writes `rho` and `u`, the same fields from which the initial store reads the prepared moments; a... Fix: stated in ARCH-46: finalisation is not repeatable without a new upload of the initial fields; a proper re-initialisation call is M3-2 (`reinitialize`)"
+   "id": "IMPL-M1-79",
+   "text": "chapter 10 lists ARCH-47 and the 02-UNIT cases at L0, but the device lookup and 02-UNIT-3 need a device; `sparse_find` returns `int` Fix: ARCH-47 at L0 and L1, 02-UNIT-3 at L1; a list holds fewer than 2^31 entries"
   },
   {
-   "id": "IMPL-M1-56",
-   "text": "the paragraph on generated modules says that a manifest's declared access is an upper bound, yet the manifests of both streaming modules omit the r... Fix: stated as the one exception: this read depends on the wall mode and is added by the assembler"
+   "id": "IMPL-M1-78",
+   "text": "IO-1 and DN-3 planned the tables as finalisation passes; with -66 and -67 they are a host step before the scheduled sequence. Cells of a kind whose... Fix: host step in M1 and M2 (on blocks it runs after the cell-type exchange: note for M2-4); the check of unused kinds is IO-3 (M3-3)"
   },
   {
-   "id": "IMPL-M1-55",
-   "text": "MEM-13 asks for an exhaustive encoder sweep over the non-negative FP32 values below 4; values from 4 upward, infinity and NaN are covered by vector... Fix: the sweep of MEM-13 is kept as specified; the rest of the 2^32 patterns (saturation, NaN, the sign rule) is sampled with a prime stride. A full swe..."
+   "id": "IMPL-M1-77",
+   "text": "the cost statement of ARCH-47 (about 1.5 probes) holds for random keys only; planes of cells give 1.7 to 3.1 on average, at most 9 Fix: the sentence carries the measured numbers; the hash is kept (the lookup runs in about 1/256 of the cells of a typical case); M1-14 measures"
   },
   {
-   "id": "IMPL-M1-54",
-   "text": "chapter 03 describes a cross-check that `checks/r2_03_fp16_vectors.py` no longer runs (the transcription it compared with was removed in IMPL-M0-1)... Fix: the sentence is marked as historical; the output file is regenerated (the vector tables are unchanged)"
+   "id": "IMPL-M1-76",
+   "text": "CORE-19 needs a warning channel and a strict mode that do not exist before M1-11 Fix: minimal `warnings()` and `CheckPolicy` in M1-7a, one warning per cell class; M1-11 extends them without renaming"
   },
   {
-   "id": "IMPL-M1-53",
-   "text": "the storage self-tests have no caller: nothing runs them before the first pass of a run, `describe()` and the run manifest do not exist yet, and `o... Fix: open: M1-11 (start-up checks) calls the self-test of every 16-bit format in use before the first pass and reports the variant and the failed vector..."
+   "id": "IMPL-M1-75",
+   "text": "fragments are lattice-independent text but the velocity has `dim` components Fix: constant `DIM` (emitted only where used); `outlet_u_prev` has three components in 2D too"
   },
   {
-   "id": "IMPL-M1-52",
-   "text": "ARCH-36 defines accessor variants for `f16s` only and does not say whether an `f16c` accessor may use floating-point operations Fix: one integer-only accessor from the same token source as the host codec; no variant, nothing new in the cache key"
+   "id": "IMPL-M1-74",
+   "text": "the field write overwrites `rho` and `u` at equilibrium cells, where they are inputs (IMPL-M1-11) Fix: the generated field write skips prescribed cells when an active fragment prescribes; IMPL-M1-11 is closed"
   }
  ]
 };
