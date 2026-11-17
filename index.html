@@ -60,18 +60,37 @@ aside h2:first-of-type{margin-top:0}
 aside table{border-collapse:collapse;width:100%;font-size:11.5px}
 aside td,aside th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top}
 aside .close{float:right}
-.foot{position:fixed;left:10px;bottom:8px;z-index:4;font-size:11px;color:var(--mute)}
+.foot{position:fixed;left:10px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:4;font-size:11px;color:var(--mute)}
+.ctl{display:flex;align-items:center;gap:6px}
+button{white-space:nowrap}
+#legend{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 10px}
+@media (max-width: 760px){
+  header{gap:6px 12px;padding:6px 10px calc(6px) 10px;padding-top:calc(6px + env(safe-area-inset-top))}
+  h1{font-size:15px}
+  .stat.opt{display:none}
+  .pills{display:none}
+  .ctl{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+  .ctl::-webkit-scrollbar{display:none}
+  .ctl button{min-height:38px;padding:6px 12px;flex:none}
+  input#q{flex:1 0 130px;width:auto;min-height:38px;font-size:16px}
+  aside{top:auto;left:0;right:0;bottom:0;width:100%;height:46dvh;border-left:0;border-top:1px solid var(--line);border-radius:14px 14px 0 0;transform:translateY(100%);padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+  aside.open{transform:none}
+  aside .close{min-height:38px}
+  .foot{font-size:10px}
+}
 </style>
 </head>
 <body>
 <header>
   <h1>openlbx plan</h1>
   <div id="stats" style="display:flex;gap:16px;flex-wrap:wrap"></div>
-  <input id="q" type="search" placeholder="Find a package" aria-label="Find a package">
-  <button id="zin" title="Zoom in">+</button><button id="zout" title="Zoom out">&minus;</button>
-  <button id="fit">Fit all</button><button id="prog">In progress</button>
-  <button id="direct" aria-pressed="false" title="Highlight only direct neighbours of the selected package">Direct edges</button>
-  <button id="info">Tests &amp; decisions</button>
+  <div class="ctl">
+    <input id="q" type="search" placeholder="Find a package" aria-label="Find a package">
+    <button id="zin" title="Zoom in" aria-label="Zoom in">+</button><button id="zout" title="Zoom out" aria-label="Zoom out">&minus;</button>
+    <button id="fit">Fit all</button><button id="prog">In progress</button>
+    <button id="direct" aria-pressed="false" title="Highlight only direct neighbours of the selected package">Direct edges</button>
+    <button id="info">Tests &amp; decisions</button>
+  </div>
   <div class="pills" id="pills"></div>
 </header>
 <div id="stage"><div id="world"><svg id="edges"></svg></div></div>
@@ -704,7 +723,8 @@ const INLINE = {
 const LABEL = {done:"completed", partial:"merged, acceptance pending", running:"in progress", ready:"ready to start", waiting:"waiting", blocked:"blocked"};
 const ORDER = ["done","partial","running","ready","waiting","blocked"];
 const W = 210, GX = 26, GY = 64;
-let LABELS = [];
+let LABELS = [], LEGEND = "";
+const small = () => innerWidth < 760;
 let D = null, N = [], BY = {}, sel = null, direct = false, view = {x: 0, y: 0, k: 1}, sig = "";
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -771,11 +791,12 @@ function draw() {
   $("edges").innerHTML = paths;
   const c = {}; for (const n of N) c[n.st] = (c[n.st] || 0) + 1;
   const t = D.tests, fail = t.rows.reduce((a, r) => a + r.failed, 0);
-  const stat = (b, s) => `<div class="stat"><b>${esc(b)}</b><span>${esc(s)}</span></div>`;
+  const stat = (b, s, opt) => `<div class="stat${opt ? " opt" : ""}"><b>${esc(b)}</b><span>${esc(s)}</span></div>`;
   $("stats").innerHTML = stat(`${c.done || 0} / ${N.length}`, "completed") + stat(c.running || 0, "in progress") + stat(c.ready || 0, "ready")
-    + stat(c.waiting || 0, "waiting") + stat(c.partial || 0, "acceptance pending")
-    + stat(t.rows.map(r => r.cases).join(" · "), `test cases, ${fail} failed`) + stat(`${D.branch} @ ${t.commit}`, "branch / tested commit") + stat(D.updated, "updated");
-  $("pills").innerHTML = ORDER.filter(k => c[k]).map(k => `<span class="pill s-${k}">${LABEL[k]}</span>`).join("");
+    + stat(c.waiting || 0, "waiting") + stat(c.partial || 0, "acceptance pending", 1)
+    + stat(t.rows.map(r => r.cases).join(" · "), `test cases, ${fail} failed`, 1) + stat(`${D.branch} @ ${t.commit}`, "branch / tested commit", 1) + stat(D.updated, "updated", 1);
+  LEGEND = ORDER.filter(k => c[k]).map(k => `<span class="pill s-${k}">${LABEL[k]}</span>`).join("");
+  $("pills").innerHTML = LEGEND;
   mark();
 }
 
@@ -818,7 +839,7 @@ function zoom(f, cx = innerWidth / 2, cy = innerHeight / 2) {
 
 function side() {
   const rows = (a, f) => a.map(f).join("");
-  let h = "";
+  let h = `<div id="legend">${LEGEND}</div>`;
   if (sel) {
     const n = BY[sel];
     h += `<h2>${esc(n.id)}: ${esc(n.title)}</h2><table><tr><th>Status</th><td>${LABEL[n.st]}</td></tr><tr><th>Milestone</th><td>${esc(n.ms)}</td></tr>`
@@ -826,7 +847,7 @@ function side() {
       + `<tr><th>Needs</th><td>${esc(n.deps.join(", ") || "nothing")}</td></tr><tr><th>Needed by</th><td>${esc(n.kids.join(", ") || "nothing")}</td></tr></table>`;
   }
   const t = D.tests;
-  h += `<h2>Tests at ${esc(t.commit)}</h2><table><tr><th>Level</th><th>Device</th><th>Cases</th><th>Assertions</th><th>Failed</th><th>Skipped</th></tr>`
+  h += `<p>Branch ${esc(D.branch)}, updated ${esc(D.updated)}.</p><h2>Tests at ${esc(t.commit)}</h2><table><tr><th>Level</th><th>Device</th><th>Cases</th><th>Assertions</th><th>Failed</th><th>Skipped</th></tr>`
     + rows(t.rows, r => `<tr><td>${esc(r.level)}</td><td>${esc(r.device)}</td><td>${r.cases}</td><td>${r.assertions}</td><td>${r.failed}</td><td>${r.skipped}</td></tr>`)
     + `</table><p>${esc(t.compilers)}. ${esc(t.note)}</p>`;
   h += `<h2>Newest decisions</h2><table>` + rows(D.decisions || [], d => `<tr><td>${esc(d.id)}</td><td>${esc(d.text)}</td></tr>`) + `</table>`;
@@ -837,20 +858,42 @@ function side() {
 function load(data, first) {
   const s = JSON.stringify(data); if (s === sig) return; sig = s;
   prep(data); if (sel && !BY[sel]) sel = null; draw(); side();
-  if (first) { const act = new Set(N.filter(n => n.st === "running" || n.st === "ready").map(n => n.ms)); fit(act.size ? N.filter(n => act.has(n.ms)) : N); }
+  if (first) {
+    const live = N.filter(n => n.st === "running" || n.st === "ready"), act = new Set(live.map(n => n.ms));
+    fit(small() && live.length ? live : act.size ? N.filter(n => act.has(n.ms)) : N);   // a phone starts on the packages in work
+  }
 }
 async function refresh() {
   if (location.protocol.startsWith("http")) {
     try { const r = await fetch("data.json?t=" + Date.now(), {cache: "no-store"}); if (r.ok) load(await r.json(), !D); } catch (e) {}
   }
-  $("foot").textContent = "checked " + new Date().toLocaleTimeString() + " · drag to pan, wheel to zoom, click a package for its chain";
+  $("foot").textContent = "checked " + new Date().toLocaleTimeString() + (small() ? " · drag, pinch, tap a package" : " · drag to pan, wheel to zoom, click a package for its chain");
 }
 
 const stage = $("stage"); let drag = null, moved = false;
-stage.addEventListener("pointerdown", e => { drag = {x: e.clientX - view.x, y: e.clientY - view.y}; moved = false; stage.setPointerCapture(e.pointerId); stage.classList.add("drag"); });
-stage.addEventListener("pointermove", e => { if (!drag) return; const nx = e.clientX - drag.x, ny = e.clientY - drag.y; if (Math.abs(nx - view.x) + Math.abs(ny - view.y) > 3) moved = true; view.x = nx; view.y = ny; apply(); });
-stage.addEventListener("pointerup", () => { stage.classList.remove("drag"); drag = null; });
-stage.addEventListener("pointercancel", () => { stage.classList.remove("drag"); drag = null; });
+const pts = new Map(); let pinch = null, travel = 0;   // one pointer pans, two pointers pinch-zoom about their midpoint
+const two = () => { const [a, b] = [...pts.values()]; return {d: Math.hypot(a.x - b.x, a.y - b.y) || 1, cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2}; };
+stage.addEventListener("pointerdown", e => {
+  pts.set(e.pointerId, {x: e.clientX, y: e.clientY}); stage.setPointerCapture(e.pointerId); stage.classList.add("drag");
+  if (pts.size === 1) { drag = {x: e.clientX - view.x, y: e.clientY - view.y}; moved = false; travel = 0; }
+  else if (pts.size === 2) { drag = null; pinch = two(); moved = true; }
+});
+stage.addEventListener("pointermove", e => {
+  if (!pts.has(e.pointerId)) return;
+  const was = pts.get(e.pointerId); travel += Math.abs(e.clientX - was.x) + Math.abs(e.clientY - was.y);
+  pts.set(e.pointerId, {x: e.clientX, y: e.clientY});
+  if (pts.size === 2 && pinch) { const now = two(); zoom(now.d / pinch.d, now.cx, now.cy); view.x += now.cx - pinch.cx; view.y += now.cy - pinch.cy; apply(); pinch = now; return; }
+  if (!drag) return;
+  if (travel > 6) moved = true;
+  view.x = e.clientX - drag.x; view.y = e.clientY - drag.y; apply();
+});
+const lift = e => {
+  pts.delete(e.pointerId); pinch = null;
+  if (pts.size === 1) { const p = [...pts.values()][0]; drag = {x: p.x - view.x, y: p.y - view.y}; }   // continue panning with the remaining finger
+  else if (!pts.size) { drag = null; stage.classList.remove("drag"); }
+};
+stage.addEventListener("pointerup", lift);
+stage.addEventListener("pointercancel", lift);
 stage.addEventListener("click", e => {
   if (moved) { moved = false; return; }
   const el = document.elementFromPoint(e.clientX, e.clientY)?.closest(".n");
