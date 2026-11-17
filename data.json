@@ -2,30 +2,30 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-10",
+  "commit": "m1 after M1-3a",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 452,
-    "assertions": 164701,
+    "cases": 458,
+    "assertions": 168751,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 124,
-    "assertions": 85312,
+    "cases": 128,
+    "assertions": 92572,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 124,
-    "assertions": 85522,
+    "cases": 128,
+    "assertions": 92782,
     "failed": 0,
     "skipped": 0
    },
@@ -303,12 +303,11 @@
     {
      "id": "M1-3a",
      "title": "two-array check variant: generator",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-4b"
      ],
-     "stage": "verification",
-     "since": "2026-11-18"
+     "note": "the check variant of the streaming step exists: two copies of the populations with explicit bounce-back, built from the same collision fragments as production; its slot rules match the frozen oracles on six lattices in both wall modes, and the negative control without the second generation differs in exactly the expected elements"
     },
     {
      "id": "M1-3b",
