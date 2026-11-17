@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-17",
+ "updated": "2026-11-18",
  "branch": "m0",
  "tests": {
   "commit": "d70c7b4",
@@ -189,8 +189,8 @@
       "M0-7c",
       "M0-8"
      ],
-     "note": "implemented and reviewed (accept with fixes): view argument type, reserved instance names, output-buffer source kind",
-     "stage": "fixes after review",
+     "note": "review fixes applied on the driver branch (D-052); merges together with the driver",
+     "stage": "merging with the driver",
      "since": "2026-11-17",
      "rounds": 1
     },
@@ -201,20 +201,23 @@
      "deps": [
       "M0-9a"
      ],
-     "note": "driver implemented; all tests pass except one counter assertion that is a test flaw; odd-parity view test being added",
-     "stage": "fixes",
+     "note": "driver passes 257 host and 60 device tests on three devices; long mass run within the bound, one seed at half the bound is being analysed; review running",
+     "stage": "in review",
      "since": "2026-11-17",
      "rounds": 1
     },
     {
      "id": "M0-10",
      "title": "benchmark harness",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M0-9b",
       "M0-R"
      ],
-     "note": "brief written and ruled on"
+     "note": "26 tests written; harness being implemented",
+     "stage": "implementation",
+     "since": "2026-11-18",
+     "rounds": 0
     },
     {
      "id": "M0-gate",
@@ -552,6 +555,10 @@
  ],
  "decisions": [
   {
+   "id": "D-052",
+   "text": "Kernels of the program tail (tag, init, view) are told apart from fused kernels by reserved instance names (`wall_adjacent_tag`, `init`, `view`), which a configuration may not use for a fused-pass..."
+  },
+  {
    "id": "D-051",
    "text": "Scope of forced inlining made exact: every generated function that takes a cell coordinate or is called from a streaming function carries `__attribute__((always_inline))`: the streaming functions,..."
   },
@@ -578,13 +585,21 @@
   {
    "id": "D-039",
    "text": "The portability header of ARCH-6 is emitted as two adjacent blocks at the top of every program: the backend prologue (qualifiers, `FMA`, contraction pragma) and the storage block of the accessor ge..."
-  },
-  {
-   "id": "D-038",
-   "text": "Backend after review of M0-1: devices are identified by enumeration position; write maps keep contents (no invalidate flag); the cache file has a verified header and is written through a per-proces..."
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M0-33",
+   "text": "brief M0-9: the section call before the tail parts has no effect; the source kind of the view output buffer is undefined; `parity` of the view had... Fix: rulings 8 to 12 of the brief; `ArgSource::Kind::output`"
+  },
+  {
+   "id": "IMPL-M0-32",
+   "text": "Appendix A.4 shows only the fused kernel; the tag, init and view kernels of the program and their instance names are not mentioned Fix: sentence added; the three instance names are reserved (D-052)"
+  },
+  {
+   "id": "IMPL-M0-31",
+   "text": "ARCH-22 calls the views host-side services built on the streaming primitives, which are device functions Fix: `incoming` and `outgoing` are realised by a generated device kernel per set; `raw` is a copy"
+  },
   {
    "id": "IMPL-M0-30",
    "text": "ARCH-46 says a cell stores its own equilibrium when the link ends in a wall-like cell; 03 section 2.5 item 2 says when the destination is not updat... Fix: ARCH-46 now uses the wording of 03 section 2.5 item 2"
@@ -604,18 +619,6 @@
   {
    "id": "IMPL-M0-25",
    "text": "`range` was checked for manifest defaults only; a configured value outside it reached the kernel Fix: configured values are checked against `range` and `range_open`"
-  },
-  {
-   "id": "IMPL-M0-24",
-   "text": "the order of the density and momentum sums was not stated, although bit comparisons with a host evaluation depend on it Fix: order stated"
-  },
-  {
-   "id": "IMPL-M0-23",
-   "text": "CORE-10 puts the uniform force first; the group order of ARCH-12 would run it last if another force fragment carried a set Fix: force fragments carry no set, order by `after`"
-  },
-  {
-   "id": "IMPL-M0-22",
-   "text": "CORE-7 refuses a viscosity of zero, but the inclusive `range` of `omega` in A.2 lets 2.0 through Fix: key `range_open`"
   }
  ]
 }
