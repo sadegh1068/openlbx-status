@@ -345,14 +345,22 @@ const INLINE = {
      "since": "2026-11-18"
     },
     {
-     "id": "M1-4",
-     "title": "all lattices",
+     "id": "M1-4a",
+     "title": "lattice tables and modules",
      "status": "running",
      "deps": [
       "M0-gate"
      ],
-     "stage": "design",
+     "stage": "tests",
      "since": "2026-11-18"
+    },
+    {
+     "id": "M1-4b",
+     "title": "streaming on every lattice",
+     "status": "pending",
+     "deps": [
+      "M1-4a"
+     ]
     },
     {
      "id": "M1-10",
@@ -367,7 +375,7 @@ const INLINE = {
      "title": "two-array check variants",
      "status": "pending",
      "deps": [
-      "M1-4"
+      "M1-4b"
      ]
     },
     {
@@ -375,7 +383,7 @@ const INLINE = {
      "title": "TRT, MRT, subgrid",
      "status": "pending",
      "deps": [
-      "M1-4"
+      "M1-4a"
      ]
     },
     {
@@ -652,6 +660,14 @@ const INLINE = {
  ],
  "decisions": [
   {
+   "id": "D-059",
+   "text": "M1-4 is split into M1-4a (host tables, lattice modules) and M1-4b (streaming generator on every lattice, oracles, device tests). The scalar sets D2Q5 and D3Q7 get tables and streaming only; their i..."
+  },
+  {
+   "id": "D-058",
+   "text": "The lattice modules `lattice.d2q9`, `lattice.d3q15`, `lattice.d3q27` are rendered from the host velocity table by one function and checked in as files; an L0 test requires every file of the four hy..."
+  },
+  {
    "id": "D-054",
    "text": "The mass loss of 1.0e-6 in one seed of the VAL-7 test is accepted as 32-bit rounding and the generated solver is not changed at M0. The test keeps the 2.0e-6 bound and gains a per-step mass balance..."
   },
@@ -674,48 +690,28 @@ const INLINE = {
   {
    "id": "D-045",
    "text": "A test that crashes the Intel CPU runtime is not moved to a GPU; the cause is found first"
-  },
-  {
-   "id": "D-044",
-   "text": "`SetContext` carries `const BlockGeometry& block`"
-  },
-  {
-   "id": "D-043",
-   "text": "M0-8 is merged after its review fixes although tests 4, 6 and 7 are compiled out until M0-7b/7c; it counts as accepted only when they have run and I have viewed the box contour plot; TRACE rows say..."
   }
  ],
  "findings": [
   {
-   "id": "IMPL-M0-42",
-   "text": "OD-6 rests on one efficiency; on the RTX 5050 the data-sheet bandwidth (320 GB/s, unverified) gives about 0.90 and the measured copy bandwidth (291... Fix: the decision is provisional when the two figures straddle 90 % or lie within 2 points of it, until the deliverable bandwidth is verified outside Op..."
+   "id": "IMPL-M1-5",
+   "text": "chapter 02 lists q in {9, 15, 19, 27} and excludes D3Q7 from the core while MEM-2 compiles D2Q5 and D3Q7; no chapter says what the initial store of... Fix: tables and streaming of the scalar sets exist from M1; moments, equilibrium and initialisation come with chapter 05, and until then their initial s..."
   },
   {
-   "id": "IMPL-M0-41",
-   "text": "VAL-17 compares on the same hardware only; runs of another grid size or case would enter the window Fix: the window matches device, driver, grid size and case configuration"
+   "id": "IMPL-M1-4",
+   "text": "section 1.5 gives one cell along z in two dimensions but not what happens when a two-dimensional set meets a thicker block or a split along z Fix: configuration error (MEM-22); a three-dimensional set on a block one cell thick stays valid"
   },
   {
-   "id": "IMPL-M0-39",
-   "text": "ARCH-31 does not say what the permissive measurement build consists of; the harness added the permissive flags while the program text kept `FP_CONT... Fix: the permissive build is defined in ARCH-31 (pragma, flags, no correctly rounded division); `ModelConfig::deterministic`"
+   "id": "IMPL-M1-3",
+   "text": "the momentum and velocity locals have three components and nothing says what their third component holds on a two-dimensional set; an undefined val... Fix: exactly zero, written by the moment and velocity fragments"
   },
   {
-   "id": "IMPL-M0-38",
-   "text": "forming the shifted equilibrium from the unrounded sum s instead of fl(1 + s) - 1 removes the drift (2e-11 instead of 1e-6 in the same run); CORE-5... Fix: open: decided at M1-14 together with the momentum bias 10-O4 (same rounding); no change at M0 (D-054)"
+   "id": "IMPL-M1-2",
+   "text": "the CORE-1/CORE-2 row of the test table says D3Q27 equals D3Q19 in entries 0 to 18 in \"vectors and weights\"; table 2.4 gives different weights and... Fix: the row reads \"vectors and opposite indices; the weights differ\""
   },
   {
-   "id": "IMPL-M0-37",
-   "text": "VAL-7 states the f32 bound as ten times the measured level; one seed in four reached 1.0e-6 (half the bound), 30 times the level VAL-7 quotes. Caus... Fix: VAL-7 explains the mechanism, states the real margin (1.8) and adds a per-step mass balance that does not depend on the seed"
-  },
-  {
-   "id": "IMPL-M0-36",
-   "text": "the type of a `step` kernel argument (32 or 64 bit) is stated nowhere; a 32-bit step wraps after 4.3e9 steps Fix: open: decided with the scheduler (M1-2); no M0 kernel has a step argument; the driver accepts both and checks the type at construction"
-  },
-  {
-   "id": "IMPL-M0-35",
-   "text": "ARCH-46 does not say what initialisation means after steps were run Fix: initialisation sets the time to 0"
-  },
-  {
-   "id": "IMPL-M0-34",
-   "text": "ARCH-24 counts all time outside device kernels as host work; with an asynchronous queue this includes time blocked on a full queue (measured: 0.66... Fix: host work is the time preparing and submitting; blocked time is measured and reported separately (D-053)"
+   "id": "IMPL-M1-1",
+   "text": "CORE-3 asks the four moment identities for every compiled set, but D2Q5 and D3Q7, which MEM-2 compiles, cannot satisfy the fourth-order identity (t... Fix: CORE-3 holds for the four hydrodynamic sets; the scalar sets are checked for the pairing, unit weight sum, vanishing first and third moments and th..."
   }
  ]
 };
