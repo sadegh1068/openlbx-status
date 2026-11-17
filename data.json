@@ -2,38 +2,38 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-2a",
+  "commit": "m1 after M1-5a",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 384,
-    "assertions": 25095,
+    "cases": 400,
+    "assertions": 25914,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 72,
-    "assertions": 43087,
+    "cases": 78,
+    "assertions": 43555,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 72,
-    "assertions": 43294,
+    "cases": 78,
+    "assertions": 43762,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel UHD 770",
-    "cases": 72,
-    "assertions": 43091,
+    "cases": 78,
+    "assertions": 43559,
     "failed": 0,
     "skipped": 0
    }
@@ -312,12 +312,10 @@
     {
      "id": "M1-5a",
      "title": "TRT, subgrid model, eddy viscosity",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-4a"
-     ],
-     "stage": "fixes",
-     "since": "2026-11-18"
+     ]
     },
     {
      "id": "M1-5b",
@@ -636,6 +634,10 @@
  ],
  "findings": [
   {
+   "id": "IMPL-M1-39",
+   "text": "with every fragment in every flavour by default (IMPL-M1-37), a fragment of a stage up to 8 that writes a field which is not derived would enter th... Fix: the assembler refuses such a kernel, naming fragment and field; the module then gives the fragment the list `lean`, `writing` or supplies a read-on..."
+  },
+  {
    "id": "IMPL-M1-38",
    "text": "the spec did not say whether $\\nu_t \\ge 0$ holds on a device without a correctly rounded square root, nor how accurate $\\nu_t$ is when it is formed... Fix: exact non-negativity only with a correctly rounded square root, else bounded below by -4e-6; absolute error about 2e-7 (relative 2e-4 at 1e-4). Acc..."
   },
@@ -662,10 +664,6 @@
   {
    "id": "IMPL-M1-32",
    "text": "section 8.4 says \"accepted range 0 to 0.3 (warning outside)\", but a manifest range is an error, not a warning Fix: range [0, 1] is the error bound; above 0.3 a warning (M1-11)"
-  },
-  {
-   "id": "IMPL-M1-31",
-   "text": "02-UNIT-2 asks that $C_S = 0$ returns $\\tau_0$ exactly; on a device this needs a correctly rounded square root Fix: exact on the host and on such a device, relative 1e-6 otherwise"
   }
  ]
 }
