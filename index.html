@@ -101,30 +101,30 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-15",
+  "commit": "m1 after M1-4b",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 403,
-    "assertions": 26256,
+    "cases": 412,
+    "assertions": 31352,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 83,
-    "assertions": 43574,
+    "cases": 92,
+    "assertions": 50959,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 83,
-    "assertions": 43781,
+    "cases": 92,
+    "assertions": 51166,
     "failed": 0,
     "skipped": 0
    },
@@ -382,14 +382,12 @@ const INLINE = {
     {
      "id": "M1-4b",
      "title": "streaming on every lattice",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-4a",
       "M1-15"
      ],
-     "note": "passes on the CPU runtime and the NVIDIA card; the failures on the Intel integrated GPU were traced to a defect of that device compiler, which the new self-test package works around",
-     "stage": "final check",
-     "since": "2026-11-18"
+     "note": "the streaming generator now serves every lattice (D2Q9, D3Q15, D3Q19, D3Q27 and the scalar sets D2Q5, D3Q7): slot tables, wall tags, initialisation and the views are compared exactly with an independent numpy oracle on the Intel CPU runtime and the RTX 5050, including two negative controls that must fail"
     },
     {
      "id": "M1-10",
