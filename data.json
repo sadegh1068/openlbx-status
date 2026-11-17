@@ -2,14 +2,14 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-1",
+  "commit": "m1 after M1-2a",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 356,
-    "assertions": 24086,
+    "cases": 384,
+    "assertions": 25095,
     "failed": 0,
     "skipped": 0
    },
@@ -237,12 +237,11 @@
     {
      "id": "M1-2a",
      "title": "scheduler: graph and exchange placement",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-1"
      ],
-     "stage": "fixes",
-     "since": "2026-11-18"
+     "note": "the scheduler now derives, from the declared reads and writes of every pass, where halo exchanges go and which step variants exist; review found and closed two ordering defects, and the rule for two writers of one field is now stated per phase"
     },
     {
      "id": "M1-2b",
