@@ -241,7 +241,7 @@
      "deps": [
       "M1-1"
      ],
-     "stage": "tests",
+     "stage": "implementation",
      "since": "2026-11-18"
     },
     {
