@@ -331,8 +331,9 @@ const INLINE = {
      "deps": [
       "M0-gate"
      ],
-     "stage": "review",
-     "since": "2026-11-18"
+     "stage": "fixes after review",
+     "since": "2026-11-18",
+     "rounds": 1
     },
     {
      "id": "M1-2a",
@@ -375,7 +376,8 @@ const INLINE = {
      "deps": [
       "M1-4a"
      ],
-     "stage": "implementation",
+     "note": "passes on the CPU runtime and the NVIDIA card; five device tests fail on the Intel integrated GPU and are being investigated",
+     "stage": "debugging",
      "since": "2026-11-18"
     },
     {
@@ -710,6 +712,14 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-21",
+   "text": "ARCH-35 does not say what a cycle of `after` / `before` entries means; the first implementation took two passes that name each other as ordered and... Fix: a cycle orders nothing; the scheduler (M1-2a) reports the cycle itself"
+  },
+  {
+   "id": "IMPL-M1-20",
+   "text": "ARCH-42 says nothing about preprocessor lines in a fragment; `#define R f.rho` followed by `R = 1.0f;` hides a write from the lexical comparison Fix: a reserved form on a preprocessor line is a form violation"
+  },
+  {
    "id": "IMPL-M1-19",
    "text": "CORE-6 says only \"analogous sequences\" for the other components and sets; which member of a pair comes first when the odd index has the component -... Fix: pairs in ascending order of their odd index, the direction with component +1 first"
   },
@@ -732,14 +742,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-14",
    "text": "a `[[pass]]` had no key saying when it runs, population accesses of a pass had no spelling, and `after` / `before` could not name the fused pass Fix: key `phase` (default `[\"finalise\"]`); spellings `<s>`, `<s>:incoming`, `<s>:outgoing`, `<s>:raw`; token `fused`; a `finalise` pass is ordered befor..."
-  },
-  {
-   "id": "IMPL-M1-13",
-   "text": "ARCH-20 places an exchange \"immediately before the first pass that reads\", MEM-19 and chapter 06 section 3 \"after the fused pass\"; nothing said wha... Fix: the end of a sequence reads every population set, so a due `ddf` exchange is placed there and all other parts stay lazy; exchange points are record..."
-  },
-  {
-   "id": "IMPL-M1-12",
-   "text": "remedy (a) of ARCH-32 names `double_buffer = true`, which is not among the key spellings Fix: open: the key is added with the first module that needs it; until then a manifest with it is refused as an unknown key"
   }
  ]
 };
