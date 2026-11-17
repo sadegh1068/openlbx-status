@@ -349,7 +349,7 @@ const INLINE = {
      "deps": [
       "M1-2a"
      ],
-     "stage": "review",
+     "stage": "fixes",
      "since": "2026-11-18"
     },
     {
@@ -376,7 +376,7 @@ const INLINE = {
      "deps": [
       "M0-gate"
      ],
-     "note": "added after a device compiler was found to misplace memory writes; the backend now probes for it and switches optimisation off on an affected device",
+     "note": "added after a device compiler was found to misplace memory writes; the backend now probes for it and refuses an affected device when it is opened",
      "stage": "fixes",
      "since": "2026-11-18"
     },
@@ -419,11 +419,13 @@ const INLINE = {
     {
      "id": "M1-5b",
      "title": "MRT",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-4a",
       "M1-5a"
-     ]
+     ],
+     "stage": "tests",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-6",
