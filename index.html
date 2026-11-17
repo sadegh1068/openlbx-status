@@ -398,14 +398,23 @@ const INLINE = {
      ]
     },
     {
-     "id": "M1-3",
-     "title": "two-array check variants",
+     "id": "M1-3a",
+     "title": "two-array check variant: generator",
      "status": "running",
      "deps": [
       "M1-4b"
      ],
-     "stage": "design",
+     "stage": "tests",
      "since": "2026-11-18"
+    },
+    {
+     "id": "M1-3b",
+     "title": "production equals the check variant bit for bit",
+     "status": "pending",
+     "deps": [
+      "M1-3a",
+      "M1-5b"
+     ]
     },
     {
      "id": "M1-5a",
@@ -447,7 +456,7 @@ const INLINE = {
      "title": "write_in, refile, restart",
      "status": "pending",
      "deps": [
-      "M1-3"
+      "M1-3b"
      ]
     },
     {
@@ -471,7 +480,7 @@ const INLINE = {
      "title": "property suite",
      "status": "pending",
      "deps": [
-      "M1-3",
+      "M1-3b",
       "M1-5b",
       "M1-6",
       "M1-7"
@@ -734,6 +743,10 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-47",
+   "text": "MEM-14 (a') and the VAL-3 rows with moving walls and pressure cells need boundary modules of M1-7; MEM-14 (e) on blocks and with a force that varie... Fix: M1-3 runs those cell kinds as plain wall-like cells, one block, a uniform force, and the scalar lattices at slot level; M1-7 adds its modules to th..."
+  },
+  {
    "id": "IMPL-M1-44",
    "text": "section 4.3 says that setup prints the ratio of bulk to shear viscosity for an MRT operator; no package owned it Fix: the line is part of `describe()` (M1-2c), from `mrt_bulk_ratio`; nothing is printed by the model layer"
   },
@@ -760,10 +773,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-37",
    "text": "the default of the fragment key `flavours` was not stated; the parser of M0-3 took `lean` and `writing`, so no existing fragment was in the `moment... Fix: a fragment without `flavours` belongs to every flavour. The implementer had made the assembler treat the pair `lean`, `writing` as all three; refus..."
-  },
-  {
-   "id": "IMPL-M1-36",
-   "text": "ARCH-49 answered a failed probe with optimisation off. On the Intel UHD 770 (driver 32.0.101.6129) that breaks other programs: the unoptimised comp... Fix: a device that fails a probe is refused at open; no workaround option. The Intel CPU runtime and the RTX 5050 remain as device-test devices; the UHD..."
   }
  ]
 };
