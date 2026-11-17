@@ -298,7 +298,7 @@
      "deps": [
       "M0-gate"
      ],
-     "stage": "implementation",
+     "stage": "fixes",
      "since": "2026-11-18"
     },
     {
@@ -308,7 +308,7 @@
      "deps": [
       "M1-4b"
      ],
-     "stage": "review",
+     "stage": "fixes",
      "since": "2026-11-18"
     },
     {
@@ -645,6 +645,22 @@
  ],
  "findings": [
   {
+   "id": "IMPL-M1-60",
+   "text": "with `f16c` storage a NaN or an infinity saturates to the largest magnitude (MEM-13), so a diverging run keeps finite populations and a finite dens... Fix: open, for M1-11 (health checks): the candidate rule is that a stored pattern of largest magnitude counts as the stop condition for `f16c`, since a..."
+  },
+  {
+   "id": "IMPL-M1-59",
+   "text": "ruling 1 of the M1-2c brief asked to refuse a time table on `omega` while an MRT module is enabled; an MRT program has no parameter `omega`, so the... Fix: the special refusal is dropped (the ordinary unknown-parameter error applies); a time table on an array parameter is a configuration error in miles..."
+  },
+  {
+   "id": "IMPL-M1-58",
+   "text": "finalisation ends with a `moments-only` pass that writes `rho` and `u`, the same fields from which the initial store reads the prepared moments; a... Fix: stated in ARCH-46: finalisation is not repeatable without a new upload of the initial fields; a proper re-initialisation call is M3-2 (`reinitialize`)"
+  },
+  {
+   "id": "IMPL-M1-56",
+   "text": "the paragraph on generated modules says that a manifest's declared access is an upper bound, yet the manifests of both streaming modules omit the r... Fix: stated as the one exception: this read depends on the wall mode and is added by the assembler"
+  },
+  {
    "id": "IMPL-M1-55",
    "text": "MEM-13 asks for an exhaustive encoder sweep over the non-negative FP32 values below 4; values from 4 upward, infinity and NaN are covered by vector... Fix: the sweep of MEM-13 is kept as specified; the rest of the 2^32 patterns (saturation, NaN, the sign rule) is sampled with a prime stride. A full swe..."
   },
@@ -659,22 +675,6 @@
   {
    "id": "IMPL-M1-52",
    "text": "ARCH-36 defines accessor variants for `f16s` only and does not say whether an `f16c` accessor may use floating-point operations Fix: one integer-only accessor from the same token source as the host codec; no variant, nothing new in the cache key"
-  },
-  {
-   "id": "IMPL-M1-51",
-   "text": "the content of the error that stops a run after a failed storage self-test is not specified Fix: the `f16c` error names device, driver and the failed vectors, like the refusal of ARCH-49; the existing `f16s` text is left as it is"
-  },
-  {
-   "id": "IMPL-M1-50",
-   "text": "VAL-18 names fault injection for the `f16s` hardware accessor only, while MEM-13 says that a failing `f16c` self-test stops the run; that path had... Fix: two test-only `f16c` faults (ties to even in the encoder, a decoder that flushes subnormal patterns); the designer checked that the section 6.3 vec..."
-  },
-  {
-   "id": "IMPL-M1-47",
-   "text": "MEM-14 (a') and the VAL-3 rows with moving walls and pressure cells need boundary modules of M1-7; MEM-14 (e) on blocks and with a force that varie... Fix: M1-3 runs those cell kinds as plain wall-like cells, one block, a uniform force, and the scalar lattices at slot level; M1-7 adds its modules to th..."
-  },
-  {
-   "id": "IMPL-M1-44",
-   "text": "section 4.3 says that setup prints the ratio of bulk to shear viscosity for an MRT operator; no package owned it Fix: the line is part of `describe()` (M1-2c), from `mrt_bulk_ratio`; nothing is printed by the model layer"
   }
  ]
 }
