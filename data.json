@@ -2,14 +2,14 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "3fa2554",
+  "commit": "m1 after M1-1",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 303,
-    "assertions": 22958,
+    "cases": 356,
+    "assertions": 24086,
     "failed": 0,
     "skipped": 0
    },
@@ -38,7 +38,7 @@
     "skipped": 0
    }
   ],
-  "note": "The velocity sets D2Q9, D3Q15 and D3Q27 now have device modules whose density, momentum and equilibrium agree bit for bit with a host evaluation on all three devices; the program text of the D3Q19 solver measured at the M0 gate is unchanged (42 hashes)."
+  "note": "The assembler checks declared access, ownership and races for every module set; the program text of the solver measured at the M0 gate is unchanged. A defect of the Intel integrated GPU compiler found by the tests of the next package is documented and gets a self-test at device open."
  },
  "milestones": [
   {
@@ -228,22 +228,21 @@
     {
      "id": "M1-1",
      "title": "access and race checks",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M0-gate"
      ],
-     "stage": "fixes after review",
-     "since": "2026-11-18",
-     "rounds": 1
+     "note": "the assembler now rejects module sets whose declared reads and writes do not match their code, two writers of one field, and read-after-write races; two review rounds closed five ways a hidden write could pass"
     },
     {
      "id": "M1-2a",
      "title": "scheduler: graph and exchange placement",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-1"
      ],
-     "note": "design accepted; starts after the access checks are merged"
+     "stage": "design",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-2b",
