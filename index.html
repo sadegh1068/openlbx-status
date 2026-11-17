@@ -370,14 +370,26 @@ const INLINE = {
      "note": "five more velocity sets (two- and three-dimensional) with their device modules; tables and moment identities recomputed independently in review"
     },
     {
+     "id": "M1-15",
+     "title": "compiler self-tests at device open",
+     "status": "running",
+     "deps": [
+      "M0-gate"
+     ],
+     "note": "added after a device compiler was found to misplace memory writes; the backend now probes for it and switches optimisation off on an affected device",
+     "stage": "tests",
+     "since": "2026-11-18"
+    },
+    {
      "id": "M1-4b",
      "title": "streaming on every lattice",
      "status": "running",
      "deps": [
-      "M1-4a"
+      "M1-4a",
+      "M1-15"
      ],
-     "note": "passes on the CPU runtime and the NVIDIA card; five device tests fail on the Intel integrated GPU and are being investigated",
-     "stage": "debugging",
+     "note": "passes on the CPU runtime and the NVIDIA card; the failures on the Intel integrated GPU were traced to a defect of that device compiler, which the new self-test package works around",
+     "stage": "review",
      "since": "2026-11-18"
     },
     {
@@ -712,12 +724,16 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-22",
+   "text": "the spec assumed that a device compiler translates valid device code correctly; the Intel UHD 770 compiler (driver 32.0.101.6129) sends stores thro... Fix: new requirement ARCH-49: probe kernels at device open; a failing device is used with optimisation off or refused; stated in the capability report (..."
+  },
+  {
    "id": "IMPL-M1-21",
    "text": "ARCH-35 does not say what a cycle of `after` / `before` entries means; the first implementation took two passes that name each other as ordered and... Fix: a cycle orders nothing; the scheduler (M1-2a) reports the cycle itself"
   },
   {
    "id": "IMPL-M1-20",
-   "text": "ARCH-42 says nothing about preprocessor lines in a fragment; `#define R f.rho` followed by `R = 1.0f;` hides a write from the lexical comparison Fix: a reserved form on a preprocessor line is a form violation"
+   "text": "ARCH-42 says nothing about preprocessor lines in a fragment; `#define R f.rho` followed by `R = 1.0f;` hides a write from the lexical comparison Fix: a hand-written fragment may not define or undefine a macro, include a file or use a pragma (the second look of the review showed that a macro witho..."
   },
   {
    "id": "IMPL-M1-19",
@@ -738,10 +754,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-15",
    "text": "the meaning of a kernel's parity argument and the type of a step argument were not fixed (IMPL-M0-36) Fix: parity of the next load, `(t + shift + phase) mod 2`, stores use the complement; the step argument is an unsigned 64-bit integer"
-  },
-  {
-   "id": "IMPL-M1-14",
-   "text": "a `[[pass]]` had no key saying when it runs, population accesses of a pass had no spelling, and `after` / `before` could not name the fused pass Fix: key `phase` (default `[\"finalise\"]`); spellings `<s>`, `<s>:incoming`, `<s>:outgoing`, `<s>:raw`; token `fused`; a `finalise` pass is ordered befor..."
   }
  ]
 };
