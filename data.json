@@ -160,7 +160,7 @@
       "M0-5a",
       "M0-6"
      ],
-     "note": "merged; the inline workaround for the CPU runtime awaits a small reproducer (D-049)"
+     "note": "merged; CPU-runtime crash traced to 3-component vector arguments of non-inlined helpers and avoided (D-050)"
     },
     {
      "id": "M0-7c",
@@ -169,8 +169,8 @@
      "deps": [
       "M0-7b"
      ],
-     "note": "tests written; implementation started",
-     "stage": "implementation",
+     "note": "tests written; the cell coordinate becomes a 4-component vector first (D-050), then the implementation",
+     "stage": "coordinate type change",
      "since": "2026-11-17",
      "rounds": 0
     },
