@@ -267,7 +267,7 @@
      "deps": [
       "M0-gate"
      ],
-     "stage": "implementation",
+     "stage": "review",
      "since": "2026-11-18"
     },
     {
@@ -277,6 +277,7 @@
      "deps": [
       "M1-4a"
      ],
+     "note": "tests and oracles written; implementation starts when the lattice tables are merged",
      "stage": "tests",
      "since": "2026-11-18"
     },
