@@ -2,43 +2,43 @@
  "updated": "2026-11-17",
  "branch": "m0",
  "tests": {
-  "commit": "8161e54",
+  "commit": "d70c7b4",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 230,
-    "assertions": 13651,
+    "cases": 239,
+    "assertions": 17530,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 44,
-    "assertions": 35725,
+    "cases": 54,
+    "assertions": 36489,
     "failed": 0,
-    "skipped": 1
+    "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 44,
-    "assertions": 35725,
+    "cases": 54,
+    "assertions": 36489,
     "failed": 0,
-    "skipped": 1
+    "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel UHD 770",
-    "cases": 44,
-    "assertions": 35725,
+    "cases": 54,
+    "assertions": 36489,
     "failed": 0,
-    "skipped": 1
+    "skipped": 0
    }
   ],
-  "note": "The skipped case holds the two device tests of M0-8 (rest state, 30-step box); they wait for M0-7c and M0-9a. The assembled-program test of M0-8 is active and passes."
+  "note": "First end-to-end runs of the generated solver are in: rest state and a 30-step periodic box with random walls agree with the numpy check script to float rounding on all three devices."
  },
  "milestones": [
   {
@@ -165,23 +165,20 @@
     {
      "id": "M0-7c",
      "title": "initialisation",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M0-7b"
      ],
-     "note": "implemented; 236 host and 53 device tests pass on three devices; the 30-step box agrees with the check script to float rounding; review running",
-     "stage": "in review",
-     "since": "2026-11-17",
-     "rounds": 0
+     "note": "merged; init bit-exact against the check script at time 0 in both wall modes; cell coordinate is a 4-component vector everywhere (D-050)"
     },
     {
      "id": "M0-8",
      "title": "core modules",
-     "status": "partial",
+     "status": "done",
      "deps": [
       "M0-5b"
      ],
-     "note": "merged; its device tests (rest state, 30-step box) pass on the M0-7c branch; accepted when that branch merges"
+     "note": "merged and accepted (D-043): rest state exact, 30-step box with walls within 1.2e-7 of the check script on three devices, plot viewed"
     },
     {
      "id": "M0-9a",
@@ -192,10 +189,10 @@
       "M0-7c",
       "M0-8"
      ],
-     "note": "brief ruled on; tests being written",
-     "stage": "tests",
+     "note": "implemented and reviewed (accept with fixes): view argument type, reserved instance names, output-buffer source kind",
+     "stage": "fixes after review",
      "since": "2026-11-17",
-     "rounds": 0
+     "rounds": 1
     },
     {
      "id": "M0-9b",
@@ -204,10 +201,10 @@
      "deps": [
       "M0-9a"
      ],
-     "note": "interface headers and tests being written",
-     "stage": "tests",
+     "note": "driver implemented; all tests pass except one counter assertion that is a test flaw; odd-parity view test being added",
+     "stage": "fixes",
      "since": "2026-11-17",
-     "rounds": 0
+     "rounds": 1
     },
     {
      "id": "M0-10",
@@ -555,6 +552,10 @@
  ],
  "decisions": [
   {
+   "id": "D-051",
+   "text": "Scope of forced inlining made exact: every generated function that takes a cell coordinate or is called from a streaming function carries `__attribute__((always_inline))`: the streaming functions,..."
+  },
+  {
    "id": "D-049",
    "text": "The generated streaming functions are preceded by `__attribute__((always_inline))`. The scope of the rule (these functions only, or every generated helper through one macro of the portability heade..."
   },
@@ -581,13 +582,21 @@
   {
    "id": "D-038",
    "text": "Backend after review of M0-1: devices are identified by enumeration position; write maps keep contents (no invalidate flag); the cache file has a verified header and is written through a per-proces..."
-  },
-  {
-   "id": "D-037",
-   "text": "Cell-type layout is canonical (descending width, then name); wall-like and not-updated kinds are declared in the manifest of the module that owns the group, not hard-coded in the registry"
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M0-30",
+   "text": "ARCH-46 says a cell stores its own equilibrium when the link ends in a wall-like cell; 03 section 2.5 item 2 says when the destination is not updat... Fix: ARCH-46 now uses the wording of 03 section 2.5 item 2"
+  },
+  {
+   "id": "IMPL-M0-29",
+   "text": "MEM-5 and condition 4 of 03 section 3.2 forbid a pass to write a slot outside its cell's set, but item 3 of the initialisation of section 2.5 (`imp... Fix: the initialisation write of section 2.5 item 3 is named as allowed in MEM-5 and in condition 4"
+  },
+  {
+   "id": "IMPL-M0-28",
+   "text": "ARCH-33 gives s = 82 for a bound of 10^-6; the stated formula 62 - ceil(log2(bound)) gives 81 Fix: example corrected to 81 (checked numerically)"
+  },
   {
    "id": "IMPL-M0-26",
    "text": "no format for the schedule record; no place in the program for the tag, init and view kernels; VAL-7 names no generator or seeds and fixes TRT, whi... Fix: provisional record in brief M0-9 (confirmed by the M1-2 design note); kernels appended by a tail hook after the fused kernels; fixed seeds, SRT at..."
@@ -607,18 +616,6 @@
   {
    "id": "IMPL-M0-22",
    "text": "CORE-7 refuses a viscosity of zero, but the inclusive `range` of `omega` in A.2 lets 2.0 through Fix: key `range_open`"
-  },
-  {
-   "id": "IMPL-M0-21",
-   "text": "parameter values were checked only when folded; a split axis with halo width 0 let a neighbour index leave the block; the brief gave the field writ... Fix: values checked always; neighbour access across a split axis without halo is refused; field write also in `moments-only`"
-  },
-  {
-   "id": "IMPL-M0-20",
-   "text": "which locals of which set a fragment may touch; \"readable after its first writer stage\" allowed reads of locals nobody wrote (`rho_w`, `omega`) and... Fix: scope rule per set; readable means written by a placed fragment or initialised by the assembler; `u` from stage 6; group order is fixed and a contr..."
-  },
-  {
-   "id": "IMPL-M0-19",
-   "text": "points the design notes left open for the streaming generator and the core modules: tag and init kernels have no slot in the generator interface; i... Fix: accepted as proposed in the briefs; the driver (M0-9) wires the tag and init kernels"
   }
  ]
 }
