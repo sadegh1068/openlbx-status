@@ -340,7 +340,7 @@ const INLINE = {
      "deps": [
       "M1-1"
      ],
-     "stage": "design",
+     "stage": "tests",
      "since": "2026-11-18"
     },
     {
@@ -388,7 +388,7 @@ const INLINE = {
       "M1-15"
      ],
      "note": "passes on the CPU runtime and the NVIDIA card; the failures on the Intel integrated GPU were traced to a defect of that device compiler, which the new self-test package works around",
-     "stage": "review",
+     "stage": "fixes",
      "since": "2026-11-18"
     },
     {
@@ -689,6 +689,10 @@ const INLINE = {
  ],
  "decisions": [
   {
+   "id": "D-063",
+   "text": "L1 tests keep their per-process temporary kernel cache by default; when the environment variable `OLBX_TEST_CACHE_DIR` is set, that directory is used and kept. The verification before a merge runs..."
+  },
+  {
    "id": "D-059",
    "text": "M1-4 is split into M1-4a (host tables, lattice modules) and M1-4b (streaming generator on every lattice, oracles, device tests). The scalar sets D2Q5 and D3Q7 get tables and streaming only; their i..."
   },
@@ -715,13 +719,17 @@ const INLINE = {
   {
    "id": "D-049",
    "text": "The generated streaming functions are preceded by `__attribute__((always_inline))`. The scope of the rule (these functions only, or every generated helper through one macro of the portability heade..."
-  },
-  {
-   "id": "D-045",
-   "text": "A test that crashes the Intel CPU runtime is not moved to a GPU; the cause is found first"
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M1-24",
+   "text": "03 section 1.5 forbids a split along z only for a two-dimensional set, but the block geometry (M0-4, `geometry.cpp`) refuses a z split of any block... Fix: open, decided with the partitioner (M2-1): either the refusal moves to the lattice-aware check, or the spec states a least owned extent on a split..."
+  },
+  {
+   "id": "IMPL-M1-23",
+   "text": "the `[[pass]]` row ordered a `finalise` pass before every pass of a step and said nothing of `geometry` passes Fix: a pass without `step` in its phases never interleaves with a step and is ordered against every step pass and fused instance"
+  },
   {
    "id": "IMPL-M1-22",
    "text": "the spec assumed that a device compiler translates valid device code correctly; the Intel UHD 770 compiler (driver 32.0.101.6129) sends stores thro... Fix: new requirement ARCH-49: probe kernels at device open; a failing device is used with optimisation off or refused; stated in the capability report (..."
@@ -745,14 +753,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-17",
    "text": "reads of a pass carry a stencil in section 8 but the scheduler had no source for it Fix: the access records of M1-1 (`[[uses]]` with `by`, plus the reads the generators supply) are the single source for the scheduler; no second declarat..."
-  },
-  {
-   "id": "IMPL-M1-16",
-   "text": "the plain-flow list of DEV-17 exchanges the tag bits and sends boundary inputs with the cell types, which the rule of ARCH-20 does not produce (no... Fix: the list follows the rule: no tag-bit exchange, boundary inputs travel with the prepared moments. M2-2 re-examines whether a pack or unpack kernel..."
-  },
-  {
-   "id": "IMPL-M1-15",
-   "text": "the meaning of a kernel's parity argument and the type of a step argument were not fixed (IMPL-M0-36) Fix: parity of the next load, `(t + shift + phase) mod 2`, stores use the complement; the step argument is an unsigned 64-bit integer"
   }
  ]
 };
