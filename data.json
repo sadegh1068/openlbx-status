@@ -1,6 +1,6 @@
 {
  "updated": "2026-11-18",
- "branch": "main",
+ "branch": "m1",
  "tests": {
   "commit": "14abc4a",
   "compilers": "MSVC 14.44 and clang-cl 21",
@@ -228,26 +228,32 @@
     {
      "id": "M1-1",
      "title": "access and race checks",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M0-gate"
-     ]
+     ],
+     "stage": "design",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-2",
      "title": "scheduler",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M0-gate"
-     ]
+     ],
+     "stage": "design",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-4",
      "title": "all lattices",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M0-gate"
-     ]
+     ],
+     "stage": "design",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-10",
