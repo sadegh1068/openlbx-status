@@ -101,30 +101,30 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-5b",
+  "commit": "m1 after M1-2b",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 430,
-    "assertions": 32077,
+    "cases": 441,
+    "assertions": 32822,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 96,
-    "assertions": 51737,
+    "cases": 118,
+    "assertions": 52476,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 96,
-    "assertions": 51944,
+    "cases": 118,
+    "assertions": 52686,
     "failed": 0,
     "skipped": 0
    },
@@ -346,20 +346,21 @@ const INLINE = {
     {
      "id": "M1-2b",
      "title": "scheduler: consumers and validity",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-2a"
      ],
-     "stage": "final check",
-     "since": "2026-11-18"
+     "note": "diagnostics now register as consumers with their sampling steps, so the output fields are written only on the steps that need them and can be brought up to date on demand; reads inside a callback refer to the sample time; the declared access of generated code is narrowed to what the configuration really writes. Three review passes; a dangling record found by the reviewer was shown by a test and fixed"
     },
     {
      "id": "M1-2c",
      "title": "scheduler: finalisation and describe",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-2b"
-     ]
+     ],
+     "stage": "tests",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-4a",
