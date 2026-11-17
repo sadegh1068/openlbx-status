@@ -1,0 +1,871 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>openlbx plan</title>
+<style>
+:root{
+  --bg:#f6f6f2;--panel:#ffffff;--ink:#1f2328;--mute:#6b7178;--line:#d9d9d2;--edge:#b9c9bd;--hl:#2f6fd0;
+  --done:#dcefe2;--done-b:#7fbf95;--partial:#e6f3df;--partial-b:#5fa878;--running:#fdebc8;--running-b:#e0a93b;
+  --ready:#e3ecfb;--ready-b:#6f95d8;--waiting:#efefec;--waiting-b:#cfcfc8;--blocked:#fbe1e1;--blocked-b:#d86f6f;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#14171a;--panel:#1c2024;--ink:#e6e8ea;--mute:#9aa1a8;--line:#30363d;--edge:#3d5145;--hl:#6ea8ff;
+  --done:#1d3a28;--done-b:#3f8a5a;--partial:#22381f;--partial-b:#5fa878;--running:#4a3a14;--running-b:#c9952e;
+  --ready:#1c2c4a;--ready-b:#4f78c4;--waiting:#24282c;--waiting-b:#454b52;--blocked:#4a1f1f;--blocked-b:#c45a5a;
+}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:13px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+header{position:fixed;inset:0 0 auto 0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;padding:8px 14px}
+h1{font-size:17px;margin:0 6px 0 0;white-space:nowrap}
+.stat{display:flex;flex-direction:column;line-height:1.1}
+.stat b{font-size:14px;font-variant-numeric:tabular-nums}
+.stat span{font-size:10px;color:var(--mute)}
+input#q{width:170px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer}
+button:hover{border-color:var(--hl)}
+button[aria-pressed="true"]{background:var(--ready);border-color:var(--ready-b)}
+.pills{display:flex;flex-wrap:wrap;gap:5px;margin-left:auto}
+.pill{font-size:11px;padding:2px 9px;border-radius:999px;border:1px solid;white-space:nowrap}
+#stage{position:fixed;inset:0;cursor:grab;touch-action:none}
+#stage.drag{cursor:grabbing}
+#world{position:absolute;left:0;top:0;transform-origin:0 0}
+#world svg{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+path.e{fill:none;stroke:var(--edge);stroke-width:1.2}
+path.e.hl{stroke:var(--hl);stroke-width:2.2}
+path.e.dim{opacity:.18}
+.n{position:absolute;border:1px solid;border-radius:6px;padding:5px 8px;cursor:pointer;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04)}
+.n .id{font:600 11.5px ui-monospace,SFMono-Regular,Consolas,monospace}
+.n .ms{float:right;font-size:9.5px;color:var(--mute)}
+.n .t{font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.n .x{font-size:10.5px;margin-top:4px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.n .k{display:flex;gap:12px;margin-top:4px;font-size:10px;color:var(--mute)}
+.n .k b{display:block;color:var(--ink);font-size:11px}
+.ml{position:absolute;text-align:center;font-size:20px;font-weight:600;color:var(--mute);white-space:nowrap}
+.n.dim{opacity:.28}
+.n.sel{outline:2px solid var(--hl);outline-offset:1px}
+.n.match{outline:2px dashed var(--running-b);outline-offset:1px}
+.s-done{background:var(--done);border-color:var(--done-b)}
+.s-partial{background:var(--partial);border-color:var(--partial-b);border-style:dashed}
+.s-running{background:var(--running);border-color:var(--running-b)}
+.s-ready{background:var(--ready);border-color:var(--ready-b)}
+.s-waiting{background:var(--waiting);border-color:var(--waiting-b)}
+.s-blocked{background:var(--blocked);border-color:var(--blocked-b)}
+aside{position:fixed;top:0;right:0;bottom:0;width:min(440px,92vw);z-index:6;background:var(--panel);border-left:1px solid var(--line);padding:14px 16px;overflow:auto;transform:translateX(100%);transition:transform .15s}
+aside.open{transform:none}
+aside h2{font-size:14px;margin:16px 0 6px}
+aside h2:first-of-type{margin-top:0}
+aside table{border-collapse:collapse;width:100%;font-size:11.5px}
+aside td,aside th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top}
+aside .close{float:right}
+.foot{position:fixed;left:10px;bottom:8px;z-index:4;font-size:11px;color:var(--mute)}
+</style>
+</head>
+<body>
+<header>
+  <h1>openlbx plan</h1>
+  <div id="stats" style="display:flex;gap:16px;flex-wrap:wrap"></div>
+  <input id="q" type="search" placeholder="Find a package" aria-label="Find a package">
+  <button id="zin" title="Zoom in">+</button><button id="zout" title="Zoom out">&minus;</button>
+  <button id="fit">Fit all</button><button id="prog">In progress</button>
+  <button id="direct" aria-pressed="false" title="Highlight only direct neighbours of the selected package">Direct edges</button>
+  <button id="info">Tests &amp; decisions</button>
+  <div class="pills" id="pills"></div>
+</header>
+<div id="stage"><div id="world"><svg id="edges"></svg></div></div>
+<aside id="side"><button class="close" id="closeSide">Close</button><div id="sideBody"></div></aside>
+<div class="foot" id="foot"></div>
+<script>
+const INLINE = {
+ "updated": "2026-11-17",
+ "branch": "m0",
+ "tests": {
+  "commit": "6073e2d",
+  "compilers": "MSVC 14.44 and clang-cl 21",
+  "rows": [
+   {
+    "level": "L0 host",
+    "device": "none",
+    "cases": 222,
+    "assertions": 9989,
+    "failed": 0,
+    "skipped": 1
+   },
+   {
+    "level": "L1 device",
+    "device": "Intel CPU runtime (i7-14700K)",
+    "cases": 33,
+    "assertions": 34260,
+    "failed": 0,
+    "skipped": 1
+   },
+   {
+    "level": "L1 device",
+    "device": "NVIDIA RTX 5050",
+    "cases": 33,
+    "assertions": 34260,
+    "failed": 0,
+    "skipped": 1
+   },
+   {
+    "level": "L1 device",
+    "device": "Intel UHD 770",
+    "cases": 33,
+    "assertions": 34260,
+    "failed": 0,
+    "skipped": 1
+   }
+  ],
+  "note": "Skipped cases are the end-to-end tests of M0-8 (assembled program, rest state, 30-step box); they wait for M0-7b, M0-7c and M0-9a."
+ },
+ "milestones": [
+  {
+   "id": "M0",
+   "title": "M0: performance prototype",
+   "packages": [
+    {
+     "id": "S0",
+     "title": "spec gaps closed, spec-v1.0",
+     "status": "done",
+     "deps": []
+    },
+    {
+     "id": "M0-0",
+     "title": "skeleton, presets",
+     "status": "done",
+     "deps": [
+      "S0"
+     ]
+    },
+    {
+     "id": "DN-1",
+     "title": "design: code generation",
+     "status": "done",
+     "deps": [
+      "S0"
+     ]
+    },
+    {
+     "id": "DN-2",
+     "title": "design: streaming",
+     "status": "done",
+     "deps": [
+      "S0"
+     ]
+    },
+    {
+     "id": "M0-R",
+     "title": "baseline measurement",
+     "status": "done",
+     "deps": [],
+     "note": "re-measured interleaved at the gate"
+    },
+    {
+     "id": "M0-1",
+     "title": "OpenCL backend",
+     "status": "done",
+     "deps": [
+      "M0-0"
+     ]
+    },
+    {
+     "id": "M0-2",
+     "title": "host numerics, f16s",
+     "status": "done",
+     "deps": [
+      "M0-0"
+     ]
+    },
+    {
+     "id": "M0-3",
+     "title": "manifests, module registry",
+     "status": "done",
+     "deps": [
+      "M0-0"
+     ]
+    },
+    {
+     "id": "M0-4",
+     "title": "field registry, cell types",
+     "status": "done",
+     "deps": [
+      "M0-2",
+      "M0-3"
+     ]
+    },
+    {
+     "id": "M0-5a",
+     "title": "assembler: stages, locals",
+     "status": "done",
+     "deps": [
+      "DN-1",
+      "M0-3",
+      "M0-4"
+     ]
+    },
+    {
+     "id": "M0-5b",
+     "title": "assembler: signatures, flavours",
+     "status": "done",
+     "deps": [
+      "M0-5a"
+     ]
+    },
+    {
+     "id": "M0-6",
+     "title": "storage accessors",
+     "status": "done",
+     "deps": [
+      "M0-2",
+      "DN-1"
+     ]
+    },
+    {
+     "id": "M0-7a",
+     "title": "slot tables",
+     "status": "done",
+     "deps": [
+      "DN-2",
+      "M0-2"
+     ]
+    },
+    {
+     "id": "M0-7b",
+     "title": "streaming generator",
+     "status": "running",
+     "deps": [
+      "M0-7a",
+      "M0-5a",
+      "M0-6"
+     ],
+     "note": "tests written; a crash on the CPU runtime with 16-bit software storage is being debugged before acceptance",
+     "stage": "implementation",
+     "since": "2026-11-17",
+     "rounds": 0
+    },
+    {
+     "id": "M0-7c",
+     "title": "initialisation",
+     "status": "running",
+     "deps": [
+      "M0-7b"
+     ],
+     "note": "waits for the streaming generator",
+     "stage": "tests written",
+     "since": "2026-11-17",
+     "rounds": 0
+    },
+    {
+     "id": "M0-8",
+     "title": "core modules",
+     "status": "partial",
+     "deps": [
+      "M0-5b"
+     ],
+     "note": "merged; 3 end-to-end tests wait for M0-9a (D-043)"
+    },
+    {
+     "id": "M0-9a",
+     "title": "program integration",
+     "status": "running",
+     "deps": [
+      "M0-7b",
+      "M0-7c",
+      "M0-8"
+     ],
+     "note": "integration brief ruled on; tests start after M0-7b merges",
+     "stage": "brief written",
+     "since": "2026-11-17",
+     "rounds": 0
+    },
+    {
+     "id": "M0-9b",
+     "title": "prototype driver",
+     "status": "pending",
+     "deps": [
+      "M0-9a"
+     ]
+    },
+    {
+     "id": "M0-10",
+     "title": "benchmark harness",
+     "status": "pending",
+     "deps": [
+      "M0-9b",
+      "M0-R"
+     ],
+     "note": "brief being written"
+    },
+    {
+     "id": "M0-gate",
+     "title": "gate: VAL-12 parity",
+     "status": "pending",
+     "deps": [
+      "M0-10"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "M1",
+   "title": "M1: core model",
+   "packages": [
+    {
+     "id": "M1-1",
+     "title": "access and race checks",
+     "status": "pending",
+     "deps": [
+      "M0-gate"
+     ]
+    },
+    {
+     "id": "M1-2",
+     "title": "scheduler",
+     "status": "pending",
+     "deps": [
+      "M0-gate"
+     ]
+    },
+    {
+     "id": "M1-4",
+     "title": "all lattices",
+     "status": "pending",
+     "deps": [
+      "M0-gate"
+     ]
+    },
+    {
+     "id": "M1-10",
+     "title": "f16c accessor",
+     "status": "pending",
+     "deps": [
+      "M0-gate"
+     ]
+    },
+    {
+     "id": "M1-3",
+     "title": "two-array check variants",
+     "status": "pending",
+     "deps": [
+      "M1-4"
+     ]
+    },
+    {
+     "id": "M1-5",
+     "title": "TRT, MRT, subgrid",
+     "status": "pending",
+     "deps": [
+      "M1-4"
+     ]
+    },
+    {
+     "id": "M1-6",
+     "title": "force field, forcing",
+     "status": "pending",
+     "deps": [
+      "M1-2"
+     ]
+    },
+    {
+     "id": "M1-7",
+     "title": "sparse fields, boundaries",
+     "status": "pending",
+     "deps": [
+      "M1-2"
+     ]
+    },
+    {
+     "id": "M1-8",
+     "title": "write_in, refile, restart",
+     "status": "pending",
+     "deps": [
+      "M1-3"
+     ]
+    },
+    {
+     "id": "M1-9",
+     "title": "exact reductions, force pass",
+     "status": "pending",
+     "deps": [
+      "M1-7"
+     ]
+    },
+    {
+     "id": "M1-11",
+     "title": "stability checks",
+     "status": "pending",
+     "deps": [
+      "M1-9"
+     ]
+    },
+    {
+     "id": "M1-12",
+     "title": "property suite",
+     "status": "pending",
+     "deps": [
+      "M1-3",
+      "M1-5",
+      "M1-6",
+      "M1-7"
+     ]
+    },
+    {
+     "id": "M1-13",
+     "title": "physical cases, thresholds",
+     "status": "pending",
+     "deps": [
+      "M1-12"
+     ]
+    },
+    {
+     "id": "M1-14",
+     "title": "measurements",
+     "status": "pending",
+     "deps": [
+      "M1-5"
+     ]
+    },
+    {
+     "id": "M1-gate",
+     "title": "gate: L0 to L3",
+     "status": "pending",
+     "deps": [
+      "M1-1",
+      "M1-8",
+      "M1-10",
+      "M1-11",
+      "M1-13",
+      "M1-14"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "M2",
+   "title": "M2: multi-device",
+   "packages": [
+    {
+     "id": "DN-3",
+     "title": "design: cut-link tables",
+     "status": "pending",
+     "deps": [
+      "M1-gate"
+     ]
+    },
+    {
+     "id": "M2-1",
+     "title": "partitioner, padded blocks",
+     "status": "pending",
+     "deps": [
+      "M1-gate"
+     ]
+    },
+    {
+     "id": "M2-2",
+     "title": "exchange plan, pack/unpack",
+     "status": "pending",
+     "deps": [
+      "DN-3",
+      "M2-1"
+     ]
+    },
+    {
+     "id": "M2-3",
+     "title": "transports",
+     "status": "pending",
+     "deps": [
+      "M2-1"
+     ]
+    },
+    {
+     "id": "M2-4",
+     "title": "scheduler on blocks",
+     "status": "pending",
+     "deps": [
+      "M2-2"
+     ]
+    },
+    {
+     "id": "M2-5",
+     "title": "reductions across blocks",
+     "status": "pending",
+     "deps": [
+      "M2-4"
+     ]
+    },
+    {
+     "id": "M2-6",
+     "title": "VAL-4 suite",
+     "status": "pending",
+     "deps": [
+      "M2-3",
+      "M2-4"
+     ]
+    },
+    {
+     "id": "M2-7",
+     "title": "scaling proxy",
+     "status": "pending",
+     "deps": [
+      "M2-6"
+     ]
+    },
+    {
+     "id": "M2-gate",
+     "title": "gate: VAL-4, VAL-20",
+     "status": "pending",
+     "deps": [
+      "M2-5",
+      "M2-7"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "M3",
+   "title": "M3: usability (first release candidate)",
+   "packages": [
+    {
+     "id": "M3-1",
+     "title": "units",
+     "status": "pending",
+     "deps": [
+      "M2-gate"
+     ]
+    },
+    {
+     "id": "M3-2",
+     "title": "field accessors",
+     "status": "pending",
+     "deps": [
+      "M2-gate"
+     ]
+    },
+    {
+     "id": "M3-3",
+     "title": "shapes, expressions",
+     "status": "pending",
+     "deps": [
+      "M3-2"
+     ]
+    },
+    {
+     "id": "M3-4",
+     "title": "mesh voxeliser",
+     "status": "pending",
+     "deps": [
+      "M3-1"
+     ]
+    },
+    {
+     "id": "M3-5",
+     "title": "device diagnostics",
+     "status": "pending",
+     "deps": [
+      "M3-2"
+     ]
+    },
+    {
+     "id": "M3-6",
+     "title": "VTKHDF output",
+     "status": "pending",
+     "deps": [
+      "M3-2"
+     ]
+    },
+    {
+     "id": "M3-7",
+     "title": "checkpoint, restart",
+     "status": "pending",
+     "deps": [
+      "M3-6"
+     ]
+    },
+    {
+     "id": "M3-8",
+     "title": "run control, manifest",
+     "status": "pending",
+     "deps": [
+      "M3-2"
+     ]
+    },
+    {
+     "id": "M3-9",
+     "title": "C++ API, Python, CLI",
+     "status": "pending",
+     "deps": [
+      "M3-3",
+      "M3-4",
+      "M3-5",
+      "M3-7",
+      "M3-8"
+     ]
+    },
+    {
+     "id": "M3-10",
+     "title": "gate cases",
+     "status": "pending",
+     "deps": [
+      "M3-9"
+     ]
+    },
+    {
+     "id": "M3-11",
+     "title": "moving bodies",
+     "status": "pending",
+     "deps": [
+      "M3-3",
+      "M3-7"
+     ]
+    },
+    {
+     "id": "M3-gate",
+     "title": "gate: VAL-5, VAL-16",
+     "status": "pending",
+     "deps": [
+      "M3-10",
+      "M3-11"
+     ]
+    }
+   ]
+  }
+ ],
+ "decisions": [
+  {
+   "id": "D-045",
+   "text": "A test that crashes the Intel CPU runtime is not moved to a GPU; the cause is found first"
+  },
+  {
+   "id": "D-044",
+   "text": "`SetContext` carries `const BlockGeometry& block`"
+  },
+  {
+   "id": "D-043",
+   "text": "M0-8 is merged after its review fixes although tests 4, 6 and 7 are compiled out until M0-7b/7c; it counts as accepted only when they have run and I have viewed the box contour plot; TRACE rows say..."
+  },
+  {
+   "id": "D-042",
+   "text": "The 30-step box oracle of M0-8 uses force (1e-3, -2e-4, 0), tolerance 1e-6 unchanged"
+  },
+  {
+   "id": "D-039",
+   "text": "The portability header of ARCH-6 is emitted as two adjacent blocks at the top of every program: the backend prologue (qualifiers, `FMA`, contraction pragma) and the storage block of the accessor ge..."
+  },
+  {
+   "id": "D-038",
+   "text": "Backend after review of M0-1: devices are identified by enumeration position; write maps keep contents (no invalidate flag); the cache file has a verified header and is written through a per-proces..."
+  },
+  {
+   "id": "D-037",
+   "text": "Cell-type layout is canonical (descending width, then name); wall-like and not-updated kinds are declared in the manifest of the module that owns the group, not hard-coded in the registry"
+  },
+  {
+   "id": "D-035",
+   "text": "All project exceptions derive from `olbx::Error`; modules are found by recursive search for `module.toml`, the name comes from the manifest"
+  }
+ ],
+ "findings": [
+  {
+   "id": "IMPL-M0-26",
+   "text": "no format for the schedule record; no place in the program for the tag, init and view kernels; VAL-7 names no generator or seeds and fixes TRT, whi... Fix: provisional record in brief M0-9 (confirmed by the M1-2 design note); kernels appended by a tail hook after the fused kernels; fixed seeds, SRT at..."
+  },
+  {
+   "id": "IMPL-M0-25",
+   "text": "`range` was checked for manifest defaults only; a configured value outside it reached the kernel Fix: configured values are checked against `range` and `range_open`"
+  },
+  {
+   "id": "IMPL-M0-24",
+   "text": "the order of the density and momentum sums was not stated, although bit comparisons with a host evaluation depend on it Fix: order stated"
+  },
+  {
+   "id": "IMPL-M0-23",
+   "text": "CORE-10 puts the uniform force first; the group order of ARCH-12 would run it last if another force fragment carried a set Fix: force fragments carry no set, order by `after`"
+  },
+  {
+   "id": "IMPL-M0-22",
+   "text": "CORE-7 refuses a viscosity of zero, but the inclusive `range` of `omega` in A.2 lets 2.0 through Fix: key `range_open`"
+  },
+  {
+   "id": "IMPL-M0-21",
+   "text": "parameter values were checked only when folded; a split axis with halo width 0 let a neighbour index leave the block; the brief gave the field writ... Fix: values checked always; neighbour access across a split axis without halo is refused; field write also in `moments-only`"
+  },
+  {
+   "id": "IMPL-M0-20",
+   "text": "which locals of which set a fragment may touch; \"readable after its first writer stage\" allowed reads of locals nobody wrote (`rho_w`, `omega`) and... Fix: scope rule per set; readable means written by a placed fragment or initialised by the assembler; `u` from stage 6; group order is fixed and a contr..."
+  },
+  {
+   "id": "IMPL-M0-19",
+   "text": "points the design notes left open for the streaming generator and the core modules: tag and init kernels have no slot in the generator interface; i... Fix: accepted as proposed in the briefs; the driver (M0-9) wires the tag and init kernels"
+  }
+ ]
+};
+const LABEL = {done:"completed", partial:"merged, acceptance pending", running:"in progress", ready:"ready to start", waiting:"waiting", blocked:"blocked"};
+const ORDER = ["done","partial","running","ready","waiting","blocked"];
+const W = 210, GX = 26, GY = 64;
+let LABELS = [];
+let D = null, N = [], BY = {}, sel = null, direct = false, view = {x: 0, y: 0, k: 1}, sig = "";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function prep(data) {
+  D = data; N = []; BY = {};
+  for (const m of data.milestones) for (const p of m.packages) { const n = {...p, ms: m.id, kids: []}; N.push(n); BY[n.id] = n; }
+  for (const n of N) for (const d of n.deps) BY[d].kids.push(n.id);
+  const ok = id => BY[id].status === "done" || BY[id].status === "partial";
+  for (const n of N) n.st = n.status === "pending" ? (n.deps.every(ok) ? "ready" : "waiting") : n.status;
+  // One layered column per milestone, side by side; layers count only dependencies inside the milestone.
+  const memo = {}, own = (n, ids) => ids.filter(d => BY[d].ms === n.ms);
+  const layer = id => memo[id] ?? (memo[id] = own(BY[id], BY[id].deps).length ? 1 + Math.max(...own(BY[id], BY[id].deps).map(layer)) : 0);
+  const bary = (n, ids) => ids.length ? ids.reduce((a, id) => a + BY[id].o, 0) / ids.length : n.o;
+  let x0 = 0; LABELS = [];
+  for (const m of data.milestones) {
+    const rows = [];
+    for (const n of N.filter(n => n.ms === m.id)) { n.l = layer(n.id); (rows[n.l] ??= []).push(n); n.h = n.st === "running" ? 112 : n.note ? 76 : 46; }
+    rows.forEach(r => r.forEach((n, i) => n.o = i));
+    for (let s = 0; s < 6; s++) {
+      const seq = s % 2 ? [...rows].reverse() : rows;
+      for (const r of seq) { r.forEach(n => n.b = bary(n, own(n, s % 2 ? n.kids : n.deps))); r.sort((a, b) => a.b - b.b); r.forEach((n, i) => n.o = i); }
+    }
+    const width = Math.max(...rows.map(r => r.length * W + (r.length - 1) * GX));
+    let y = 0;
+    for (const r of rows) {
+      const tot = r.length * W + (r.length - 1) * GX;
+      r.forEach((n, i) => { n.x = x0 + (width - tot) / 2 + i * (W + GX); n.y = y; });
+      y += Math.max(...r.map(n => n.h)) + GY;
+    }
+    LABELS.push({x: x0, w: width, text: m.title});
+    x0 += width + 150;
+  }
+}
+
+function card(n) {
+  let h = `<span class="ms">${esc(n.ms)}</span><div class="id">${esc(n.id)}</div><div class="t">${esc(n.title)}</div>`;
+  if (n.st === "running") h += `<div class="k"><div><b>${esc(n.stage || "in work")}</b>stage</div><div><b>${esc(n.rounds ?? 0)}</b>fix rounds</div><div><b>${esc(n.since || D.updated)}</b>since</div></div>`;
+  if (n.note) h += `<div class="x">${esc(n.note)}</div>`;
+  return h;
+}
+
+function draw() {
+  const world = $("world");
+  world.querySelectorAll(".n,.ml").forEach(e => e.remove());
+  for (const l of LABELS) {
+    const el = document.createElement("div");
+    el.className = "ml"; el.style.cssText = `left:${l.x}px;top:-58px;width:${l.w}px`; el.textContent = l.text;
+    world.appendChild(el);
+  }
+  let paths = "";
+  for (const n of N) {
+    const el = document.createElement("div");
+    el.className = `n s-${n.st}`; el.dataset.id = n.id;
+    el.style.cssText = `left:${n.x}px;top:${n.y}px;width:${W}px;height:${n.h}px`;
+    el.title = `${n.id}: ${n.title} (${LABEL[n.st]})`;
+    el.innerHTML = card(n);
+    world.appendChild(el);
+    for (const d of n.deps) {
+      const s = BY[d], x1 = s.x + W / 2, y1 = s.y + s.h, x2 = n.x + W / 2, y2 = n.y, c = Math.max(28, Math.abs(y2 - y1) / 2);
+      paths += `<path class="e" data-a="${esc(d)}" data-b="${esc(n.id)}" d="M${x1} ${y1} C${x1} ${y1 + c} ${x2} ${y2 - c} ${x2} ${y2}"/>`;
+    }
+  }
+  $("edges").innerHTML = paths;
+  const c = {}; for (const n of N) c[n.st] = (c[n.st] || 0) + 1;
+  const t = D.tests, fail = t.rows.reduce((a, r) => a + r.failed, 0);
+  const stat = (b, s) => `<div class="stat"><b>${esc(b)}</b><span>${esc(s)}</span></div>`;
+  $("stats").innerHTML = stat(`${c.done || 0} / ${N.length}`, "completed") + stat(c.running || 0, "in progress") + stat(c.ready || 0, "ready")
+    + stat(c.waiting || 0, "waiting") + stat(c.partial || 0, "acceptance pending")
+    + stat(t.rows.map(r => r.cases).join(" · "), `test cases, ${fail} failed`) + stat(`${D.branch} @ ${t.commit}`, "branch / tested commit") + stat(D.updated, "updated");
+  $("pills").innerHTML = ORDER.filter(k => c[k]).map(k => `<span class="pill s-${k}">${LABEL[k]}</span>`).join("");
+  mark();
+}
+
+function chain(id) {
+  const out = new Set([id]);
+  if (direct) { BY[id].deps.forEach(d => out.add(d)); BY[id].kids.forEach(d => out.add(d)); return out; }
+  const walk = (i, key) => BY[i][key].forEach(j => { if (!out.has(j)) { out.add(j); walk(j, key); } });
+  const up = new Set([id]), down = new Set([id]);
+  (function a(i) { BY[i].deps.forEach(j => { if (!up.has(j)) { up.add(j); a(j); } }); })(id);
+  (function b(i) { BY[i].kids.forEach(j => { if (!down.has(j)) { down.add(j); b(j); } }); })(id);
+  return new Set([...up, ...down]);
+}
+
+function mark() {
+  const q = $("q").value.trim().toLowerCase(), set = sel ? chain(sel) : null;
+  document.querySelectorAll(".n").forEach(el => {
+    const n = BY[el.dataset.id];
+    el.classList.toggle("sel", n.id === sel);
+    el.classList.toggle("dim", !!set && !set.has(n.id));
+    el.classList.toggle("match", !!q && (n.id + " " + n.title).toLowerCase().includes(q));
+  });
+  document.querySelectorAll("path.e").forEach(p => {
+    const on = !!set && set.has(p.dataset.a) && set.has(p.dataset.b) && (!direct || p.dataset.a === sel || p.dataset.b === sel);
+    p.classList.toggle("hl", on); p.classList.toggle("dim", !!set && !on);
+  });
+}
+
+function apply() { $("world").style.transform = `translate(${view.x}px,${view.y}px) scale(${view.k})`; }
+function fit(list) {
+  if (!list.length) return;
+  const top = document.querySelector("header").offsetHeight + 12, vw = innerWidth, vh = innerHeight - top - 28;
+  const x0 = Math.min(...list.map(n => n.x)), x1 = Math.max(...list.map(n => n.x + W)), y0 = Math.min(...list.map(n => n.y)) - 70, y1 = Math.max(...list.map(n => n.y + n.h));
+  view.k = Math.min(1.6, Math.max(0.12, Math.min((vw - 40) / (x1 - x0), vh / (y1 - y0))));
+  view.x = (vw - (x1 - x0) * view.k) / 2 - x0 * view.k; view.y = top + (vh - (y1 - y0) * view.k) / 2 - y0 * view.k; apply();
+}
+function zoom(f, cx = innerWidth / 2, cy = innerHeight / 2) {
+  const k = Math.min(3, Math.max(0.1, view.k * f));
+  view.x = cx - (cx - view.x) * k / view.k; view.y = cy - (cy - view.y) * k / view.k; view.k = k; apply();
+}
+
+function side() {
+  const rows = (a, f) => a.map(f).join("");
+  let h = "";
+  if (sel) {
+    const n = BY[sel];
+    h += `<h2>${esc(n.id)}: ${esc(n.title)}</h2><table><tr><th>Status</th><td>${LABEL[n.st]}</td></tr><tr><th>Milestone</th><td>${esc(n.ms)}</td></tr>`
+      + (n.stage ? `<tr><th>Stage</th><td>${esc(n.stage)}</td></tr>` : "") + (n.note ? `<tr><th>Note</th><td>${esc(n.note)}</td></tr>` : "")
+      + `<tr><th>Needs</th><td>${esc(n.deps.join(", ") || "nothing")}</td></tr><tr><th>Needed by</th><td>${esc(n.kids.join(", ") || "nothing")}</td></tr></table>`;
+  }
+  const t = D.tests;
+  h += `<h2>Tests at ${esc(t.commit)}</h2><table><tr><th>Level</th><th>Device</th><th>Cases</th><th>Assertions</th><th>Failed</th><th>Skipped</th></tr>`
+    + rows(t.rows, r => `<tr><td>${esc(r.level)}</td><td>${esc(r.device)}</td><td>${r.cases}</td><td>${r.assertions}</td><td>${r.failed}</td><td>${r.skipped}</td></tr>`)
+    + `</table><p>${esc(t.compilers)}. ${esc(t.note)}</p>`;
+  h += `<h2>Newest decisions</h2><table>` + rows(D.decisions || [], d => `<tr><td>${esc(d.id)}</td><td>${esc(d.text)}</td></tr>`) + `</table>`;
+  h += `<h2>Newest spec findings</h2><table>` + rows(D.findings || [], d => `<tr><td>${esc(d.id)}</td><td>${esc(d.text)}</td></tr>`) + `</table>`;
+  $("sideBody").innerHTML = h;
+}
+
+function load(data, first) {
+  const s = JSON.stringify(data); if (s === sig) return; sig = s;
+  prep(data); if (sel && !BY[sel]) sel = null; draw(); side();
+  if (first) { const act = new Set(N.filter(n => n.st === "running" || n.st === "ready").map(n => n.ms)); fit(act.size ? N.filter(n => act.has(n.ms)) : N); }
+}
+async function refresh() {
+  if (location.protocol.startsWith("http")) {
+    try { const r = await fetch("data.json?t=" + Date.now(), {cache: "no-store"}); if (r.ok) load(await r.json(), !D); } catch (e) {}
+  }
+  $("foot").textContent = "checked " + new Date().toLocaleTimeString() + " · drag to pan, wheel to zoom, click a package for its chain";
+}
+
+const stage = $("stage"); let drag = null, moved = false;
+stage.addEventListener("pointerdown", e => { drag = {x: e.clientX - view.x, y: e.clientY - view.y}; moved = false; stage.setPointerCapture(e.pointerId); stage.classList.add("drag"); });
+stage.addEventListener("pointermove", e => { if (!drag) return; const nx = e.clientX - drag.x, ny = e.clientY - drag.y; if (Math.abs(nx - view.x) + Math.abs(ny - view.y) > 3) moved = true; view.x = nx; view.y = ny; apply(); });
+stage.addEventListener("pointerup", () => { stage.classList.remove("drag"); drag = null; });
+stage.addEventListener("pointercancel", () => { stage.classList.remove("drag"); drag = null; });
+stage.addEventListener("click", e => {
+  if (moved) { moved = false; return; }
+  const el = document.elementFromPoint(e.clientX, e.clientY)?.closest(".n");
+  sel = el ? (sel === el.dataset.id ? null : el.dataset.id) : null; mark(); side(); if (sel) $("side").classList.add("open");
+});
+stage.addEventListener("wheel", e => { e.preventDefault(); zoom(e.deltaY < 0 ? 1.12 : 1 / 1.12, e.clientX, e.clientY); }, {passive: false});
+$("zin").onclick = () => zoom(1.25); $("zout").onclick = () => zoom(0.8);
+$("fit").onclick = () => fit(N); $("prog").onclick = () => fit(N.filter(n => n.st === "running" || n.st === "ready"));
+$("direct").onclick = e => { direct = !direct; e.currentTarget.setAttribute("aria-pressed", direct); mark(); };
+$("info").onclick = () => $("side").classList.toggle("open"); $("closeSide").onclick = () => $("side").classList.remove("open");
+$("q").addEventListener("input", mark);
+$("q").addEventListener("keydown", e => { if (e.key !== "Enter") return; const q = e.target.value.trim().toLowerCase(); const hit = N.filter(n => (n.id + " " + n.title).toLowerCase().includes(q)); if (q && hit.length) fit(hit); });
+addEventListener("resize", () => apply());
+if (INLINE) load(INLINE, true);
+refresh(); setInterval(refresh, 60000);
+</script>
+</body>
+</html>
