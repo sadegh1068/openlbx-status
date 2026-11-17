@@ -101,38 +101,38 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m0",
  "tests": {
-  "commit": "62135a5",
+  "commit": "14abc4a",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 257,
-    "assertions": 19367,
+    "cases": 292,
+    "assertions": 21036,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 65,
-    "assertions": 36612,
+    "cases": 71,
+    "assertions": 38852,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 65,
-    "assertions": 36616,
+    "cases": 71,
+    "assertions": 39059,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel UHD 770",
-    "cases": 65,
-    "assertions": 36616,
+    "cases": 71,
+    "assertions": 38856,
     "failed": 0,
     "skipped": 0
    }
@@ -302,23 +302,24 @@ const INLINE = {
     {
      "id": "M0-10",
      "title": "benchmark harness",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M0-9b",
       "M0-R"
      ],
-     "note": "harness implemented; test correction for the GPU query and the new wait-time field in progress",
-     "stage": "fixes",
-     "since": "2026-11-18",
-     "rounds": 1
+     "note": "merged; harness reviewed and corrected before any gate figure was taken (D-055)"
     },
     {
      "id": "M0-gate",
      "title": "gate: VAL-12 parity",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M0-10"
-     ]
+     ],
+     "note": "sweep, cost cases and interleaved parity runs at 256^3 on the RTX 5050",
+     "stage": "measurements",
+     "since": "2026-11-18",
+     "rounds": 0
     }
    ]
   },
@@ -682,6 +683,18 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M0-42",
+   "text": "OD-6 rests on one efficiency; on the RTX 5050 the data-sheet bandwidth (320 GB/s, unverified) gives about 0.90 and the measured copy bandwidth (291... Fix: the decision is provisional when the two figures straddle 90 % or lie within 2 points of it, until the deliverable bandwidth is verified outside Op..."
+  },
+  {
+   "id": "IMPL-M0-41",
+   "text": "VAL-17 compares on the same hardware only; runs of another grid size or case would enter the window Fix: the window matches device, driver, grid size and case configuration"
+  },
+  {
+   "id": "IMPL-M0-39",
+   "text": "ARCH-31 does not say what the permissive measurement build consists of; the harness added the permissive flags while the program text kept `FP_CONT... Fix: the permissive build is defined in ARCH-31 (pragma, flags, no correctly rounded division); `ModelConfig::deterministic`"
+  },
+  {
    "id": "IMPL-M0-38",
    "text": "forming the shifted equilibrium from the unrounded sum s instead of fl(1 + s) - 1 removes the drift (2e-11 instead of 1e-6 in the same run); CORE-5... Fix: open: decided at M1-14 together with the momentum bias 10-O4 (same rounding); no change at M0 (D-054)"
   },
@@ -700,18 +713,6 @@ const INLINE = {
   {
    "id": "IMPL-M0-34",
    "text": "ARCH-24 counts all time outside device kernels as host work; with an asynchronous queue this includes time blocked on a full queue (measured: 0.66... Fix: host work is the time preparing and submitting; blocked time is measured and reported separately (D-053)"
-  },
-  {
-   "id": "IMPL-M0-33",
-   "text": "brief M0-9: the section call before the tail parts has no effect; the source kind of the view output buffer is undefined; `parity` of the view had... Fix: rulings 8 to 12 of the brief; `ArgSource::Kind::output`"
-  },
-  {
-   "id": "IMPL-M0-32",
-   "text": "Appendix A.4 shows only the fused kernel; the tag, init and view kernels of the program and their instance names are not mentioned Fix: sentence added; the three instance names are reserved (D-052)"
-  },
-  {
-   "id": "IMPL-M0-31",
-   "text": "ARCH-22 calls the views host-side services built on the streaming primitives, which are device functions Fix: `incoming` and `outgoing` are realised by a generated device kernel per set; `raw` is a copy"
   }
  ]
 };
