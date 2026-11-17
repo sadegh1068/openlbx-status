@@ -160,8 +160,8 @@
       "M0-5a",
       "M0-6"
      ],
-     "note": "tests written; a crash on the CPU runtime with 16-bit software storage is being debugged before acceptance",
-     "stage": "implementation",
+     "note": "implemented; 219 host and 39 device tests pass on the CPU runtime and both GPUs; review running; the CPU-runtime crash is being cross-checked by a second analysis",
+     "stage": "in review",
      "since": "2026-11-17",
      "rounds": 0
     },
@@ -172,7 +172,7 @@
      "deps": [
       "M0-7b"
      ],
-     "note": "waits for the streaming generator",
+     "note": "tests written; implementation starts when M0-7b is merged",
      "stage": "tests written",
      "since": "2026-11-17",
      "rounds": 0
