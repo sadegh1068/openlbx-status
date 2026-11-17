@@ -293,11 +293,11 @@ const INLINE = {
     {
      "id": "M0-9b",
      "title": "prototype driver",
-     "status": "partial",
+     "status": "done",
      "deps": [
       "M0-9a"
      ],
-     "note": "merged; host work is 2 % of wall time at 128^3 and first throughput 1886 MLUPs (not a gate figure); acceptance waits for the analysis of one mass-drift outlier (within the bound)"
+     "note": "merged and accepted; host work is 2 % of wall time at 128^3; the mass-drift outlier is 32-bit rounding of the density at 1, reproduced bit for bit by a numpy model (D-054)"
     },
     {
      "id": "M0-10",
@@ -648,6 +648,10 @@ const INLINE = {
  ],
  "decisions": [
   {
+   "id": "D-054",
+   "text": "The mass loss of 1.0e-6 in one seed of the VAL-7 test is accepted as 32-bit rounding and the generated solver is not changed at M0. The test keeps the 2.0e-6 bound and gains a per-step mass balance..."
+  },
+  {
    "id": "D-053",
    "text": "The stepping loop bounds its lead over the device: one launch event is kept every 64 steps and the driver waits on the one that is 256 steps old before going further; that wait is reported as `wait..."
   },
@@ -674,13 +678,17 @@ const INLINE = {
   {
    "id": "D-043",
    "text": "M0-8 is merged after its review fixes although tests 4, 6 and 7 are compiled out until M0-7b/7c; it counts as accepted only when they have run and I have viewed the box contour plot; TRACE rows say..."
-  },
-  {
-   "id": "D-042",
-   "text": "The 30-step box oracle of M0-8 uses force (1e-3, -2e-4, 0), tolerance 1e-6 unchanged"
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M0-38",
+   "text": "forming the shifted equilibrium from the unrounded sum s instead of fl(1 + s) - 1 removes the drift (2e-11 instead of 1e-6 in the same run); CORE-5... Fix: open: decided at M1-14 together with the momentum bias 10-O4 (same rounding); no change at M0 (D-054)"
+  },
+  {
+   "id": "IMPL-M0-37",
+   "text": "VAL-7 states the f32 bound as ten times the measured level; one seed in four reached 1.0e-6 (half the bound), 30 times the level VAL-7 quotes. Caus... Fix: VAL-7 explains the mechanism, states the real margin (1.8) and adds a per-step mass balance that does not depend on the seed"
+  },
   {
    "id": "IMPL-M0-36",
    "text": "the type of a `step` kernel argument (32 or 64 bit) is stated nowhere; a 32-bit step wraps after 4.3e9 steps Fix: open: decided with the scheduler (M1-2); no M0 kernel has a step argument; the driver accepts both and checks the type at construction"
@@ -704,14 +712,6 @@ const INLINE = {
   {
    "id": "IMPL-M0-31",
    "text": "ARCH-22 calls the views host-side services built on the streaming primitives, which are device functions Fix: `incoming` and `outgoing` are realised by a generated device kernel per set; `raw` is a copy"
-  },
-  {
-   "id": "IMPL-M0-30",
-   "text": "ARCH-46 says a cell stores its own equilibrium when the link ends in a wall-like cell; 03 section 2.5 item 2 says when the destination is not updat... Fix: ARCH-46 now uses the wording of 03 section 2.5 item 2"
-  },
-  {
-   "id": "IMPL-M0-29",
-   "text": "MEM-5 and condition 4 of 03 section 3.2 forbid a pass to write a slot outside its cell's set, but item 3 of the initialisation of section 2.5 (`imp... Fix: the initialisation write of section 2.5 item 3 is named as allowed in MEM-5 and in condition 4"
   }
  ]
 };
