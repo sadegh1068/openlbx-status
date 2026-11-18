@@ -443,7 +443,7 @@
      "deps": [
       "M1-9b"
      ],
-     "stage": "implementation"
+     "stage": "review fixes"
     },
     {
      "id": "M1-11a",
@@ -505,7 +505,7 @@
       "M1-12c",
       "M1-9b"
      ],
-     "stage": "review fixes",
+     "stage": "verification",
      "since": "2026-11-18"
     },
     {
@@ -804,6 +804,14 @@
  ],
  "findings": [
   {
+   "id": "IMPL-M1-192",
+   "text": "a force sample costs 2K kernel launches over all cells of the set and 14.7 MB of partial sums per body at 256^3 (estimate: 2 to 4 percent of a step... Fix: stated in IO-13 and in the driver header; to measure in M1-14 on a quiet RTX 5050 (cost of one sample per body at 64^3 and 256^3); a warning record..."
+  },
+  {
+   "id": "IMPL-M1-191",
+   "text": "IO-13 did not say in which order a series returns samples after a restore to an earlier time (the same time is sampled twice), nor which flagged sa... Fix: sampling order with duplicates; per series inside `run`; the earliest flagged time over all series at a `setup()` and a restore"
+  },
+  {
    "id": "IMPL-M1-187",
    "text": "VAL-2 asks for an L3 case per module; `force.static`, `boundary.equilibrium`, `boundary.pressure`, `subgrid.*` and `observe.sums` / `observe.body_i... Fix: `force.static` gets a variant of the pipe case now; the others are deferred per module with the milestone named"
   },
@@ -826,14 +834,6 @@
   {
    "id": "IMPL-M1-181",
    "text": "a program with `observe.force` takes about 2.7 times as long to build on the CPU runtime (56 s and 58 s against 21 s for two D3Q19 rows, alternatin... Fix: accepted for now (decision D-080); to measure in M1-14 on a quiet machine: build time of the force kernel by lattice, and whether a loop over the l..."
-  },
-  {
-   "id": "IMPL-M1-180",
-   "text": "the result of a check is read without blocking into pageable host memory; on NVIDIA such a read may run synchronously and drain the pipeline at eve... Fix: to measure in M1-14: the time of the read enqueue on the RTX 5050 at 256^3; if confirmed the host ring goes into pinned memory. At the default inte..."
-  },
-  {
-   "id": "IMPL-M1-179",
-   "text": "ARCH-30 does not say which cells the check covers Fix: the updated cells: equilibrium and pressure boundary cells included, walls excluded"
   }
  ]
 }
