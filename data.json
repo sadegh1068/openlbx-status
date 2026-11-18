@@ -2,7 +2,7 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-2c",
+  "commit": "m1 after M1-3b",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
@@ -16,16 +16,16 @@
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 150,
-    "assertions": 93133,
+    "cases": 155,
+    "assertions": 94691,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 150,
-    "assertions": 93343,
+    "cases": 155,
+    "assertions": 94901,
     "failed": 0,
     "skipped": 0
    },
@@ -311,13 +311,12 @@
     {
      "id": "M1-3b",
      "title": "production equals the check variant bit for bit",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-3a",
       "M1-5b"
      ],
-     "stage": "verification",
-     "since": "2026-11-18"
+     "note": "the production streaming step and the two-array check variant give the same bits: every element of the populations at steps 0, 1, 2, 3 and 100 and the output fields at both parities, on four lattices, in both wall modes, with the SRT, TRT and MRT operators and the three storage types; leaving out the second generation at initialisation changes exactly the predicted number of elements"
     },
     {
      "id": "M1-5a",
