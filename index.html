@@ -451,7 +451,7 @@ const INLINE = {
       "M1-2c",
       "M1-7a"
      ],
-     "stage": "test fixes",
+     "stage": "review fixes",
      "since": "2026-11-18"
     },
     {
@@ -804,6 +804,14 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-122",
+   "text": "the pass key `when = \"force:f\"` of the streaming manifests names the set `f` literally, and the preparation takes every stage-5 fragment whatever i... Fix: open, for M4 (thermal set, several sets in one program): a `<s>` form of `when` and a filter by set"
+  },
+  {
+   "id": "IMPL-M1-121",
+   "text": "a second `setup()` that reduces the prepared velocity once more is a silent wrong result (reviewer, against the ruling on IMPL-M1-117); CORE-35 als... Fix: the driver warns (CORE-35) when `setup()` finds the velocity field still holding the prepared value; the sentence on reads is corrected"
+  },
+  {
    "id": "IMPL-M1-119",
    "text": "the ordering paragraph of Appendix B (chapter 02) places the local-density fragment in the moving-wall module, while CORE-21 makes it a companion m... Fix: CORE-21 states the companion module and that the constant 1 is used without it"
   },
@@ -813,7 +821,7 @@ const INLINE = {
   },
   {
    "id": "IMPL-M1-117",
-   "text": "with a preparation pass a second `setup()` without a new upload reduces the velocity once more when no pass wrote the field back (lean flavour, pro... Fix: stated in CORE-35 next to IMPL-M1-58; no refusal and no warning now. Open, for M3-2: `reinitialize` must take the initial fields anew or keep them"
+   "text": "with a preparation pass a second `setup()` without a new upload reduces the velocity once more when no pass wrote the field back (lean flavour, pro... Fix: stated in CORE-35 next to IMPL-M1-58; a warning since IMPL-M1-121. Open, for M3-2: `reinitialize` must take the initial fields anew or keep them"
   },
   {
    "id": "IMPL-M1-116",
@@ -826,14 +834,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-114",
    "text": "chapter 05 writes the velocity as `(j + F/2) / rho`, Appendix B of chapter 02 and every lattice fragment as `j / rho + F / (2 rho)` Fix: open, for the review of chapter 05 before M4: align to Appendix B"
-  },
-  {
-   "id": "IMPL-M1-113",
-   "text": "nothing says whether a force field may be rewritten between steps Fix: allowed; it invalidates the derived fields of the current time; no new preparation"
-  },
-  {
-   "id": "IMPL-M1-112",
-   "text": "the 1e-8 of the CORE-35 row holds only for small velocities (5.59e-9 for components up to 0.03, 2.98e-8 up to 0.1) Fix: the row and CORE-35 name the magnitude"
   }
  ]
 };
