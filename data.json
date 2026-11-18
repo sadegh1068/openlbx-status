@@ -443,7 +443,7 @@
      "deps": [
       "M1-9b"
      ],
-     "stage": "review fixes"
+     "stage": "verification"
     },
     {
      "id": "M1-11a",
@@ -525,7 +525,7 @@
      "deps": [
       "M1-13a"
      ],
-     "stage": "review fixes"
+     "stage": "verification"
     },
     {
      "id": "M1-13c",
@@ -550,10 +550,11 @@
     {
      "id": "M1-16",
      "title": "memory check of the two-array variant",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-3b"
-     ]
+     ],
+     "stage": "tests"
     },
     {
      "id": "M1-14",
