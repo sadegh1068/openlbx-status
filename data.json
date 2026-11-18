@@ -31,6 +31,15 @@
    },
    {
     "level": "L1 device",
+    "device": "NVIDIA Quadro RTX 4000 (second machine, driver 442.74)",
+    "cases": 148,
+    "assertions": 92436,
+    "failed": 0,
+    "skipped": 7,
+    "note": "run from a copied build; the 7 benchmark smoke cases are left out there (they need a git checkout)"
+   },
+   {
+    "level": "L1 device",
     "device": "Intel UHD 770",
     "cases": 0,
     "assertions": 0,
@@ -675,6 +684,10 @@
  ],
  "findings": [
   {
+   "id": "IMPL-M1-88",
+   "text": "a test kernel of the backend tests was a function named `step`, the name of an OpenCL built-in; the compiler of NVIDIA driver 442.74 (Quadro RTX 40... Fix: the test kernel is renamed; the kernels and helpers the framework generates carry prefixes and cannot collide. Open, for M3-9a (user modules): the..."
+  },
+  {
    "id": "IMPL-M1-87",
    "text": "`Q` and `DIM` come from the first population set of the program, `nb` from the first set of the kernel; with sets on different lattices these differ Fix: open, for M4 (thermal sets): constants and `nb` per set. In M1 to M3 every program has one lattice"
   },
@@ -701,10 +714,6 @@
   {
    "id": "IMPL-M1-81",
    "text": "the host step of finalisation visits every owned cell (and up to q - 1 neighbours for the cells of the class); nothing bounds its cost Fix: it runs once per `setup()`, never in a step; single thread in M1; the implementer reports the time for a 256^3 box, and M1-14 adds threads if it ex..."
-  },
-  {
-   "id": "IMPL-M1-80",
-   "text": "the probe loop of `sparse_find` ends only at a match or an empty slot; with a damaged table it would not end, and a kernel that does not end resets... Fix: the loop is bounded by the capacity and returns -1 after it (orchestrator ruling; one compare per probe)"
   }
  ]
 }
