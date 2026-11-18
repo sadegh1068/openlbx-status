@@ -660,7 +660,7 @@ const INLINE = {
       "M1-9c",
       "M1-16"
      ],
-     "stage": "tests"
+     "stage": "implementation"
     },
     {
      "id": "M1-14c",
@@ -669,7 +669,7 @@ const INLINE = {
      "deps": [
       "M1-13a"
      ],
-     "stage": "device tests"
+     "stage": "remedy tests"
     },
     {
      "id": "M1-14b",
@@ -924,8 +924,8 @@ const INLINE = {
  ],
  "findings": [
   {
-   "id": "IMPL-M1-201",
-   "text": "the levels of 02-VAL-P2 are round-off levels, not discretisation errors: the SRT and TRT rows (4.3e-4 and 2.9e-4) fall to about 3e-5 with exact wei... Fix: the frozen thresholds hold for the exact case only and the per-run baselines guard the arithmetic; a robust measure and the remedy of IMPL-M1-200 a..."
+   "id": "IMPL-M1-202",
+   "text": "a force-driven SRT channel of 256 cells at tau 0.52 with a centre velocity of 0.05 needs a force of 4.1e-8, far below the 1e-5 of the small-force w... Fix: CORE-11 warns for this force today; the remedy is decided at the gate with decision D-086 (the investigator recommends the projection, 75 percent s..."
   },
   {
    "id": "IMPL-M1-200",
