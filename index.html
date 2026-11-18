@@ -534,7 +534,7 @@ const INLINE = {
       "M1-9a",
       "M1-7d"
      ],
-     "stage": "test corrections",
+     "stage": "review fixes",
      "since": "2026-11-18"
     },
     {
@@ -867,6 +867,18 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-172",
+   "text": "CORE-23 requires a setup warning when a body touches equilibrium-boundary cells; no package had it Fix: a warning record (CORE-23, body) from the host step, in M1-9b"
+  },
+  {
+   "id": "IMPL-M1-171",
+   "text": "a user list written after setup() left the device list and the centroids of the last setup in use without any sign Fix: the write marks the lists stale as a write of the cell types does (IMPL-M1-142)"
+  },
+  {
+   "id": "IMPL-M1-170",
+   "text": "the raw state held the payload of a user-written list but not its cells: a restore rebuilt the lists from the lists of the driver, so a list change... Fix: the cells of user-written lists are part of the raw state and a restore takes them from the state"
+  },
+  {
    "id": "IMPL-M1-169",
    "text": "CORE-29 does not say in which precision the limits are compared: `float(1/0.55)` gives tau 0.54999998, so a nominal 0.55 warns under the rule for t... Fix: the 32-bit values the device uses are compared; a warning is given either way"
   },
@@ -885,18 +897,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-165",
    "text": "the brief does not define the index \"iWB\" that spreads force and subgrid over the matrix rows, and six readings give the same 973 triples with diff... Fix: iWB is the position (from 0) of the pair wall mode and boundary option in the list of the 8 valid pairs; pinned by the labels of M002, M137 and M26..."
-  },
-  {
-   "id": "IMPL-M1-164",
-   "text": "VAL-19 \"every module combination\" Fix: the rest-state check on every row of the VAL-3 tables on both generators"
-  },
-  {
-   "id": "IMPL-M1-163",
-   "text": "the allocation refusal of the reduction buffers (ARCH-33) cannot be triggered in a test Fix: by inspection"
-  },
-  {
-   "id": "IMPL-M1-162",
-   "text": "a 64-bit cell index cannot be reached on a device with the memory at hand (2^32 cells) Fix: by inspection and the host text tests until M2; no test-only switch in production code"
   }
  ]
 };
