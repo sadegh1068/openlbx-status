@@ -2,30 +2,30 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-12b",
+  "commit": "m1 after M1-9b",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 570,
-    "assertions": 336076,
+    "cases": 577,
+    "assertions": 359794,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 233,
-    "assertions": 2303820,
+    "cases": 247,
+    "assertions": 2307721,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 233,
-    "assertions": 2304030,
+    "cases": 247,
+    "assertions": 2307931,
     "failed": 0,
     "skipped": 0
    },
@@ -430,13 +430,11 @@
     {
      "id": "M1-9b",
      "title": "force and torque pass",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-9a",
       "M1-7d"
-     ],
-     "stage": "verification",
-     "since": "2026-11-18"
+     ]
     },
     {
      "id": "M1-9c",
