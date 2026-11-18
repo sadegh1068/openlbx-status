@@ -101,7 +101,7 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-13c",
+  "commit": "m1 after M1-13d",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
@@ -635,14 +635,13 @@ const INLINE = {
     {
      "id": "M1-13d",
      "title": "threshold re-freeze",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-13a",
       "M1-13b",
       "M1-13c",
       "M1-12b"
-     ],
-     "stage": "verification"
+     ]
     },
     {
      "id": "M1-16",
@@ -924,6 +923,10 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-203",
+   "text": "after the re-freeze the thresholds in force live in tests/l3/data/frozen.toml, and the tables of chapter 02 section 10 (thresholds of 02-VAL-C1, C2... Fix: VAL-10 names the file as the source in force; the chapter tables are regenerated from the file at the M1 gate, after the decision on a remedy (D-08..."
+  },
+  {
    "id": "IMPL-M1-202",
    "text": "a force-driven SRT channel of 256 cells at tau 0.52 with a centre velocity of 0.05 needs a force of 4.1e-8, far below the 1e-5 of the small-force w... Fix: CORE-11 warns for this force today; the remedy is decided at the gate with decision D-086 (the investigator recommends the projection, 75 percent s..."
   },
@@ -950,10 +953,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-193",
    "text": "the check that the review asked for CORE-8 (TRT started from the analytic profile: 0.0052 percent after 3000 steps in the emulation) does not hold... Fix: the case stays as a regression case with a control at a magic parameter of 1 (1.5e-4, above the threshold) and without a claim on CORE-8; CORE-8 is..."
-  },
-  {
-   "id": "IMPL-M1-192",
-   "text": "a force sample costs 2K kernel launches over all cells of the set and 14.7 MB of partial sums per body at 256^3 (estimate: 2 to 4 percent of a step... Fix: stated in IO-13 and in the driver header; to measure in M1-14 on a quiet RTX 5050 (cost of one sample per body at 64^3 and 256^3); a warning record..."
   }
  ]
 };
