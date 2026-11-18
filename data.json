@@ -352,7 +352,7 @@
       "M1-2c",
       "M1-7a"
      ],
-     "stage": "implementation",
+     "stage": "test fixes",
      "since": "2026-11-18"
     },
     {
@@ -382,7 +382,7 @@
       "M1-7b",
       "M1-3b"
      ],
-     "stage": "implementation",
+     "stage": "review fixes",
      "since": "2026-11-18"
     },
     {
@@ -401,7 +401,7 @@
       "M1-3b",
       "M1-7a"
      ],
-     "stage": "review",
+     "stage": "review fixes",
      "since": "2026-11-18"
     },
     {
@@ -705,6 +705,22 @@
  ],
  "findings": [
   {
+   "id": "IMPL-M1-119",
+   "text": "the ordering paragraph of Appendix B (chapter 02) places the local-density fragment in the moving-wall module, while CORE-21 makes it a companion m... Fix: CORE-21 states the companion module and that the constant 1 is used without it"
+  },
+  {
+   "id": "IMPL-M1-118",
+   "text": "nothing says what the phase of a set is after `setup()`; a restore can leave it at 1, and the initial store, which has no parity argument, is then... Fix: `setup()` resets every phase to 0"
+  },
+  {
+   "id": "IMPL-M1-117",
+   "text": "with a preparation pass a second `setup()` without a new upload reduces the velocity once more when no pass wrote the field back (lean flavour, pro... Fix: stated in CORE-35 next to IMPL-M1-58; no refusal and no warning now. Open, for M3-2: `reinitialize` must take the initial fields anew or keep them"
+  },
+  {
+   "id": "IMPL-M1-116",
+   "text": "CORE-35 says the state at time 0 equals the given field next to wall-like cells when the field satisfies the boundary condition; with a force this... Fix: stated in CORE-35; the rest rows run without a force and keep every fluid cell; the step next to walls with a force is tested bit for bit against t..."
+  },
+  {
    "id": "IMPL-M1-115",
    "text": "CORE-11 has no row in chapter 10; the CORE-35 row is L2 only Fix: rows added: CORE-11 at L0 and L1, CORE-35 on one block at L1"
   },
@@ -719,22 +735,6 @@
   {
    "id": "IMPL-M1-112",
    "text": "the 1e-8 of the CORE-35 row holds only for small velocities (5.59e-9 for components up to 0.03, 2.98e-8 up to 0.1) Fix: the row and CORE-35 name the magnitude"
-  },
-  {
-   "id": "IMPL-M1-111",
-   "text": "CORE-11 does not say whether the bound is per contribution or per cell, nor when it is evaluated Fix: per-cell sum at updated cells, once at setup with the values of time 0"
-  },
-  {
-   "id": "IMPL-M1-110",
-   "text": "the z refusal of CORE-10 is \"raised by the force modules\", which are TOML, and CORE-11 needs to know which values are forces (IMPL-M1-29) Fix: manifest key `force = true`; the framework checks"
-  },
-  {
-   "id": "IMPL-M1-109",
-   "text": "the driver marks a derived field valid for any record that writes it, so the prepared velocity would be readable as valid at time 0 Fix: a manifest pass that writes a derived field makes it invalid"
-  },
-  {
-   "id": "IMPL-M1-108",
-   "text": "a force fragment may read locals of the pass that do not exist before the first load Fix: allowed reads in the preparation listed; anything else refused at assembly. Open, for M4: the buoyancy force reads the temperature of the scalar se..."
   }
  ]
 }
