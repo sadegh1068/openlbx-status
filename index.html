@@ -534,7 +534,7 @@ const INLINE = {
       "M1-9a",
       "M1-7d"
      ],
-     "stage": "review fixes",
+     "stage": "verification",
      "since": "2026-11-18"
     },
     {
@@ -587,7 +587,7 @@ const INLINE = {
       "M1-12a",
       "M1-9a"
      ],
-     "stage": "review",
+     "stage": "verification",
      "since": "2026-11-18"
     },
     {
@@ -598,7 +598,7 @@ const INLINE = {
       "M1-12a",
       "M1-9a"
      ],
-     "stage": "review fixes",
+     "stage": "verification",
      "since": "2026-11-18"
     },
     {
@@ -833,6 +833,10 @@ const INLINE = {
  ],
  "decisions": [
   {
+   "id": "D-079",
+   "text": "The wall-clock limit of the benchmark smoke test (`tests/l1/bench/test_m010_smoke.cpp`: each case below 10 s) is reported as a warning of the test and no longer fails the L1 suite; the time limit a..."
+  },
+  {
    "id": "D-078",
    "text": "M1-12 is four packages (a: the `l2` target with its labels, the row tables and the geometry helpers; b: VAL-6 to VAL-8 on the device sums; c: the row rig, the covering rows and the full matrix with..."
   },
@@ -859,16 +863,20 @@ const INLINE = {
   {
    "id": "D-065",
    "text": "Replaces the workaround half of D-062: a device whose compiler fails a probe is refused when it is opened; nothing is built with `-cl-opt-disable`. The device tests run on the Intel CPU runtime and..."
-  },
-  {
-   "id": "D-064",
-   "text": "M1-5 is split into M1-5a (TRT, Smagorinsky model, `subgrid.nu_t`, shared test rig) and M1-5b (MRT). TRT derives its second rate per cell from the local rate; the MRT collision matrix is computed on..."
   }
  ],
  "findings": [
   {
+   "id": "IMPL-M1-176",
+   "text": "in one L1 run on the RTX 5050 under machine load the benchmark smoke test failed not only its time limit but also the exit code of the benchmark an... Fix: not reproduced; decision D-079 covers only the time limit. If it happens again the output of the benchmark is kept and the cause found before any m..."
+  },
+  {
+   "id": "IMPL-M1-175",
+   "text": "cause of the 32-bit momentum bias (open point 10-O4; also IMPL-M1-173), proposed from the code and the data, about 85 percent sure: SRT changes the... Fix: to confirm in M1-14: a host loop over the decayed uniform state that evaluates the first moment of the equilibrium minus j with the float arithmeti..."
+  },
+  {
    "id": "IMPL-M1-173",
-   "text": "in the steady Couette state (D2Q9 3x18, SRT, f32) the incoming momentum of the fluid is constant bit for bit while the forces on lid and bottom sum... Fix: not a defect of the force pass as far as the exact per-step identity of test 11 holds in that state (asserted there from now on); the imbalance is..."
+   "text": "in the steady Couette state (D2Q9 3x18, SRT, f32) the incoming momentum of the fluid repeats bit for bit with period 4 (largest change 1.1e-10 per... Fix: not a defect of the force pass: the exact per-step identity of test 11 holds in that state (bottom wall exactly; lid within the rounding of the mov..."
   },
   {
    "id": "IMPL-M1-172",
@@ -889,14 +897,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-168",
    "text": "the fault injection of VAL-18 is a public default argument of the model builder Fix: acceptable below the front end (it is no configuration key); the front end must not expose it"
-  },
-  {
-   "id": "IMPL-M1-167",
-   "text": "at a restore the warning records and the largest speed were replaced only for models with sparse fields or rule groups, and the records carried ste... Fix: replaced at every restore; restored step; parameters at the restored time; a refused setup or restore changes neither records nor largest speed"
-  },
-  {
-   "id": "IMPL-M1-166",
-   "text": "a ctest entry that selects a doctest suite with no case exits 0, so the tiers `matrix` and `long` could pass at the gate without running anything Fix: the package that puts the first case into a tier makes an empty selection of that tier fail (M1-12b for `long`, M1-12c for `l2` and `matrix`)"
   }
  ]
 };
