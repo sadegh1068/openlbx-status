@@ -101,7 +101,7 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-12d",
+  "commit": "m1 after M1-13b",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
@@ -608,21 +608,20 @@ const INLINE = {
     {
      "id": "M1-13a",
      "title": "L3 target, Couette and Poiseuille",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-12c",
       "M1-11b"
      ],
-     "stage": "verification"
+     "note": "the L3 test target and its first physical cases: an every-build tier and a full tier (GPU only) / a data file of frozen thresholds with provenance per key / Couette flow (02-VAL-C1 and C2) on four lattices and three operators / channel and pipe flow (02-VAL-P2 / P3 / P3R) with the force as a parameter and as a field. Every value on the RTX 5050 is inside its spec threshold: Couette 6.8e-6 against 6.8e-5 / channel TRT 2.88e-4 against 2.9e-3 / pipes with margins 1.30 to 1.54. The two MRT channel rows are inside the threshold with small margins (1.20 and 1.27) and far above the 32-bit emulation / which goes to M1-14. Controls show that each test can fail"
     },
     {
      "id": "M1-13b",
      "title": "sound wave and Taylor-Green",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-13a"
-     ],
-     "stage": "verification"
+     ]
     },
     {
      "id": "M1-13c",
