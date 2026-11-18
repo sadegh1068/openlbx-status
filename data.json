@@ -499,7 +499,7 @@
       "M1-12a",
       "M1-9a"
      ],
-     "stage": "tests",
+     "stage": "review fixes",
      "since": "2026-11-18"
     },
     {
@@ -768,6 +768,10 @@
  ],
  "findings": [
   {
+   "id": "IMPL-M1-173",
+   "text": "in the steady Couette state (D2Q9 3x18, SRT, f32) the incoming momentum of the fluid is constant bit for bit while the forces on lid and bottom sum... Fix: not a defect of the force pass as far as the exact per-step identity of test 11 holds in that state (asserted there from now on); the imbalance is..."
+  },
+  {
    "id": "IMPL-M1-172",
    "text": "CORE-23 requires a setup warning when a body touches equilibrium-boundary cells; no package had it Fix: a warning record (CORE-23, body) from the host step, in M1-9b"
   },
@@ -794,10 +798,6 @@
   {
    "id": "IMPL-M1-166",
    "text": "a ctest entry that selects a doctest suite with no case exits 0, so the tiers `matrix` and `long` could pass at the gate without running anything Fix: the package that puts the first case into a tier makes an empty selection of that tier fail (M1-12b for `long`, M1-12c for `l2` and `matrix`)"
-  },
-  {
-   "id": "IMPL-M1-165",
-   "text": "the brief does not define the index \"iWB\" that spreads force and subgrid over the matrix rows, and six readings give the same 973 triples with diff... Fix: iWB is the position (from 0) of the pair wall mode and boundary option in the list of the 8 valid pairs; pinned by the labels of M002, M137 and M26..."
   }
  ]
 }
