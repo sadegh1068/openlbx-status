@@ -316,7 +316,7 @@
       "M1-3a",
       "M1-5b"
      ],
-     "stage": "review",
+     "stage": "verification",
      "since": "2026-11-18"
     },
     {
@@ -361,7 +361,7 @@
      "deps": [
       "M1-2b"
      ],
-     "stage": "implementation",
+     "stage": "review",
      "since": "2026-11-18"
     },
     {
