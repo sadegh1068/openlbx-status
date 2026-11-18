@@ -549,10 +549,22 @@ const INLINE = {
      ]
     },
     {
-     "id": "M1-11",
-     "title": "stability checks",
+     "id": "M1-11a",
+     "title": "warning mechanism, storage self-tests",
+     "status": "running",
+     "deps": [
+      "M1-7c",
+      "M1-6"
+     ],
+     "stage": "tests",
+     "since": "2026-11-18"
+    },
+    {
+     "id": "M1-11b",
+     "title": "run-time health check",
      "status": "pending",
      "deps": [
+      "M1-11a",
       "M1-9a"
      ]
     },
@@ -591,7 +603,7 @@ const INLINE = {
       "M1-1",
       "M1-8b",
       "M1-10",
-      "M1-11",
+      "M1-11b",
       "M1-13",
       "M1-14"
      ]
@@ -824,36 +836,36 @@ const INLINE = {
  ],
  "findings": [
   {
-   "id": "IMPL-M1-141",
-   "text": "the test-only exact sum of M0-9 (tests/l1/sim_core/exact_sum.hpp) converts to double in two steps and is not correctly rounded for 1825 of 20 000 r... Fix: replaced in M1-9a by src/base/exact_sum with a correctly rounded conversion; the test header goes"
+   "id": "IMPL-M1-153",
+   "text": "the C_S warning of section 8.4 has no requirement tag Fix: CORE-29"
   },
   {
-   "id": "IMPL-M1-140",
-   "text": "ARCH-33 with subnormal contributions: ldexp is exact only where the device keeps denormals Fix: not specified; the tests use normal floats"
+   "id": "IMPL-M1-152",
+   "text": "MEM-12 and ARCH-36 let the backend run the storage self-test and select the variant which the layering forbids Fix: the model builder runs it once per device and process and selects; describe() reports it"
   },
   {
-   "id": "IMPL-M1-139",
-   "text": "section 8 of chapter 01 describes reductions and the force pass as scheduled passes over links(list) and reduce(domain); nothing runs on request Fix: driver-invoked kernels like the views; A.4 and describe() say so"
+   "id": "IMPL-M1-151",
+   "text": "ARCH-29 promises a general mechanism that no text defines Fix: records of requirement / subject / text / step; one per requirement and subject between setups; strict at every point of detection; manifest keys w..."
   },
   {
-   "id": "IMPL-M1-138",
-   "text": "VAL-7 defines the momentum as the exact reduction of rho u which is a product of rounded fields Fix: the exact sum of c_k g_k over the incoming populations"
+   "id": "IMPL-M1-150",
+   "text": "CORE-11 \"values set later belong to the health checks\" Fix: the parameter sum is checked at set_parameter; force fields written after setup are not checked until M3"
   },
   {
-   "id": "IMPL-M1-137",
-   "text": "ARCH-33 \"stops the run\" for a reduction called outside run and for samples batched on the device Fix: a call on request throws and leaves the driver usable; a series fails run at its flush (late by up to one flush interval: the price of batching the..."
+   "id": "IMPL-M1-149",
+   "text": "CORE-29 does not say where u_max and tau come from Fix: u_max from the CORE-19 scan at setup; tau from the parameter marked shear_rate; no CORE-29 warning for operators without such a parameter (MRT pres..."
   },
   {
-   "id": "IMPL-M1-136",
-   "text": "CORE-23 \"the force at step t\" against the driver time Fix: a request at driver time T reports step T - 1; T = 0 uses the initial store"
+   "id": "IMPL-M1-147",
+   "text": "IO-27 makes the health check a default but a kernel in every program would change every program text Fix: module observe.health asked for at the driver level; on by default in the front end (M3)"
   },
   {
-   "id": "IMPL-M1-135",
-   "text": "CORE-15 names a user mask that nothing defines Fix: the value 1 to 3 of the user cell-type group of ARCH-10"
+   "id": "IMPL-M1-146",
+   "text": "ARCH-30 \"stop the run\" with results read asynchronously Fix: run raises a numerical error at the first poll that sees the failure (late by at most the look-ahead); the driver stays usable"
   },
   {
-   "id": "IMPL-M1-134",
-   "text": "ARCH-47 has no manifest form for lists the user writes (body ids) Fix: entries = { class / user = true }; the driver takes the list before setup and checks the class; body ids live in the companion module observe.body_ids"
+   "id": "IMPL-M1-145",
+   "text": "ARCH-30 names a velocity threshold without a value Fix: default 1/sqrt 3; settable; velocity j/rho without the half-force term"
   }
  ]
 };
