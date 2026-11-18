@@ -101,30 +101,30 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-6",
+  "commit": "m1 after M1-7d",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 548,
-    "assertions": 263798,
+    "cases": 551,
+    "assertions": 264528,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 191,
-    "assertions": 404364,
+    "cases": 200,
+    "assertions": 411391,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 191,
-    "assertions": 404574,
+    "cases": 200,
+    "assertions": 411601,
     "failed": 0,
     "skipped": 0
    },
@@ -484,12 +484,11 @@ const INLINE = {
     {
      "id": "M1-7d",
      "title": "pressure boundary",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-7c"
      ],
-     "stage": "review",
-     "since": "2026-11-18"
+     "note": "pressure boundary by anti-bounce-back: a cell next to a pressure cell receives the reflected population with the prescribed density and its own velocity of the previous step (kept in a sparse field). A pressure-driven channel recovers the Poiseuille profile to 6e-5 of its maximum; the pressure gradient is 2.6 % above nominal as the spec predicts. The review found no fault in the code but showed that neither the channel nor the host mirror could see an error in the quadratic velocity term; a uniform-flow test where the rule must return the equilibrium exactly closes that (largest deviation 4.5e-8 / a dropped term gives 1.5e-3). The spec had the direction of the end effect reversed; corrected"
     },
     {
      "id": "M1-8a",
