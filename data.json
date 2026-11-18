@@ -467,8 +467,8 @@
      ]
     },
     {
-     "id": "M1-12",
-     "title": "property suite",
+     "id": "M1-12a",
+     "title": "L2 target, row tables, test geometries",
      "status": "running",
      "deps": [
       "M1-3b",
@@ -476,15 +476,42 @@
       "M1-6",
       "M1-7d"
      ],
-     "stage": "design",
+     "stage": "tests",
      "since": "2026-11-18"
+    },
+    {
+     "id": "M1-12b",
+     "title": "conservation and symmetry on device sums",
+     "status": "pending",
+     "deps": [
+      "M1-12a",
+      "M1-9a"
+     ]
+    },
+    {
+     "id": "M1-12c",
+     "title": "row rig and the full matrix",
+     "status": "pending",
+     "deps": [
+      "M1-12a",
+      "M1-9a"
+     ]
+    },
+    {
+     "id": "M1-12d",
+     "title": "force columns of the matrix",
+     "status": "pending",
+     "deps": [
+      "M1-12c",
+      "M1-9b"
+     ]
     },
     {
      "id": "M1-13",
      "title": "physical cases, thresholds",
      "status": "pending",
      "deps": [
-      "M1-12"
+      "M1-12c"
      ]
     },
     {
@@ -702,6 +729,10 @@
  ],
  "decisions": [
   {
+   "id": "D-078",
+   "text": "M1-12 is four packages (a: the `l2` target with its labels, the row tables and the geometry helpers; b: VAL-6 to VAL-8 on the device sums; c: the row rig, the covering rows and the full matrix with..."
+  },
+  {
    "id": "D-074",
    "text": "M1-6 is built as one package. The half-force preparation of CORE-35 is a manifest pass of the streaming modules, selected by the new `when` key of `[[pass]]`, and its kernel is the last section of..."
   },
@@ -728,44 +759,40 @@
   {
    "id": "D-064",
    "text": "M1-5 is split into M1-5a (TRT, Smagorinsky model, `subgrid.nu_t`, shared test rig) and M1-5b (MRT). TRT derives its second rate per cell from the local rate; the MRT collision matrix is computed on..."
-  },
-  {
-   "id": "D-063",
-   "text": "L1 tests keep their per-process temporary kernel cache by default; when the environment variable `OLBX_TEST_CACHE_DIR` is set, that directory is used and kept. The verification before a merge runs..."
   }
  ],
  "findings": [
   {
-   "id": "IMPL-M1-155",
-   "text": "the device flags a non-finite contribution with a float comparison that a build with relaxed floating-point options may fold away, leaving a NaN un... Fix: the flag is taken from the exponent bits"
+   "id": "IMPL-M1-164",
+   "text": "VAL-19 \"every module combination\" Fix: the rest-state check on every row of the VAL-3 tables on both generators"
   },
   {
-   "id": "IMPL-M1-154",
-   "text": "ARCH-33 gives no range for the scale; the helper that derives it from a bound could return up to 1136 where the conversion of a sum to double round... Fix: scale limited to -128 to 256 everywhere; a bound outside is refused"
+   "id": "IMPL-M1-163",
+   "text": "the allocation refusal of the reduction buffers (ARCH-33) cannot be triggered in a test Fix: by inspection"
   },
   {
-   "id": "IMPL-M1-153",
-   "text": "the C_S warning of section 8.4 has no requirement tag Fix: CORE-29"
+   "id": "IMPL-M1-162",
+   "text": "a 64-bit cell index cannot be reached on a device with the memory at hand (2^32 cells) Fix: by inspection and the host text tests until M2; no test-only switch in production code"
   },
   {
-   "id": "IMPL-M1-152",
-   "text": "MEM-12 and ARCH-36 let the backend run the storage self-test and select the variant which the layering forbids Fix: the model builder runs it once per device and process and selects; describe() reports it"
+   "id": "IMPL-M1-161",
+   "text": "VAL-22 has nothing to test: no M1 pass is order_independent Fix: a host tripwire now; the random-order test with the first such pass"
   },
   {
-   "id": "IMPL-M1-151",
-   "text": "ARCH-29 promises a general mechanism that no text defines Fix: records of requirement / subject / text / step; one per requirement and subject between setups; strict at every point of detection; manifest keys w..."
+   "id": "IMPL-M1-160",
+   "text": "VAL-8 bounds were measured for 32-bit storage Fix: judged for f32 on every lattice and operator; 16-bit runs reported"
   },
   {
-   "id": "IMPL-M1-150",
-   "text": "CORE-11 \"values set later belong to the health checks\" Fix: the parameter sum is checked at set_parameter; force fields written after setup are not checked until M3"
+   "id": "IMPL-M1-159",
+   "text": "VAL-7 per-step balance for MRT and its bound; IMPL-M1-35 (drift of the MRT column sums) Fix: asserted for SRT and TRT; reported for MRT which is judged by the drift bound; the bound of the balance is provisional (about the size of the per-s..."
   },
   {
-   "id": "IMPL-M1-149",
-   "text": "CORE-29 does not say where u_max and tau come from Fix: u_max from the CORE-19 scan at setup; tau from the parameter marked shear_rate; no CORE-29 warning for operators without such a parameter (MRT pres..."
+   "id": "IMPL-M1-158",
+   "text": "VAL-7 gives no box for D2Q9 Fix: 64 x 64"
   },
   {
-   "id": "IMPL-M1-147",
-   "text": "IO-27 makes the health check a default but a kernel in every program would change every program text Fix: module observe.health asked for at the driver level; on by default in the front end (M3)"
+   "id": "IMPL-M1-157",
+   "text": "L2 runs on every commit but VAL-7 at its stated size takes minutes Fix: short form every build; stated form at the gate"
   }
  ]
 }
