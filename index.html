@@ -101,30 +101,30 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-13d",
+  "commit": "m1 after M1-14a",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 589,
-    "assertions": 369962,
+    "cases": 634,
+    "assertions": 381247,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 285,
-    "assertions": 2314860,
+    "cases": 335,
+    "assertions": 2323231,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 285,
-    "assertions": 2315070,
+    "cases": 335,
+    "assertions": 2323990,
     "failed": 0,
     "skipped": 0
    },
@@ -654,12 +654,12 @@ const INLINE = {
     {
      "id": "M1-14a",
      "title": "measurements: harness and campaign script",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-9c",
       "M1-16"
      ],
-     "stage": "verification"
+     "note": "the tools of the measurement campaign of M1-14: options of the benchmark harness for lattice / operator / box / schedule / extra modules / geometries with bodies / force series and source variants (text transforms of a program with a strict count of replacements); the program olbx_m114 with the call-level measurements and a bit-identity guard of a variant against production (incoming view / raw state / the moments and the writing kernel / forces and a series sample); a quiet-machine verdict (decisions D-084 and D-087) that only observes; transfer counters checked against design values in every record; the tool olbx_kinfo (registers and spills per kernel / device identifiers); a campaign script that runs by section with a dry run / a report generator and seven plots. With no new option the program text / the cache key and the record keys equal M0. The cause of the smoke-test failure IMPL-M1-176 is fixed: a refused busy device is reported as not judged. The campaign itself has not run (part b)"
     },
     {
      "id": "M1-14c",
