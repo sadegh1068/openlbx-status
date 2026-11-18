@@ -101,14 +101,14 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-11a",
+  "commit": "m1 after M1-12b",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 568,
-    "assertions": 336018,
+    "cases": 570,
+    "assertions": 336076,
     "failed": 0,
     "skipped": 0
    },
@@ -116,7 +116,7 @@ const INLINE = {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
     "cases": 233,
-    "assertions": 2303818,
+    "assertions": 2303820,
     "failed": 0,
     "skipped": 0
    },
@@ -124,7 +124,7 @@ const INLINE = {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
     "cases": 233,
-    "assertions": 2304028,
+    "assertions": 2304030,
     "failed": 0,
     "skipped": 0
    },
@@ -582,13 +582,12 @@ const INLINE = {
     {
      "id": "M1-12b",
      "title": "conservation and symmetry on device sums",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-12a",
       "M1-9a"
      ],
-     "stage": "verification",
-     "since": "2026-11-18"
+     "note": "conservation and symmetry measured with the exact device sums: mass and momentum drift (VAL-7) and mirror and rotation symmetry (VAL-8) on every lattice and collision operator / a short form on every build and the stated form (4 seeds / 10000 steps) at the gates. All values are identical on the CPU runtime and the RTX 5050 and inside their bounds. The per-step mass balance of SRT and TRT is below 2e-10 of the mass (bound fixed from the device values). The momentum drift of MRT is three orders below SRT and TRT / which points at the float equilibrium as the cause of the 32-bit momentum bias (to confirm in M1-14)"
     },
     {
      "id": "M1-12c",
