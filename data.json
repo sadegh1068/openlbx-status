@@ -443,7 +443,7 @@
      "deps": [
       "M1-9b"
      ],
-     "stage": "test corrections"
+     "stage": "implementation"
     },
     {
      "id": "M1-11a",
@@ -506,17 +506,53 @@
       "M1-12c",
       "M1-9b"
      ],
-     "stage": "review",
+     "stage": "review fixes",
      "since": "2026-11-18"
     },
     {
-     "id": "M1-13",
-     "title": "physical cases, thresholds",
-     "status": "running",
+     "id": "M1-13a",
+     "title": "L3 target, Couette and Poiseuille",
+     "status": "pending",
      "deps": [
-      "M1-12c"
-     ],
-     "stage": "design"
+      "M1-12c",
+      "M1-11b"
+     ]
+    },
+    {
+     "id": "M1-13b",
+     "title": "sound wave and Taylor-Green",
+     "status": "pending",
+     "deps": [
+      "M1-13a"
+     ]
+    },
+    {
+     "id": "M1-13c",
+     "title": "Stokes drag",
+     "status": "pending",
+     "deps": [
+      "M1-13a",
+      "M1-9c"
+     ]
+    },
+    {
+     "id": "M1-13d",
+     "title": "threshold re-freeze",
+     "status": "pending",
+     "deps": [
+      "M1-13a",
+      "M1-13b",
+      "M1-13c",
+      "M1-12b"
+     ]
+    },
+    {
+     "id": "M1-16",
+     "title": "memory check of the two-array variant",
+     "status": "pending",
+     "deps": [
+      "M1-3b"
+     ]
     },
     {
      "id": "M1-14",
@@ -535,8 +571,9 @@
       "M1-8b",
       "M1-10",
       "M1-11b",
-      "M1-13",
-      "M1-14"
+      "M1-14",
+      "M1-13d",
+      "M1-16"
      ]
     }
    ]
@@ -733,6 +770,10 @@
  ],
  "decisions": [
   {
+   "id": "D-080",
+   "text": "The rows of the matrix keep one program set with `observe.force` in every row configuration (M1-12d), although such a program builds about 2.7 times slower on the CPU runtime (finding IMPL-M1-181)."
+  },
+  {
    "id": "D-079",
    "text": "The wall-clock limit of the benchmark smoke test (`tests/l1/bench/test_m010_smoke.cpp`: each case below 10 s) is reported as a warning of the test and no longer fails the L1 suite; the time limit a..."
   },
@@ -759,13 +800,33 @@
   {
    "id": "D-066",
    "text": "Inside a consumer callback a field that is not a derived output (populations, cell types, force field) can be read only when the driver time equals the sample time; otherwise the read is refused. T..."
-  },
-  {
-   "id": "D-065",
-   "text": "Replaces the workaround half of D-062: a device whose compiler fails a probe is refused when it is opened; nothing is built with `-cl-opt-disable`. The device tests run on the Intel CPU runtime and..."
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M1-187",
+   "text": "VAL-2 asks for an L3 case per module; `force.static`, `boundary.equilibrium`, `boundary.pressure`, `subgrid.*` and `observe.sums` / `observe.body_i... Fix: `force.static` gets a variant of the pipe case now; the others are deferred per module with the milestone named"
+  },
+  {
+   "id": "IMPL-M1-186",
+   "text": "the pipe rows with the MRT `trt` preset may never meet the relative-change criterion and run to the step limit Fix: the step limit is the expected stop for these rows"
+  },
+  {
+   "id": "IMPL-M1-185",
+   "text": "02-VAL-S3 \"near the box faces\" names no set of cells and no norm Fix: the maximum over the first fluid layer inside the faces, at the read after the converging run"
+  },
+  {
+   "id": "IMPL-M1-184",
+   "text": "round-off stall levels depend on the order of operations, which is fixed per device and driver only; a 20 % rule against a baseline of another devi... Fix: asserted on the device and driver of the provenance, reported elsewhere"
+  },
+  {
+   "id": "IMPL-M1-182",
+   "text": "the memory check counts one copy of the populations, while the two-array variant keeps both copies in one buffer: at 256^3 D3Q19 `f32` the buffer i... Fix: the check counts the copies and tests each buffer against the largest allocation (package M1-16, tests first); two buffers for the two copies wait..."
+  },
+  {
+   "id": "IMPL-M1-181",
+   "text": "a program with `observe.force` takes about 2.7 times as long to build on the CPU runtime (56 s and 58 s against 21 s for two D3Q19 rows, alternatin... Fix: accepted for now (decision D-080); to measure in M1-14 on a quiet machine: build time of the force kernel by lattice, and whether a loop over the l..."
+  },
   {
    "id": "IMPL-M1-180",
    "text": "the result of a check is read without blocking into pageable host memory; on NVIDIA such a read may run synchronously and drain the pipeline at eve... Fix: to measure in M1-14: the time of the read enqueue on the RTX 5050 at 256^3; if confirmed the host ring goes into pinned memory. At the default inte..."
@@ -773,30 +834,6 @@
   {
    "id": "IMPL-M1-179",
    "text": "ARCH-30 does not say which cells the check covers Fix: the updated cells: equilibrium and pressure boundary cells included, walls excluded"
-  },
-  {
-   "id": "IMPL-M1-178",
-   "text": "ARCH-30 bounded the lateness of the stop by the look-ahead; by the code it is the look-ahead plus one event stride (default 256 + 64 steps), measur... Fix: wording corrected; no code change (a flush at every poll would not bound a device that is behind any better)"
-  },
-  {
-   "id": "IMPL-M1-177",
-   "text": "a failing check still pending when `run` returns was dropped by `setup()` or a restore and not decoded by `raw_state()`, so a checkpoint taken righ... Fix: `raw_state()` decodes pending checks and raises the numerical error if one failed"
-  },
-  {
-   "id": "IMPL-M1-176",
-   "text": "in one L1 run on the RTX 5050 under machine load the benchmark smoke test failed not only its time limit but also the exit code of the benchmark an... Fix: not reproduced; decision D-079 covers only the time limit. If it happens again the output of the benchmark is kept and the cause found before any m..."
-  },
-  {
-   "id": "IMPL-M1-175",
-   "text": "cause of the 32-bit momentum bias (open point 10-O4; also IMPL-M1-173), proposed from the code and the data, about 85 percent sure: SRT changes the... Fix: to confirm in M1-14: a host loop over the decayed uniform state that evaluates the first moment of the equilibrium minus j with the float arithmeti..."
-  },
-  {
-   "id": "IMPL-M1-173",
-   "text": "in the steady Couette state (D2Q9 3x18, SRT, f32) the incoming momentum of the fluid repeats bit for bit with period 4 (largest change 1.1e-10 per... Fix: not a defect of the force pass: the exact per-step identity of test 11 holds in that state (bottom wall exactly; lid within the rounding of the mov..."
-  },
-  {
-   "id": "IMPL-M1-172",
-   "text": "CORE-23 requires a setup warning when a body touches equilibrium-boundary cells; no package had it Fix: a warning record (CORE-23, body) from the host step, in M1-9b"
   }
  ]
 }
