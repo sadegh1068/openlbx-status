@@ -101,30 +101,30 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-12c",
+  "commit": "m1 after M1-11b",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 577,
-    "assertions": 359794,
+    "cases": 582,
+    "assertions": 369912,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 247,
-    "assertions": 2307721,
+    "cases": 265,
+    "assertions": 2314298,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 247,
-    "assertions": 2307931,
+    "cases": 265,
+    "assertions": 2314508,
     "failed": 0,
     "skipped": 0
    },
@@ -557,14 +557,13 @@ const INLINE = {
     {
      "id": "M1-11b",
      "title": "run-time health check",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-11a",
       "M1-9a",
       "M1-9b"
      ],
-     "stage": "verification",
-     "since": "2026-11-18"
+     "note": "run-time health check: a module observe.health adds a kernel that counts on the device the cells with a non-finite or saturated population / a density not above zero / a speed above the limit; run enqueues it every interval steps into a device ring of 64 checks and reads 40 bytes per check without blocking; a failed check stops the run with a numerical error naming the condition / its count and the checked step and leaves the driver usable. A diverging run stops at step 107 (velocity) and 114 (density) in f32 / f16s and f16c on both devices; a valid wave at the stability limit never stops. The review found a failed check that could be lost when a checkpoint is taken right after run / closed tests first"
     },
     {
      "id": "M1-12a",
