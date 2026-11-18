@@ -459,11 +459,13 @@
     {
      "id": "M1-11b",
      "title": "run-time health check",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-11a",
       "M1-9a"
-     ]
+     ],
+     "stage": "tests",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-12a",
