@@ -391,14 +391,32 @@
      ]
     },
     {
-     "id": "M1-8",
-     "title": "write_in, refile, restart",
+     "id": "M1-8a",
+     "title": "outgoing view, raw state and restore",
      "status": "running",
      "deps": [
-      "M1-3b"
+      "M1-3b",
+      "M1-7a"
      ],
-     "stage": "design",
+     "stage": "tests",
      "since": "2026-11-18"
+    },
+    {
+     "id": "M1-8b",
+     "title": "re-filing, activation, geometry change",
+     "status": "pending",
+     "deps": [
+      "M1-8a"
+     ]
+    },
+    {
+     "id": "M1-8c",
+     "title": "sparse payload in the raw state",
+     "status": "pending",
+     "deps": [
+      "M1-8a",
+      "M1-7d"
+     ]
     },
     {
      "id": "M1-9",
@@ -449,7 +467,7 @@
      "status": "pending",
      "deps": [
       "M1-1",
-      "M1-8",
+      "M1-8b",
       "M1-10",
       "M1-11",
       "M1-13",
@@ -684,36 +702,36 @@
  ],
  "findings": [
   {
-   "id": "IMPL-M1-88",
-   "text": "a test kernel of the backend tests was a function named `step`, the name of an OpenCL built-in; the compiler of NVIDIA driver 442.74 (Quadro RTX 40... Fix: the test kernel is renamed; the kernels and helpers the framework generates carry prefixes and cannot collide. Open, for M3-9a (user modules): the..."
+   "id": "IMPL-M1-98",
+   "text": "VAL-5 says \"per module\" without saying which modules a restart test of M1 must cover Fix: the plain sets (SRT, TRT, MRT, subgrid) on one block here; the pressure boundary with M1-8c; moving walls and equilibrium cells when M1-7c is merge..."
   },
   {
-   "id": "IMPL-M1-87",
-   "text": "`Q` and `DIM` come from the first population set of the program, `nb` from the first set of the kernel; with sets on different lattices these differ Fix: open, for M4 (thermal sets): constants and `nb` per set. In M1 to M3 every program has one lattice"
+   "id": "IMPL-M1-97",
+   "text": "IMPL-M1-48: the uniform call form of the primitives Fix: per-generator argument lists stay; one helper for framework emitters now; macros for hand-written fragments with their first user (chapter 04)"
   },
   {
-   "id": "IMPL-M1-86",
-   "text": "the table of locals in section 6.2 said that only the requested entries of `nb` are computed, while the implementation declares the whole array Fix: the table says what is built; the device compiler removes unused entries. M1-14 checks register count and spills of a kernel that indexes `nb` in a..."
+   "id": "IMPL-M1-96",
+   "text": "the source of activation values and the way a geometry change reaches the device are not specified; MEM-16 forbids volumetric transfers in the loop Fix: in M1 `change_cells` takes host lists and is a counted transfer between frames, for tests and rare changes; the device path comes with M3-11 before..."
   },
   {
-   "id": "IMPL-M1-85",
-   "text": "nothing reserved the framework capability `one_step:<s>`: a module could provide it and pass the MEM-24 check in `implicit` mode Fix: names beginning with `one_step:` are reserved; a manifest providing one is a manifest error"
+   "id": "IMPL-M1-95",
+   "text": "IO-19 lists density and velocity as checkpointed while the registry marks them derived; the in-memory raw state holds no parameters set at run time... Fix: the raw state of M1 holds every field that is not scratch, whole, with step, parities and validity times; parameters, consumer counters and the fil..."
   },
   {
-   "id": "IMPL-M1-84",
-   "text": "ARCH-11 did not say from which stage `nb` is readable; the array is declared after the guard return, so a guard fragment that declared it assembled... Fix: readable in stages 2 to 12; a guard fragment that declares `nb` is refused at assembly"
+   "id": "IMPL-M1-94",
+   "text": "the outgoing view at time 0 is undefined before the first pass Fix: it is the initial store of ARCH-46 (both generators return it)"
   },
   {
-   "id": "IMPL-M1-83",
-   "text": "ARCH-46 and MEM-14 (e) say \"up to rounding\" without a bound; at 16-bit storage the half force step is 0.11 to 0.43 of the storage rounding, so thos... Fix: the bound is the derived per-cell tolerance of test 11; the half force step is tested by the `f32` rows; a run with u' = 0 over all fluid cells tes..."
+   "id": "IMPL-M1-93",
+   "text": "\"converts\" was read as a change between wall-like and updated; a change from wall-like to a kind that is skipped but not wall-like (gas, chapter 04... Fix: re-filing follows the wall-like predicate alone"
   },
   {
-   "id": "IMPL-M1-82",
-   "text": "VAL-3 says \"every collision operator and storage type\" without saying whether the full cross product is meant; the matrix of M1-3b is partial (TRT... Fix: each operator and each storage type on every lattice in at least one combination at every build; the full cross product at the M1 gate (M1-12), dec..."
+   "id": "IMPL-M1-92",
+   "text": "nothing says what happens when a cell becomes updated without an activation store Fix: refused"
   },
   {
-   "id": "IMPL-M1-81",
-   "text": "the host step of finalisation visits every owned cell (and up to q - 1 neighbours for the cells of the class); nothing bounds its cost Fix: it runs once per `setup()`, never in a step; single thread in M1; the implementer reports the time for a 256^3 box, and M1-14 adds threads if it ex..."
+   "id": "IMPL-M1-91",
+   "text": "the kernels the driver invokes between frames and that write populations (`write_incoming`, `refile`, `activate`) are neither views nor scheduled p... Fix: role and instance `view`; no new reserved name"
   }
  ]
 }
