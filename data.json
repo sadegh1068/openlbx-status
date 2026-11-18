@@ -2,7 +2,7 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-11b",
+  "commit": "m1 after M1-12d",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
@@ -500,13 +500,11 @@
     {
      "id": "M1-12d",
      "title": "force columns of the matrix",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-12c",
       "M1-9b"
-     ],
-     "stage": "verification",
-     "since": "2026-11-18"
+     ]
     },
     {
      "id": "M1-13a",
