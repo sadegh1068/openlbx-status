@@ -463,7 +463,7 @@
       "M1-9a",
       "M1-9b"
      ],
-     "stage": "test corrections",
+     "stage": "review fixes",
      "since": "2026-11-18"
     },
     {
@@ -767,6 +767,22 @@
  ],
  "findings": [
   {
+   "id": "IMPL-M1-180",
+   "text": "the result of a check is read without blocking into pageable host memory; on NVIDIA such a read may run synchronously and drain the pipeline at eve... Fix: to measure in M1-14: the time of the read enqueue on the RTX 5050 at 256^3; if confirmed the host ring goes into pinned memory. At the default inte..."
+  },
+  {
+   "id": "IMPL-M1-179",
+   "text": "ARCH-30 does not say which cells the check covers Fix: the updated cells: equilibrium and pressure boundary cells included, walls excluded"
+  },
+  {
+   "id": "IMPL-M1-178",
+   "text": "ARCH-30 bounded the lateness of the stop by the look-ahead; by the code it is the look-ahead plus one event stride (default 256 + 64 steps), measur... Fix: wording corrected; no code change (a flush at every poll would not bound a device that is behind any better)"
+  },
+  {
+   "id": "IMPL-M1-177",
+   "text": "a failing check still pending when `run` returns was dropped by `setup()` or a restore and not decoded by `raw_state()`, so a checkpoint taken righ... Fix: `raw_state()` decodes pending checks and raises the numerical error if one failed"
+  },
+  {
    "id": "IMPL-M1-176",
    "text": "in one L1 run on the RTX 5050 under machine load the benchmark smoke test failed not only its time limit but also the exit code of the benchmark an... Fix: not reproduced; decision D-079 covers only the time limit. If it happens again the output of the benchmark is kept and the cause found before any m..."
   },
@@ -781,22 +797,6 @@
   {
    "id": "IMPL-M1-172",
    "text": "CORE-23 requires a setup warning when a body touches equilibrium-boundary cells; no package had it Fix: a warning record (CORE-23, body) from the host step, in M1-9b"
-  },
-  {
-   "id": "IMPL-M1-171",
-   "text": "a user list written after setup() left the device list and the centroids of the last setup in use without any sign Fix: the write marks the lists stale as a write of the cell types does (IMPL-M1-142)"
-  },
-  {
-   "id": "IMPL-M1-170",
-   "text": "the raw state held the payload of a user-written list but not its cells: a restore rebuilt the lists from the lists of the driver, so a list change... Fix: the cells of user-written lists are part of the raw state and a restore takes them from the state"
-  },
-  {
-   "id": "IMPL-M1-169",
-   "text": "CORE-29 does not say in which precision the limits are compared: `float(1/0.55)` gives tau 0.54999998, so a nominal 0.55 warns under the rule for t... Fix: the 32-bit values the device uses are compared; a warning is given either way"
-  },
-  {
-   "id": "IMPL-M1-168",
-   "text": "the fault injection of VAL-18 is a public default argument of the model builder Fix: acceptable below the front end (it is no configuration key); the front end must not expose it"
   }
  ]
 }
