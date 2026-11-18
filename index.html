@@ -101,30 +101,30 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-7b",
+  "commit": "m1 after M1-7a",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 487,
-    "assertions": 171626,
+    "cases": 519,
+    "assertions": 260460,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 156,
-    "assertions": 94769,
+    "cases": 160,
+    "assertions": 94879,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 156,
-    "assertions": 94979,
+    "cases": 160,
+    "assertions": 95089,
     "failed": 0,
     "skipped": 0
    },
@@ -457,12 +457,11 @@ const INLINE = {
     {
      "id": "M1-7a",
      "title": "sparse fields, host step of finalisation",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-2c"
      ],
-     "stage": "review fixes",
-     "since": "2026-11-18"
+     "note": "sparse fields: a field that holds a payload only for a listed subset of cells, found on the device through an exact hash table; a host step at setup evaluates the neighbour rules of cell-type groups, builds lists and tables and fills the initial payloads; a first warning channel on the driver. Programs without sparse fields keep their text byte for byte. The review ran three rounds: it closed ways for a fragment to write outside its own cell (one of them older than this package), a silent skip of the host step, an entry limit with 32-bit indices, and halved the time of the host step"
     },
     {
      "id": "M1-7b",
