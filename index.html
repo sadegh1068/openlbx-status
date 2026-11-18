@@ -521,21 +521,38 @@ const INLINE = {
      ]
     },
     {
-     "id": "M1-9",
-     "title": "exact reductions, force pass",
+     "id": "M1-9a",
+     "title": "exact reductions",
      "status": "running",
      "deps": [
-      "M1-7d"
+      "M1-8a"
      ],
-     "stage": "design",
+     "stage": "tests",
      "since": "2026-11-18"
+    },
+    {
+     "id": "M1-9b",
+     "title": "force and torque pass",
+     "status": "pending",
+     "deps": [
+      "M1-9a",
+      "M1-7d"
+     ]
+    },
+    {
+     "id": "M1-9c",
+     "title": "force series",
+     "status": "pending",
+     "deps": [
+      "M1-9b"
+     ]
     },
     {
      "id": "M1-11",
      "title": "stability checks",
      "status": "pending",
      "deps": [
-      "M1-9"
+      "M1-9a"
      ]
     },
     {
@@ -806,36 +823,36 @@ const INLINE = {
  ],
  "findings": [
   {
-   "id": "IMPL-M1-128",
-   "text": "02 section 6.5 and 02-Q19 describe the end effect of the pressure boundary as an extra pressure drop (extra channel length) at each end; the measur... Fix: reworded: shorter by about 0.1 R per boundary; dependence on Lambda and independence of u_w stated with their source"
+   "id": "IMPL-M1-141",
+   "text": "the test-only exact sum of M0-9 (tests/l1/sim_core/exact_sum.hpp) converts to double in two steps and is not correctly rounded for 1825 of 20 000 r... Fix: replaced in M1-9a by src/base/exact_sum with a correctly rounded conversion; the test header goes"
   },
   {
-   "id": "IMPL-M1-127",
-   "text": "cost: the early return of `change_cells` for unchanged words compares with the device words after the tag pass, so words without the generated tag... Fix: open for M3-11 (the producer of geometry changes decides whether it calls with unchanged words at all; masking the generated bits is the fix if it..."
+   "id": "IMPL-M1-140",
+   "text": "ARCH-33 with subnormal contributions: ldexp is exact only where the device keeps denormals Fix: not specified; the tests use normal floats"
   },
   {
-   "id": "IMPL-M1-126",
-   "text": "the spec is silent on a geometry change before `setup()`; the code accepted it and re-filed populations that do not exist yet Fix: refused (InvalidArgument naming MEM-20)"
+   "id": "IMPL-M1-139",
+   "text": "section 8 of chapter 01 describes reductions and the force pass as scheduled passes over links(list) and reduce(domain); nothing runs on request Fix: driver-invoked kernels like the views; A.4 and describe() say so"
   },
   {
-   "id": "IMPL-M1-125",
-   "text": "MEM-20 ties the activation store to a change of the wall-like classification, the brief to a cell that becomes updated; equal in M1, different for... Fix: activation when a cell becomes updated, re-filing when the wall-like predicate changes"
+   "id": "IMPL-M1-138",
+   "text": "VAL-7 defines the momentum as the exact reduction of rho u which is a product of rounded fields Fix: the exact sum of c_k g_k over the incoming populations"
   },
   {
-   "id": "IMPL-M1-124",
-   "text": "03 section 3.4: the two single-cell bullets, read alone, re-file whenever the other end is not a wall before the change; only the bullet on several... Fix: the single-cell bullets say it too"
+   "id": "IMPL-M1-137",
+   "text": "ARCH-33 \"stops the run\" for a reduction called outside run and for samples batched on the device Fix: a call on request throws and leaves the driver usable; a series fails run at its flush (late by up to one flush interval: the price of batching the..."
   },
   {
-   "id": "IMPL-M1-123",
-   "text": "the spec does not say what consumers see after a restore into the same driver Fix: they are reset: a sample due at the restored step is served again, later events are dropped (as the brief of M1-8 has it)"
+   "id": "IMPL-M1-136",
+   "text": "CORE-23 \"the force at step t\" against the driver time Fix: a request at driver time T reports step T - 1; T = 0 uses the initial store"
   },
   {
-   "id": "IMPL-M1-122",
-   "text": "the pass key `when = \"force:f\"` of the streaming manifests names the set `f` literally, and the preparation takes every stage-5 fragment whatever i... Fix: open, for M4 (thermal set, several sets in one program): a `<s>` form of `when` and a filter by set"
+   "id": "IMPL-M1-135",
+   "text": "CORE-15 names a user mask that nothing defines Fix: the value 1 to 3 of the user cell-type group of ARCH-10"
   },
   {
-   "id": "IMPL-M1-121",
-   "text": "a second `setup()` that reduces the prepared velocity once more is a silent wrong result (reviewer, against the ruling on IMPL-M1-117); CORE-35 als... Fix: the driver warns (CORE-35) when `setup()` finds the velocity field still holding the prepared value; the sentence on reads is corrected"
+   "id": "IMPL-M1-134",
+   "text": "ARCH-47 has no manifest form for lists the user writes (body ids) Fix: entries = { class / user = true }; the driver takes the list before setup and checks the class; body ids live in the companion module observe.body_ids"
   }
  ]
 };
