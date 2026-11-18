@@ -2,30 +2,30 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-13b",
+  "commit": "m1 after M1-13c",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 582,
-    "assertions": 369912,
+    "cases": 589,
+    "assertions": 369962,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 265,
-    "assertions": 2314298,
+    "cases": 285,
+    "assertions": 2314860,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 265,
-    "assertions": 2314508,
+    "cases": 285,
+    "assertions": 2315070,
     "failed": 0,
     "skipped": 0
    },
@@ -439,11 +439,11 @@
     {
      "id": "M1-9c",
      "title": "force series",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-9b"
      ],
-     "stage": "verification"
+     "note": "force series sampled inside run: a series names a set / bodies / a start / an interval and a flush count; run launches the force kernels of a due sample into a device ring and reads the ring once per flush samples / with no other read of the device in the loop. A sample is bit for bit what forces() returns at the same time. Samples are kept over setup() and a restore and returned in sampling order; a flagged sample is a numerical failure at the flush / a take / setup() and a restore; a series whose bodies no longer validate refuses run until it is removed. No generated kernel text changed"
     },
     {
      "id": "M1-11a",
@@ -527,12 +527,11 @@
     {
      "id": "M1-13c",
      "title": "Stokes drag",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-13a",
       "M1-9c"
-     ],
-     "stage": "verification"
+     ]
     },
     {
      "id": "M1-13d",
@@ -549,11 +548,10 @@
     {
      "id": "M1-16",
      "title": "memory check of the two-array variant",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-3b"
-     ],
-     "stage": "verification"
+     ]
     },
     {
      "id": "M1-14a",
@@ -792,6 +790,10 @@
  ],
  "decisions": [
   {
+   "id": "D-086",
+   "text": "The 32-bit momentum bias is carried by the binary32 lattice weights (the first moment of the float equilibrium is (1 + 2^-27) j; finding IMPL-M1-200). No remedy is made inside M1. The remedy (weigh..."
+  },
+  {
    "id": "D-083",
    "text": "Whether the density of the equilibrium is formed from the unrounded sum (finding IMPL-M0-38, a change of CORE-5) is decided at the M1 gate with the numbers of M1-14 (item Q25), and, if adopted, imp..."
   },
@@ -818,20 +820,24 @@
   {
    "id": "D-069",
    "text": "A constant set with `set_parameter` at driver time T is used from step T on; when the value changes, derived fields already formed for time T are invalidated and formed again on demand. `set_parame..."
-  },
-  {
-   "id": "D-068",
-   "text": "The `f16c` storage format gets one integer-only accessor and two test-only faults; a failed `f16c` self-test stops the run with an error naming device and driver. Its exhaustive host test covers th..."
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M1-201",
+   "text": "the levels of 02-VAL-P2 are round-off levels, not discretisation errors: the SRT and TRT rows (4.3e-4 and 2.9e-4) fall to about 3e-5 with exact wei... Fix: the frozen thresholds hold for the exact case only and the per-run baselines guard the arithmetic; a robust measure and the remedy of IMPL-M1-200 a..."
+  },
+  {
+   "id": "IMPL-M1-200",
+   "text": "the 32-bit momentum bias of VAL-7 (open point 10-O4, IMPL-M1-175) is carried by the binary32 lattice weights: 3 times the sum of W c_x^2 is 1 + 2^-... Fix: device confirmation in stage c2; 10-O4 and the VAL-7 note are edited after it; the remedy is decided at the gate (decision D-086)"
+  },
   {
    "id": "IMPL-M1-197",
    "text": "the control ruled for CORE-8 at L3 (IMPL-M1-193: the TRT channel from rest with a magic parameter of 1/4 above 1.2 times the baseline) passed with... Fix: the control is replaced (brief M1-13 ruling 31): the default 3/16 by bit equality in every build, and the effect of the parameter from the analytic..."
   },
   {
    "id": "IMPL-M1-196",
-   "text": "a binary32 emulation of the fragments on the D2Q9 momentum box of VAL-7 reproduces the drift (8.96e-9 per step) and its scaling with omega minus, b... Fix: emulation only (the designer is about 85 percent sure it holds on a device); device runs and the decision tree in M1-14c; 10-O4, the VAL-7 note and..."
+   "text": "a binary32 emulation of the fragments on the D2Q9 momentum box of VAL-7 reproduces the drift (8.96e-9 per step) and its scaling with omega minus, b... Fix: emulation only (the designer is about 85 percent sure it holds on a device); refuted by stage c1 of M1-14c: a port that is bit-identical to the dev..."
   },
   {
    "id": "IMPL-M1-195",
@@ -848,14 +854,6 @@
   {
    "id": "IMPL-M1-192",
    "text": "a force sample costs 2K kernel launches over all cells of the set and 14.7 MB of partial sums per body at 256^3 (estimate: 2 to 4 percent of a step... Fix: stated in IO-13 and in the driver header; to measure in M1-14 on a quiet RTX 5050 (cost of one sample per body at 64^3 and 256^3); a warning record..."
-  },
-  {
-   "id": "IMPL-M1-191",
-   "text": "IO-13 did not say in which order a series returns samples after a restore to an earlier time (the same time is sampled twice), nor which flagged sa... Fix: sampling order with duplicates; per series inside `run`; the earliest flagged time over all series at a `setup()` and a restore"
-  },
-  {
-   "id": "IMPL-M1-187",
-   "text": "VAL-2 asks for an L3 case per module; `force.static`, `boundary.equilibrium`, `boundary.pressure`, `subgrid.*` and `observe.sums` / `observe.body_i... Fix: `force.static` gets a variant of the pipe case now; the others are deferred per module with the milestone named"
   }
  ]
 }
