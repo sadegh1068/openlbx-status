@@ -101,30 +101,30 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-7a",
+  "commit": "m1 after M1-8a",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 519,
-    "assertions": 260460,
+    "cases": 524,
+    "assertions": 261371,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 160,
-    "assertions": 94879,
+    "cases": 171,
+    "assertions": 386317,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 160,
-    "assertions": 95089,
+    "cases": 171,
+    "assertions": 386527,
     "failed": 0,
     "skipped": 0
    },
@@ -495,13 +495,12 @@ const INLINE = {
     {
      "id": "M1-8a",
      "title": "outgoing view, raw state and restore",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-3b",
       "M1-7a"
      ],
-     "stage": "review fixes",
-     "since": "2026-11-18"
+     "note": "the outgoing view of the populations and its inverse (writing a state through the incoming view), and restart on one block: the raw state of a driver can be taken and restored and the run continues bit for bit, at both step parities. The review found that setup after a restore read the initial store at the wrong parity; fixed with a test. The new kernels are appended to the program text, every byte before them is unchanged"
     },
     {
      "id": "M1-8b",
