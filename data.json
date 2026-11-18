@@ -469,13 +469,15 @@
     {
      "id": "M1-12",
      "title": "property suite",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-3b",
       "M1-5b",
       "M1-6",
       "M1-7d"
-     ]
+     ],
+     "stage": "design",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-13",
