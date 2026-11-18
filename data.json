@@ -560,7 +560,7 @@
       "M1-9c",
       "M1-16"
      ],
-     "stage": "implementation"
+     "stage": "verification"
     },
     {
      "id": "M1-14c",
@@ -790,6 +790,10 @@
  ],
  "decisions": [
   {
+   "id": "D-087",
+   "text": "Amendment of D-084 (quiet machine). The list of GPU compute processes is judged by image name only: a process counts when its name is in the list of build, test and solver programs; the desktop pro..."
+  },
+  {
    "id": "D-086",
    "text": "The 32-bit momentum bias is carried by the binary32 lattice weights (the first moment of the float equilibrium is (1 + 2^-27) j; finding IMPL-M1-200). No remedy is made inside M1. The remedy (weigh..."
   },
@@ -816,13 +820,13 @@
   {
    "id": "D-071",
    "text": "The bit-identity matrix of every build covers each collision operator and each storage type on every hydrodynamic lattice in at least one combination, in both wall modes; the full cross product run..."
-  },
-  {
-   "id": "D-069",
-   "text": "A constant set with `set_parameter` at driver time T is used from step T on; when the value changes, derived fields already formed for time T are invalidated and formed again on demand. `set_parame..."
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M1-204",
+   "text": "VAL-17 and the method of M1-14 want the OpenCL C version with every benchmark number, but the device report of the backend (ARCH-5) carries the pla... Fix: in M1-14 the tool olbx_kinfo, which is outside the layers, reports it once per device and the campaign records it; the device report of the backend..."
+  },
   {
    "id": "IMPL-M1-203",
    "text": "after the re-freeze the thresholds in force live in tests/l3/data/frozen.toml, and the tables of chapter 02 section 10 (thresholds of 02-VAL-C1, C2... Fix: VAL-10 names the file as the source in force; the chapter tables are regenerated from the file at the M1 gate, after the decision on a remedy (D-08..."
@@ -850,10 +854,6 @@
   {
    "id": "IMPL-M1-194",
    "text": "the M1 gate of chapter 11 has no performance item although M1 replaces the prototype schedule by the scheduler and adds modules to every program; a... Fix: the gate of M1 names VAL-17 for the two parity cases against the medians of the M0 gate (measured in M1-14, item Q1)"
-  },
-  {
-   "id": "IMPL-M1-193",
-   "text": "the check that the review asked for CORE-8 (TRT started from the analytic profile: 0.0052 percent after 3000 steps in the emulation) does not hold... Fix: the case stays as a regression case with a control at a magic parameter of 1 (1.5e-4, above the threshold) and without a claim on CORE-8; CORE-8 is..."
   }
  ]
 }
