@@ -390,7 +390,7 @@
      "deps": [
       "M1-7c"
      ],
-     "stage": "tests",
+     "stage": "implementation",
      "since": "2026-11-18"
     },
     {
