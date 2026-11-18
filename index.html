@@ -449,7 +449,7 @@ const INLINE = {
      "deps": [
       "M1-2c"
      ],
-     "stage": "tests",
+     "stage": "implementation",
      "since": "2026-11-18"
     },
     {
@@ -459,7 +459,7 @@ const INLINE = {
      "deps": [
       "M1-2b"
      ],
-     "stage": "review",
+     "stage": "fixes",
      "since": "2026-11-18"
     },
     {
@@ -772,6 +772,22 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-87",
+   "text": "`Q` and `DIM` come from the first population set of the program, `nb` from the first set of the kernel; with sets on different lattices these differ Fix: open, for M4 (thermal sets): constants and `nb` per set. In M1 to M3 every program has one lattice"
+  },
+  {
+   "id": "IMPL-M1-86",
+   "text": "the table of locals in section 6.2 said that only the requested entries of `nb` are computed, while the implementation declares the whole array Fix: the table says what is built; the device compiler removes unused entries. M1-14 checks register count and spills of a kernel that indexes `nb` in a..."
+  },
+  {
+   "id": "IMPL-M1-85",
+   "text": "nothing reserved the framework capability `one_step:<s>`: a module could provide it and pass the MEM-24 check in `implicit` mode Fix: names beginning with `one_step:` are reserved; a manifest providing one is a manifest error"
+  },
+  {
+   "id": "IMPL-M1-84",
+   "text": "ARCH-11 did not say from which stage `nb` is readable; the array is declared after the guard return, so a guard fragment that declared it assembled... Fix: readable in stages 2 to 12; a guard fragment that declares `nb` is refused at assembly"
+  },
+  {
    "id": "IMPL-M1-83",
    "text": "ARCH-46 and MEM-14 (e) say \"up to rounding\" without a bound; at 16-bit storage the half force step is 0.11 to 0.43 of the storage rounding, so thos... Fix: the bound is the derived per-cell tolerance of test 11; the half force step is tested by the `f32` rows; a run with u' = 0 over all fluid cells tes..."
   },
@@ -786,22 +802,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-80",
    "text": "the probe loop of `sparse_find` ends only at a match or an empty slot; with a damaged table it would not end, and a kernel that does not end resets... Fix: the loop is bounded by the capacity and returns -1 after it (orchestrator ruling; one compare per probe)"
-  },
-  {
-   "id": "IMPL-M1-79",
-   "text": "chapter 10 lists ARCH-47 and the 02-UNIT cases at L0, but the device lookup and 02-UNIT-3 need a device; `sparse_find` returns `int` Fix: ARCH-47 at L0 and L1, 02-UNIT-3 at L1; a list holds fewer than 2^31 entries"
-  },
-  {
-   "id": "IMPL-M1-78",
-   "text": "IO-1 and DN-3 planned the tables as finalisation passes; with -66 and -67 they are a host step before the scheduled sequence. Cells of a kind whose... Fix: host step in M1 and M2 (on blocks it runs after the cell-type exchange: note for M2-4); the check of unused kinds is IO-3 (M3-3)"
-  },
-  {
-   "id": "IMPL-M1-77",
-   "text": "the cost statement of ARCH-47 (about 1.5 probes) holds for random keys only; planes of cells give 1.7 to 3.1 on average, at most 9 Fix: the sentence carries the measured numbers; the hash is kept (the lookup runs in about 1/256 of the cells of a typical case); M1-14 measures"
-  },
-  {
-   "id": "IMPL-M1-76",
-   "text": "CORE-19 needs a warning channel and a strict mode that do not exist before M1-11 Fix: minimal `warnings()` and `CheckPolicy` in M1-7a, one warning per cell class; M1-11 extends them without renaming"
   }
  ]
 };
