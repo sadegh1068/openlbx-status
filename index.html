@@ -643,7 +643,7 @@ const INLINE = {
       "M1-13c",
       "M1-12b"
      ],
-     "stage": "review"
+     "stage": "review fixes"
     },
     {
      "id": "M1-16",
@@ -925,6 +925,10 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-197",
+   "text": "the control ruled for CORE-8 at L3 (IMPL-M1-193: the TRT channel from rest with a magic parameter of 1/4 above 1.2 times the baseline) passed with... Fix: the control is replaced (brief M1-13 ruling 31): the default 3/16 by bit equality in every build, and the effect of the parameter from the analytic..."
+  },
+  {
    "id": "IMPL-M1-196",
    "text": "a binary32 emulation of the fragments on the D2Q9 momentum box of VAL-7 reproduces the drift (8.96e-9 per step) and its scaling with omega minus, b... Fix: emulation only (the designer is about 85 percent sure it holds on a device); device runs and the decision tree in M1-14c; 10-O4, the VAL-7 note and..."
   },
@@ -951,10 +955,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-187",
    "text": "VAL-2 asks for an L3 case per module; `force.static`, `boundary.equilibrium`, `boundary.pressure`, `subgrid.*` and `observe.sums` / `observe.body_i... Fix: `force.static` gets a variant of the pipe case now; the others are deferred per module with the milestone named"
-  },
-  {
-   "id": "IMPL-M1-186",
-   "text": "the pipe rows with the MRT `trt` preset may never meet the relative-change criterion and run to the step limit Fix: the step limit is the expected stop for these rows"
   }
  ]
 };
