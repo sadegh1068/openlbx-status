@@ -424,10 +424,12 @@
     {
      "id": "M1-9",
      "title": "exact reductions, force pass",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-7d"
-     ]
+     ],
+     "stage": "design",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-11",
