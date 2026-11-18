@@ -509,7 +509,7 @@ const INLINE = {
      "deps": [
       "M1-8a"
      ],
-     "stage": "tests",
+     "stage": "implementation",
      "since": "2026-11-18"
     },
     {
@@ -805,6 +805,10 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-123",
+   "text": "the spec does not say what consumers see after a restore into the same driver Fix: they are reset: a sample due at the restored step is served again, later events are dropped (as the brief of M1-8 has it)"
+  },
+  {
    "id": "IMPL-M1-122",
    "text": "the pass key `when = \"force:f\"` of the streaming manifests names the set `f` literally, and the preparation takes every stage-5 fragment whatever i... Fix: open, for M4 (thermal set, several sets in one program): a `<s>` form of `when` and a filter by set"
   },
@@ -831,10 +835,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-115",
    "text": "CORE-11 has no row in chapter 10; the CORE-35 row is L2 only Fix: rows added: CORE-11 at L0 and L1, CORE-35 on one block at L1"
-  },
-  {
-   "id": "IMPL-M1-114",
-   "text": "chapter 05 writes the velocity as `(j + F/2) / rho`, Appendix B of chapter 02 and every lattice fragment as `j / rho + F / (2 rho)` Fix: open, for the review of chapter 05 before M4: align to Appendix B"
   }
  ]
 };
