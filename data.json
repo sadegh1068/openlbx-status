@@ -2,14 +2,14 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-9a",
+  "commit": "m1 after M1-12a",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 559,
-    "assertions": 273897,
+    "cases": 562,
+    "assertions": 335734,
     "failed": 0,
     "skipped": 0
    },
@@ -469,15 +469,14 @@
     {
      "id": "M1-12a",
      "title": "L2 target, row tables, test geometries",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-3b",
       "M1-5b",
       "M1-6",
       "M1-7d"
      ],
-     "stage": "verification",
-     "since": "2026-11-18"
+     "note": "the ground for the property tests: a test target l2 with the tiers l2 (every build) and matrix (gates and nightly) / the row tables (21 covering rows in which every pair of factor levels occurs and 264 matrix rows in which every triple occurs) / the test geometries (channel / pipe / sphere / box faces / random walls) / and one shared copy of the random draws. The tiers hold no device test yet; those come with parts b and c. The review recomputed every count with its own scripts and found no fault in a number or a row"
     },
     {
      "id": "M1-12b",
