@@ -2,30 +2,30 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-3a",
+  "commit": "m1 after M1-2c",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 458,
-    "assertions": 168751,
+    "cases": 471,
+    "assertions": 169104,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 128,
-    "assertions": 92572,
+    "cases": 150,
+    "assertions": 93133,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 128,
-    "assertions": 92782,
+    "cases": 150,
+    "assertions": 93343,
     "failed": 0,
     "skipped": 0
    },
@@ -256,12 +256,11 @@
     {
      "id": "M1-2c",
      "title": "scheduler: finalisation and describe",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-2b"
      ],
-     "stage": "verification",
-     "since": "2026-11-18"
+     "note": "setup now runs as a scheduled sequence that ends with a pass forming the output fields of time 0; the simulation can describe itself as text; parameters can be constants, arrays or time tables, with run-time values checked like configured ones. Two review passes: unchecked run-time values and stale output fields after a changed constant were found, tested and fixed"
     },
     {
      "id": "M1-4a",
@@ -348,10 +347,12 @@
     {
      "id": "M1-7a",
      "title": "sparse fields, host step of finalisation",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-2c"
-     ]
+     ],
+     "stage": "tests",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-7b",
@@ -639,6 +640,10 @@
  ],
  "decisions": [
   {
+   "id": "D-071",
+   "text": "The bit-identity matrix of every build covers each collision operator and each storage type on every hydrodynamic lattice in at least one combination, in both wall modes; the full cross product run..."
+  },
+  {
    "id": "D-069",
    "text": "A constant set with `set_parameter` at driver time T is used from step T on; when the value changes, derived fields already formed for time T are invalidated and formed again on demand. `set_parame..."
   },
@@ -665,13 +670,17 @@
   {
    "id": "D-059",
    "text": "M1-4 is split into M1-4a (host tables, lattice modules) and M1-4b (streaming generator on every lattice, oracles, device tests). The scalar sets D2Q5 and D3Q7 get tables and streaming only; their i..."
-  },
-  {
-   "id": "D-058",
-   "text": "The lattice modules `lattice.d2q9`, `lattice.d3q15`, `lattice.d3q27` are rendered from the host velocity table by one function and checked in as files; an L0 test requires every file of the four hy..."
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M1-83",
+   "text": "ARCH-46 and MEM-14 (e) say \"up to rounding\" without a bound; at 16-bit storage the half force step is 0.11 to 0.43 of the storage rounding, so thos... Fix: the bound is the derived per-cell tolerance of test 11; the half force step is tested by the `f32` rows; a run with u' = 0 over all fluid cells tes..."
+  },
+  {
+   "id": "IMPL-M1-82",
+   "text": "VAL-3 says \"every collision operator and storage type\" without saying whether the full cross product is meant; the matrix of M1-3b is partial (TRT... Fix: each operator and each storage type on every lattice in at least one combination at every build; the full cross product at the M1 gate (M1-12), dec..."
+  },
   {
    "id": "IMPL-M1-81",
    "text": "the host step of finalisation visits every owned cell (and up to q - 1 neighbours for the cells of the class); nothing bounds its cost Fix: it runs once per `setup()`, never in a step; single thread in M1; the implementer reports the time for a 256^3 box, and M1-14 adds threads if it ex..."
@@ -695,14 +704,6 @@
   {
    "id": "IMPL-M1-76",
    "text": "CORE-19 needs a warning channel and a strict mode that do not exist before M1-11 Fix: minimal `warnings()` and `CheckPolicy` in M1-7a, one warning per cell class; M1-11 extends them without renaming"
-  },
-  {
-   "id": "IMPL-M1-75",
-   "text": "fragments are lattice-independent text but the velocity has `dim` components Fix: constant `DIM` (emitted only where used); `outlet_u_prev` has three components in 2D too"
-  },
-  {
-   "id": "IMPL-M1-74",
-   "text": "the field write overwrites `rho` and `u` at equilibrium cells, where they are inputs (IMPL-M1-11) Fix: the generated field write skips prescribed cells when an active fragment prescribes; IMPL-M1-11 is closed"
   }
  ]
 }
