@@ -2,30 +2,30 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-7c",
+  "commit": "m1 after M1-6",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 528,
-    "assertions": 261908,
+    "cases": 548,
+    "assertions": 263798,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 178,
-    "assertions": 403898,
+    "cases": 191,
+    "assertions": 404364,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 178,
-    "assertions": 404108,
+    "cases": 191,
+    "assertions": 404574,
     "failed": 0,
     "skipped": 0
    },
@@ -347,13 +347,12 @@
     {
      "id": "M1-6",
      "title": "force field, forcing",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-2c",
       "M1-7a"
      ],
-     "stage": "merge with M1-8a",
-     "since": "2026-11-18"
+     "note": "body force per cell: a static force field next to the uniform force / the forcing term in every collision operator / and the preparation pass that makes the state at time 0 consistent with the force (the half-force shift of the velocity). Kolmogorov flow driven by the field recovers the steady sine profile within 0.5 % of its amplitude on D2Q9 (SRT / TRT / MRT) and D3Q19. The review found a wrong number format in one message and gaps around a repeated setup; a repeated setup that would shift the velocity twice now warns and the flag survives a restore"
     },
     {
      "id": "M1-7a",
@@ -706,6 +705,10 @@
  ],
  "findings": [
   {
+   "id": "IMPL-M1-128",
+   "text": "02 section 6.5 and 02-Q19 describe the end effect of the pressure boundary as an extra pressure drop (extra channel length) at each end; the measur... Fix: reworded: shorter by about 0.1 R per boundary; dependence on Lambda and independence of u_w stated with their source"
+  },
+  {
    "id": "IMPL-M1-127",
    "text": "cost: the early return of `change_cells` for unchanged words compares with the device words after the tag pass, so words without the generated tag... Fix: open for M3-11 (the producer of geometry changes decides whether it calls with unchanged words at all; masking the generated bits is the fix if it..."
   },
@@ -732,10 +735,6 @@
   {
    "id": "IMPL-M1-121",
    "text": "a second `setup()` that reduces the prepared velocity once more is a silent wrong result (reviewer, against the ruling on IMPL-M1-117); CORE-35 als... Fix: the driver warns (CORE-35) when `setup()` finds the velocity field still holding the prepared value; the sentence on reads is corrected"
-  },
-  {
-   "id": "IMPL-M1-119",
-   "text": "the ordering paragraph of Appendix B (chapter 02) places the local-density fragment in the moving-wall module, while CORE-21 makes it a companion m... Fix: CORE-21 states the companion module and that the constant 1 is used without it"
   }
  ]
 }
