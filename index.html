@@ -489,7 +489,7 @@ const INLINE = {
      "deps": [
       "M1-7c"
      ],
-     "stage": "implementation",
+     "stage": "review",
      "since": "2026-11-18"
     },
     {
@@ -805,6 +805,22 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-127",
+   "text": "cost: the early return of `change_cells` for unchanged words compares with the device words after the tag pass, so words without the generated tag... Fix: open for M3-11 (the producer of geometry changes decides whether it calls with unchanged words at all; masking the generated bits is the fix if it..."
+  },
+  {
+   "id": "IMPL-M1-126",
+   "text": "the spec is silent on a geometry change before `setup()`; the code accepted it and re-filed populations that do not exist yet Fix: refused (InvalidArgument naming MEM-20)"
+  },
+  {
+   "id": "IMPL-M1-125",
+   "text": "MEM-20 ties the activation store to a change of the wall-like classification, the brief to a cell that becomes updated; equal in M1, different for... Fix: activation when a cell becomes updated, re-filing when the wall-like predicate changes"
+  },
+  {
+   "id": "IMPL-M1-124",
+   "text": "03 section 3.4: the two single-cell bullets, read alone, re-file whenever the other end is not a wall before the change; only the bullet on several... Fix: the single-cell bullets say it too"
+  },
+  {
    "id": "IMPL-M1-123",
    "text": "the spec does not say what consumers see after a restore into the same driver Fix: they are reset: a sample due at the restored step is served again, later events are dropped (as the brief of M1-8 has it)"
   },
@@ -819,22 +835,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-119",
    "text": "the ordering paragraph of Appendix B (chapter 02) places the local-density fragment in the moving-wall module, while CORE-21 makes it a companion m... Fix: CORE-21 states the companion module and that the constant 1 is used without it"
-  },
-  {
-   "id": "IMPL-M1-118",
-   "text": "nothing says what the phase of a set is after `setup()`; a restore can leave it at 1, and the initial store, which has no parity argument, is then... Fix: `setup()` resets every phase to 0"
-  },
-  {
-   "id": "IMPL-M1-117",
-   "text": "with a preparation pass a second `setup()` without a new upload reduces the velocity once more when no pass wrote the field back (lean flavour, pro... Fix: stated in CORE-35 next to IMPL-M1-58; a warning since IMPL-M1-121. Open, for M3-2: `reinitialize` must take the initial fields anew or keep them"
-  },
-  {
-   "id": "IMPL-M1-116",
-   "text": "CORE-35 says the state at time 0 equals the given field next to wall-like cells when the field satisfies the boundary condition; with a force this... Fix: stated in CORE-35; the rest rows run without a force and keep every fluid cell; the step next to walls with a force is tested bit for bit against t..."
-  },
-  {
-   "id": "IMPL-M1-115",
-   "text": "CORE-11 has no row in chapter 10; the CORE-35 row is L2 only Fix: rows added: CORE-11 at L0 and L1, CORE-35 on one block at L1"
   }
  ]
 };
