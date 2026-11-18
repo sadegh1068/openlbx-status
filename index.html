@@ -101,7 +101,7 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-8b",
+  "commit": "m1 after M1-8c",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
@@ -115,16 +115,16 @@ const INLINE = {
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 212,
-    "assertions": 1205521,
+    "cases": 219,
+    "assertions": 1205706,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 212,
-    "assertions": 1205731,
+    "cases": 219,
+    "assertions": 1205916,
     "failed": 0,
     "skipped": 0
    },
@@ -511,13 +511,12 @@ const INLINE = {
     {
      "id": "M1-8c",
      "title": "sparse payload in the raw state",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-8a",
       "M1-7d"
      ],
-     "stage": "review",
-     "since": "2026-11-18"
+     "note": "restart with sparse fields: the raw state carries the payload of checkpointed sparse fields (the outlet state of the pressure boundary) and a restore rebuilds the lists and tables from the stored cell types. A run restored into a fresh driver or into one set up with another geometry continues bit for bit. The review found no fault in the new code but a hole from earlier packages: cell types could be rewritten after setup without the lists being rebuilt; the driver now refuses to step until setup has run again"
     },
     {
      "id": "M1-9a",
@@ -834,6 +833,14 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-155",
+   "text": "the device flags a non-finite contribution with a float comparison that a build with relaxed floating-point options may fold away, leaving a NaN un... Fix: the flag is taken from the exponent bits"
+  },
+  {
+   "id": "IMPL-M1-154",
+   "text": "ARCH-33 gives no range for the scale; the helper that derives it from a bound could return up to 1136 where the conversion of a sum to double round... Fix: scale limited to -128 to 256 everywhere; a bound outside is refused"
+  },
+  {
    "id": "IMPL-M1-153",
    "text": "the C_S warning of section 8.4 has no requirement tag Fix: CORE-29"
   },
@@ -856,14 +863,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-147",
    "text": "IO-27 makes the health check a default but a kernel in every program would change every program text Fix: module observe.health asked for at the driver level; on by default in the front end (M3)"
-  },
-  {
-   "id": "IMPL-M1-146",
-   "text": "ARCH-30 \"stop the run\" with results read asynchronously Fix: run raises a numerical error at the first poll that sees the failure (late by at most the look-ahead); the driver stays usable"
-  },
-  {
-   "id": "IMPL-M1-145",
-   "text": "ARCH-30 names a velocity threshold without a value Fix: default 1/sqrt 3; settable; velocity j/rho without the half-force term"
   }
  ]
 };
