@@ -2,30 +2,30 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-7d",
+  "commit": "m1 after M1-8b",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 551,
-    "assertions": 264528,
+    "cases": 554,
+    "assertions": 266737,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 200,
-    "assertions": 411391,
+    "cases": 212,
+    "assertions": 1205521,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 200,
-    "assertions": 411601,
+    "cases": 212,
+    "assertions": 1205731,
     "failed": 0,
     "skipped": 0
    },
@@ -404,12 +404,10 @@
     {
      "id": "M1-8b",
      "title": "re-filing, activation, geometry change",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-8a"
-     ],
-     "stage": "review",
-     "since": "2026-11-18"
+     ]
     },
     {
      "id": "M1-8c",
