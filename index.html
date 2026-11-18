@@ -655,11 +655,32 @@ const INLINE = {
      "stage": "verification"
     },
     {
-     "id": "M1-14",
-     "title": "measurements",
+     "id": "M1-14a",
+     "title": "measurements: harness and campaign script",
      "status": "pending",
      "deps": [
-      "M1-5b"
+      "M1-9c",
+      "M1-16"
+     ]
+    },
+    {
+     "id": "M1-14c",
+     "title": "momentum bias and MRT channel investigation",
+     "status": "running",
+     "deps": [
+      "M1-13a"
+     ],
+     "stage": "investigation"
+    },
+    {
+     "id": "M1-14b",
+     "title": "measurements: quiet-machine campaign and report",
+     "status": "pending",
+     "deps": [
+      "M1-14a",
+      "M1-14c",
+      "M1-13d",
+      "M1-16"
      ]
     },
     {
@@ -671,7 +692,7 @@ const INLINE = {
       "M1-8b",
       "M1-10",
       "M1-11b",
-      "M1-14",
+      "M1-14b",
       "M1-13d",
       "M1-16"
      ]
@@ -870,6 +891,10 @@ const INLINE = {
  ],
  "decisions": [
   {
+   "id": "D-083",
+   "text": "Whether the density of the equilibrium is formed from the unrounded sum (finding IMPL-M0-38, a change of CORE-5) is decided at the M1 gate with the numbers of M1-14 (item Q25), and, if adopted, imp..."
+  },
+  {
    "id": "D-080",
    "text": "The rows of the matrix keep one program set with `observe.force` in every row configuration (M1-12d), although such a program builds about 2.7 times slower on the CPU runtime (finding IMPL-M1-181)."
   },
@@ -896,13 +921,21 @@ const INLINE = {
   {
    "id": "D-068",
    "text": "The `f16c` storage format gets one integer-only accessor and two test-only faults; a failed `f16c` self-test stops the run with an error naming device and driver. Its exhaustive host test covers th..."
-  },
-  {
-   "id": "D-066",
-   "text": "Inside a consumer callback a field that is not a derived output (populations, cell types, force field) can be read only when the driver time equals the sample time; otherwise the read is refused. T..."
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M1-196",
+   "text": "a binary32 emulation of the fragments on the D2Q9 momentum box of VAL-7 reproduces the drift (8.96e-9 per step) and its scaling with omega minus, b... Fix: emulation only (the designer is about 85 percent sure it holds on a device); device runs and the decision tree in M1-14c; 10-O4, the VAL-7 note and..."
+  },
+  {
+   "id": "IMPL-M1-195",
+   "text": "VAL-17 compares with the 7-day median; when the last benchmark is older than 7 days (the M0 rows at the M1 gate) the window is empty and the rule s... Fix: without a run in the window the baseline is the median of the last gate on the same device and driver; a driver change starts a new baseline and th..."
+  },
+  {
+   "id": "IMPL-M1-194",
+   "text": "the M1 gate of chapter 11 has no performance item although M1 replaces the prototype schedule by the scheduler and adds modules to every program; a... Fix: the gate of M1 names VAL-17 for the two parity cases against the medians of the M0 gate (measured in M1-14, item Q1)"
+  },
   {
    "id": "IMPL-M1-193",
    "text": "the check that the review asked for CORE-8 (TRT started from the analytic profile: 0.0052 percent after 3000 steps in the emulation) does not hold... Fix: the case stays as a regression case with a control at a magic parameter of 1 (1.5e-4, above the threshold) and without a claim on CORE-8; CORE-8 is..."
@@ -922,18 +955,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-186",
    "text": "the pipe rows with the MRT `trt` preset may never meet the relative-change criterion and run to the step limit Fix: the step limit is the expected stop for these rows"
-  },
-  {
-   "id": "IMPL-M1-185",
-   "text": "02-VAL-S3 \"near the box faces\" names no set of cells and no norm Fix: the maximum over the first fluid layer inside the faces, at the read after the converging run"
-  },
-  {
-   "id": "IMPL-M1-184",
-   "text": "round-off stall levels depend on the order of operations, which is fixed per device and driver only; a 20 % rule against a baseline of another devi... Fix: asserted on the device and driver of the provenance, reported elsewhere"
-  },
-  {
-   "id": "IMPL-M1-182",
-   "text": "the memory check counts one copy of the populations, while the two-array variant keeps both copies in one buffer: at 256^3 D3Q19 `f32` the buffer i... Fix: the check counts the copies and tests each buffer against the largest allocation (package M1-16, tests first); two buffers for the two copies wait..."
   }
  ]
 };
