@@ -448,9 +448,10 @@ const INLINE = {
      "title": "force field, forcing",
      "status": "running",
      "deps": [
-      "M1-2c"
+      "M1-2c",
+      "M1-7a"
      ],
-     "stage": "design",
+     "stage": "tests",
      "since": "2026-11-18"
     },
     {
@@ -460,7 +461,7 @@ const INLINE = {
      "deps": [
       "M1-2c"
      ],
-     "stage": "review",
+     "stage": "review fixes",
      "since": "2026-11-18"
     },
     {
@@ -475,12 +476,14 @@ const INLINE = {
     {
      "id": "M1-7c",
      "title": "equilibrium boundary, moving walls",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-7a",
       "M1-7b",
       "M1-3b"
-     ]
+     ],
+     "stage": "tests",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-7d",
@@ -768,6 +771,10 @@ const INLINE = {
  ],
  "decisions": [
   {
+   "id": "D-074",
+   "text": "M1-6 is built as one package. The half-force preparation of CORE-35 is a manifest pass of the streaming modules, selected by the new `when` key of `[[pass]]`, and its kernel is the last section of..."
+  },
+  {
    "id": "D-071",
    "text": "The bit-identity matrix of every build covers each collision operator and each storage type on every hydrodynamic lattice in at least one combination, in both wall modes; the full cross product run..."
   },
@@ -794,44 +801,40 @@ const INLINE = {
   {
    "id": "D-063",
    "text": "L1 tests keep their per-process temporary kernel cache by default; when the environment variable `OLBX_TEST_CACHE_DIR` is set, that directory is used and kept. The verification before a merge runs..."
-  },
-  {
-   "id": "D-059",
-   "text": "M1-4 is split into M1-4a (host tables, lattice modules) and M1-4b (streaming generator on every lattice, oracles, device tests). The scalar sets D2Q5 and D3Q7 get tables and streaming only; their i..."
   }
  ],
  "findings": [
   {
-   "id": "IMPL-M1-103",
-   "text": "\"registry order\" of the rule groups is not defined, nor what a group sees of the tags of other groups Fix: order of the active modules, then manifest order; a group reads the words as they were before it ran; a group that names its own tag is refused"
+   "id": "IMPL-M1-115",
+   "text": "CORE-11 has no row in chapter 10; the CORE-35 row is L2 only Fix: rows added: CORE-11 at L0 and L1, CORE-35 on one block at L1"
   },
   {
-   "id": "IMPL-M1-102",
-   "text": "ruling 6 of the M1-7 brief allows no transfer besides the cell types, while `initial = \"<field>\"` needs the values of that field (about 200 MB for... Fix: one read of the named field at setup, counted in the transfer statistics"
+   "id": "IMPL-M1-114",
+   "text": "chapter 05 writes the velocity as `(j + F/2) / rho`, Appendix B of chapter 02 and every lattice fragment as `j / rho + F / (2 rho)` Fix: open, for the review of chapter 05 before M4: align to Appendix B"
   },
   {
-   "id": "IMPL-M1-101",
-   "text": "the stencils `faces` and `full` on a box of extent 1 along an axis wrap onto the cell itself, which then counts as its own neighbour in a rule Fix: a neighbour that is the cell itself is skipped in the host step; `[[uses]]` declarations are unchanged (they state reach)"
+   "id": "IMPL-M1-113",
+   "text": "nothing says whether a force field may be rewritten between steps Fix: allowed; it invalidates the derived fields of the current time; no new preparation"
   },
   {
-   "id": "IMPL-M1-100",
-   "text": "with 32-bit indices and more than 2^30 entries the table has 2^32 slots and the shift of the mask equals the width of the type (reduced modulo 32 o... Fix: at most 2^30 entries with 32-bit indices, refused at setup"
+   "id": "IMPL-M1-112",
+   "text": "the 1e-8 of the CORE-35 row holds only for small velocities (5.59e-9 for components up to 0.03, 2.98e-8 up to 0.1) Fix: the row and CORE-35 name the magnitude"
   },
   {
-   "id": "IMPL-M1-99",
-   "text": "the entry rule of ARCH-47 is lexical: any single identifier is accepted as the entry once the fragment calls `sparse_find(F, n)`, so a write at `n`... Fix: the identifier is assigned only `sparse_find(F, n)` or an integer literal; `n` is refused"
+   "id": "IMPL-M1-111",
+   "text": "CORE-11 does not say whether the bound is per contribution or per cell, nor when it is evaluated Fix: per-cell sum at updated cells, once at setup with the values of time 0"
   },
   {
-   "id": "IMPL-M1-98",
-   "text": "VAL-5 says \"per module\" without saying which modules a restart test of M1 must cover Fix: the plain sets (SRT, TRT, MRT, subgrid) on one block here; the pressure boundary with M1-8c; moving walls and equilibrium cells when M1-7c is merge..."
+   "id": "IMPL-M1-110",
+   "text": "the z refusal of CORE-10 is \"raised by the force modules\", which are TOML, and CORE-11 needs to know which values are forces (IMPL-M1-29) Fix: manifest key `force = true`; the framework checks"
   },
   {
-   "id": "IMPL-M1-97",
-   "text": "IMPL-M1-48: the uniform call form of the primitives Fix: per-generator argument lists stay; one helper for framework emitters now; macros for hand-written fragments with their first user (chapter 04)"
+   "id": "IMPL-M1-109",
+   "text": "the driver marks a derived field valid for any record that writes it, so the prepared velocity would be readable as valid at time 0 Fix: a manifest pass that writes a derived field makes it invalid"
   },
   {
-   "id": "IMPL-M1-96",
-   "text": "the source of activation values and the way a geometry change reaches the device are not specified; MEM-16 forbids volumetric transfers in the loop Fix: in M1 `change_cells` takes host lists and is a counted transfer between frames, for tests and rare changes; the device path comes with M3-11 before..."
+   "id": "IMPL-M1-108",
+   "text": "a force fragment may read locals of the pass that do not exist before the first load Fix: allowed reads in the preparation listed; anything else refused at assembly. Open, for M4: the buoyancy force reads the temperature of the scalar se..."
   }
  ]
 };
