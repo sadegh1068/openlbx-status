@@ -516,15 +516,16 @@
       "M1-12c",
       "M1-11b"
      ],
-     "stage": "review fixes"
+     "stage": "verification"
     },
     {
      "id": "M1-13b",
      "title": "sound wave and Taylor-Green",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-13a"
-     ]
+     ],
+     "stage": "tests"
     },
     {
      "id": "M1-13c",
@@ -804,6 +805,10 @@
  ],
  "findings": [
   {
+   "id": "IMPL-M1-193",
+   "text": "the check that the review asked for CORE-8 (TRT started from the analytic profile: 0.0052 percent after 3000 steps in the emulation) does not hold... Fix: the case stays as a regression case with a control at a magic parameter of 1 (1.5e-4, above the threshold) and without a claim on CORE-8; CORE-8 is..."
+  },
+  {
    "id": "IMPL-M1-192",
    "text": "a force sample costs 2K kernel launches over all cells of the set and 14.7 MB of partial sums per body at 256^3 (estimate: 2 to 4 percent of a step... Fix: stated in IO-13 and in the driver header; to measure in M1-14 on a quiet RTX 5050 (cost of one sample per body at 64^3 and 256^3); a warning record..."
   },
@@ -830,10 +835,6 @@
   {
    "id": "IMPL-M1-182",
    "text": "the memory check counts one copy of the populations, while the two-array variant keeps both copies in one buffer: at 256^3 D3Q19 `f32` the buffer i... Fix: the check counts the copies and tests each buffer against the largest allocation (package M1-16, tests first); two buffers for the two copies wait..."
-  },
-  {
-   "id": "IMPL-M1-181",
-   "text": "a program with `observe.force` takes about 2.7 times as long to build on the CPU runtime (56 s and 58 s against 21 s for two D3Q19 rows, alternatin... Fix: accepted for now (decision D-080); to measure in M1-14 on a quiet machine: build time of the force kernel by lattice, and whether a loop over the l..."
   }
  ]
 }
