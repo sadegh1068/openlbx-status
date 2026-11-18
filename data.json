@@ -2,30 +2,30 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-8c",
+  "commit": "m1 after M1-9a",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 554,
-    "assertions": 266737,
+    "cases": 559,
+    "assertions": 273897,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 219,
-    "assertions": 1205706,
+    "cases": 222,
+    "assertions": 2303512,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 219,
-    "assertions": 1205916,
+    "cases": 222,
+    "assertions": 2303722,
     "failed": 0,
     "skipped": 0
    },
@@ -422,12 +422,10 @@
     {
      "id": "M1-9a",
      "title": "exact reductions",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-8a"
-     ],
-     "stage": "review",
-     "since": "2026-11-18"
+     ]
     },
     {
      "id": "M1-9b",
@@ -763,6 +761,26 @@
  ],
  "findings": [
   {
+   "id": "IMPL-M1-169",
+   "text": "CORE-29 does not say in which precision the limits are compared: `float(1/0.55)` gives tau 0.54999998, so a nominal 0.55 warns under the rule for t... Fix: the 32-bit values the device uses are compared; a warning is given either way"
+  },
+  {
+   "id": "IMPL-M1-168",
+   "text": "the fault injection of VAL-18 is a public default argument of the model builder Fix: acceptable below the front end (it is no configuration key); the front end must not expose it"
+  },
+  {
+   "id": "IMPL-M1-167",
+   "text": "at a restore the warning records and the largest speed were replaced only for models with sparse fields or rule groups, and the records carried ste... Fix: replaced at every restore; restored step; parameters at the restored time; a refused setup or restore changes neither records nor largest speed"
+  },
+  {
+   "id": "IMPL-M1-166",
+   "text": "a ctest entry that selects a doctest suite with no case exits 0, so the tiers `matrix` and `long` could pass at the gate without running anything Fix: the package that puts the first case into a tier makes an empty selection of that tier fail (M1-12b for `long`, M1-12c for `l2` and `matrix`)"
+  },
+  {
+   "id": "IMPL-M1-165",
+   "text": "the brief does not define the index \"iWB\" that spreads force and subgrid over the matrix rows, and six readings give the same 973 triples with diff... Fix: iWB is the position (from 0) of the pair wall mode and boundary option in the list of the 8 valid pairs; pinned by the labels of M002, M137 and M26..."
+  },
+  {
    "id": "IMPL-M1-164",
    "text": "VAL-19 \"every module combination\" Fix: the rest-state check on every row of the VAL-3 tables on both generators"
   },
@@ -773,26 +791,6 @@
   {
    "id": "IMPL-M1-162",
    "text": "a 64-bit cell index cannot be reached on a device with the memory at hand (2^32 cells) Fix: by inspection and the host text tests until M2; no test-only switch in production code"
-  },
-  {
-   "id": "IMPL-M1-161",
-   "text": "VAL-22 has nothing to test: no M1 pass is order_independent Fix: a host tripwire now; the random-order test with the first such pass"
-  },
-  {
-   "id": "IMPL-M1-160",
-   "text": "VAL-8 bounds were measured for 32-bit storage Fix: judged for f32 on every lattice and operator; 16-bit runs reported"
-  },
-  {
-   "id": "IMPL-M1-159",
-   "text": "VAL-7 per-step balance for MRT and its bound; IMPL-M1-35 (drift of the MRT column sums) Fix: asserted for SRT and TRT; reported for MRT which is judged by the drift bound; the bound of the balance is provisional (about the size of the per-s..."
-  },
-  {
-   "id": "IMPL-M1-158",
-   "text": "VAL-7 gives no box for D2Q9 Fix: 64 x 64"
-  },
-  {
-   "id": "IMPL-M1-157",
-   "text": "L2 runs on every commit but VAL-7 at its stated size takes minutes Fix: short form every build; stated form at the gate"
   }
  ]
 }
