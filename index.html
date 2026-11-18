@@ -446,10 +446,12 @@ const INLINE = {
     {
      "id": "M1-6",
      "title": "force field, forcing",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-2c"
-     ]
+     ],
+     "stage": "design",
+     "since": "2026-11-18"
     },
     {
      "id": "M1-7a",
@@ -458,7 +460,7 @@ const INLINE = {
      "deps": [
       "M1-2c"
      ],
-     "stage": "implementation",
+     "stage": "review",
      "since": "2026-11-18"
     },
     {
@@ -800,6 +802,26 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-103",
+   "text": "\"registry order\" of the rule groups is not defined, nor what a group sees of the tags of other groups Fix: order of the active modules, then manifest order; a group reads the words as they were before it ran; a group that names its own tag is refused"
+  },
+  {
+   "id": "IMPL-M1-102",
+   "text": "ruling 6 of the M1-7 brief allows no transfer besides the cell types, while `initial = \"<field>\"` needs the values of that field (about 200 MB for... Fix: one read of the named field at setup, counted in the transfer statistics"
+  },
+  {
+   "id": "IMPL-M1-101",
+   "text": "the stencils `faces` and `full` on a box of extent 1 along an axis wrap onto the cell itself, which then counts as its own neighbour in a rule Fix: a neighbour that is the cell itself is skipped in the host step; `[[uses]]` declarations are unchanged (they state reach)"
+  },
+  {
+   "id": "IMPL-M1-100",
+   "text": "with 32-bit indices and more than 2^30 entries the table has 2^32 slots and the shift of the mask equals the width of the type (reduced modulo 32 o... Fix: at most 2^30 entries with 32-bit indices, refused at setup"
+  },
+  {
+   "id": "IMPL-M1-99",
+   "text": "the entry rule of ARCH-47 is lexical: any single identifier is accepted as the entry once the fragment calls `sparse_find(F, n)`, so a write at `n`... Fix: the identifier is assigned only `sparse_find(F, n)` or an integer literal; `n` is refused"
+  },
+  {
    "id": "IMPL-M1-98",
    "text": "VAL-5 says \"per module\" without saying which modules a restart test of M1 must cover Fix: the plain sets (SRT, TRT, MRT, subgrid) on one block here; the pressure boundary with M1-8c; moving walls and equilibrium cells when M1-7c is merge..."
   },
@@ -810,26 +832,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-96",
    "text": "the source of activation values and the way a geometry change reaches the device are not specified; MEM-16 forbids volumetric transfers in the loop Fix: in M1 `change_cells` takes host lists and is a counted transfer between frames, for tests and rare changes; the device path comes with M3-11 before..."
-  },
-  {
-   "id": "IMPL-M1-95",
-   "text": "IO-19 lists density and velocity as checkpointed while the registry marks them derived; the in-memory raw state holds no parameters set at run time... Fix: the raw state of M1 holds every field that is not scratch, whole, with step, parities and validity times; parameters, consumer counters and the fil..."
-  },
-  {
-   "id": "IMPL-M1-94",
-   "text": "the outgoing view at time 0 is undefined before the first pass Fix: it is the initial store of ARCH-46 (both generators return it)"
-  },
-  {
-   "id": "IMPL-M1-93",
-   "text": "\"converts\" was read as a change between wall-like and updated; a change from wall-like to a kind that is skipped but not wall-like (gas, chapter 04... Fix: re-filing follows the wall-like predicate alone"
-  },
-  {
-   "id": "IMPL-M1-92",
-   "text": "nothing says what happens when a cell becomes updated without an activation store Fix: refused"
-  },
-  {
-   "id": "IMPL-M1-91",
-   "text": "the kernels the driver invokes between frames and that write populations (`write_incoming`, `refile`, `activate`) are neither views nor scheduled p... Fix: role and instance `view`; no new reserved name"
   }
  ]
 };
