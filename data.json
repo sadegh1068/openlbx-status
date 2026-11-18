@@ -2,30 +2,30 @@
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-3b",
+  "commit": "m1 after M1-7b",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 471,
-    "assertions": 169104,
+    "cases": 487,
+    "assertions": 171626,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 155,
-    "assertions": 94691,
+    "cases": 156,
+    "assertions": 94769,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 155,
-    "assertions": 94901,
+    "cases": 156,
+    "assertions": 94979,
     "failed": 0,
     "skipped": 0
    },
@@ -365,12 +365,11 @@
     {
      "id": "M1-7b",
      "title": "fragment support for boundary modules",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-2b"
      ],
-     "stage": "fixes",
-     "since": "2026-11-18"
+     "note": "fragments of boundary modules can now read their lattice neighbours through one array, know the dimension, ask whether the cell is next to a wall, and require the one-step wall mode; the field write leaves prescribed cells alone. Programs that use none of this keep their text byte for byte. The review found two ways to get past a check, both closed with tests"
     },
     {
      "id": "M1-7c",
