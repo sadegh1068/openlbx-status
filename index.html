@@ -101,30 +101,30 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-8a",
+  "commit": "m1 after M1-7c",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 524,
-    "assertions": 261371,
+    "cases": 528,
+    "assertions": 261908,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 171,
-    "assertions": 386317,
+    "cases": 178,
+    "assertions": 403898,
     "failed": 0,
     "skipped": 0
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 171,
-    "assertions": 386527,
+    "cases": 178,
+    "assertions": 404108,
     "failed": 0,
     "skipped": 0
    },
@@ -475,14 +475,12 @@ const INLINE = {
     {
      "id": "M1-7c",
      "title": "equilibrium boundary, moving walls",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-7a",
       "M1-7b",
       "M1-3b"
-     ],
-     "stage": "verification",
-     "since": "2026-11-18"
+     ]
     },
     {
      "id": "M1-7d",
