@@ -574,13 +574,14 @@
     {
      "id": "M1-14b",
      "title": "measurements: quiet-machine campaign (S0, S1, S3, S6) and report",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-14a",
       "M1-14c",
       "M1-13d",
       "M1-16"
-     ]
+     ],
+     "stage": "campaign run"
     },
     {
      "id": "M1-gate",
