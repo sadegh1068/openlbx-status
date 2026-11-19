@@ -101,14 +101,14 @@ const INLINE = {
  "updated": "2026-11-19",
  "branch": "m1",
  "tests": {
-  "commit": "next at the M2 and M3 gate run (2026-11-19)",
+  "commit": "next at verification run 8 (3408e66, 2026-11-19), tagged m3-gate",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
     "cases": 657,
-    "assertions": 387186,
+    "assertions": 387219,
     "failed": 0,
     "skipped": 0
    },
@@ -140,11 +140,11 @@ const INLINE = {
    {
     "level": "L3 gate cases from Python",
     "device": "NVIDIA RTX 5050",
-    "cases": 7,
+    "cases": 8,
     "assertions": 0,
     "failed": 0,
     "skipped": 0,
-    "note": "lid-driven cavity (Re 100, 1000) and cylinder 2D-1 at frozen thresholds"
+    "note": "lid-driven cavity (Re 100, 1000), cylinder 2D-1 and the oscillating cylinder at frozen thresholds"
    },
    {
     "level": "L1 device",
@@ -165,7 +165,7 @@ const INLINE = {
     "note": "refused at open: the device compiler fails the store-address probe (ARCH-49)"
    }
   ],
-  "note": "Gate run of the merged head: every label passes on the CPU runtime and the RTX 5050 with both compilers. The M1, M2 and M3 gates pass for correctness; performance work follows after them."
+  "note": "Run 8 of the merged head: every label passes on the CPU runtime and the RTX 5050 with both compilers. The M1, M2 and M3 gates pass for correctness and are tagged; M4 (thermal, particles) and M5 (free surface) are in work; performance work follows on a quiet machine."
  },
  "milestones": [
   {
@@ -815,7 +815,7 @@ const INLINE = {
     {
      "id": "M3-5",
      "title": "device diagnostics",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M3-2"
      ],
@@ -868,7 +868,7 @@ const INLINE = {
     },
     {
      "id": "M3-11",
-     "title": "moving bodies",
+     "title": "moving bodies; gate case passes, host-work package M3-11c in work",
      "status": "running",
      "deps": [
       "M3-3",
@@ -910,6 +910,208 @@ const INLINE = {
      ]
     }
    ]
+  },
+  {
+   "id": "M4",
+   "title": "M4: thermal and particles",
+   "packages": [
+    {
+     "id": "M4-0",
+     "title": "manifest grammar: generated passes, framework writers, lagrangian entry",
+     "status": "running",
+     "deps": [
+      "M3-gate"
+     ]
+    },
+    {
+     "id": "M4-1",
+     "title": "thermal set in the fused pass, one block",
+     "status": "running",
+     "deps": [
+      "M4-0"
+     ]
+    },
+    {
+     "id": "M4-2",
+     "title": "thermal walls and inlet",
+     "status": "pending",
+     "deps": [
+      "M4-1"
+     ]
+    },
+    {
+     "id": "M4-3",
+     "title": "thermal outlet",
+     "status": "pending",
+     "deps": [
+      "M4-1"
+     ]
+    },
+    {
+     "id": "M4-4",
+     "title": "thermal on blocks, restart, Rayleigh-Benard",
+     "status": "pending",
+     "deps": [
+      "M4-2",
+      "M4-3"
+     ]
+    },
+    {
+     "id": "M4-5",
+     "title": "thermal with moving bodies",
+     "status": "pending",
+     "deps": [
+      "M4-4"
+     ]
+    },
+    {
+     "id": "M4-6",
+     "title": "Lagrangian kind and services on one block",
+     "status": "running",
+     "deps": [
+      "M4-0"
+     ]
+    },
+    {
+     "id": "M4-7",
+     "title": "particle pass: interpolation, advection, deactivation",
+     "status": "pending",
+     "deps": [
+      "M4-6"
+     ]
+    },
+    {
+     "id": "M4-8",
+     "title": "deterministic spreading and two-way coupling",
+     "status": "pending",
+     "deps": [
+      "M4-7"
+     ]
+    },
+    {
+     "id": "M4-9",
+     "title": "particles on blocks and restart",
+     "status": "pending",
+     "deps": [
+      "M4-8"
+     ]
+    },
+    {
+     "id": "M4-10",
+     "title": "front end, threshold freeze, gate",
+     "status": "pending",
+     "deps": [
+      "M4-5",
+      "M4-9"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "M5",
+   "title": "M5: free surface",
+   "packages": [
+    {
+     "id": "M5-1a",
+     "title": "scheduler step boundary, tag with phase, force-pass selection",
+     "status": "running",
+     "deps": [
+      "M3-gate"
+     ]
+    },
+    {
+     "id": "M5-1b",
+     "title": "per-group cell-type access, race check",
+     "status": "running",
+     "deps": [
+      "M4-0"
+     ]
+    },
+    {
+     "id": "M5-1c",
+     "title": "module passes with text and library",
+     "status": "pending",
+     "deps": [
+      "M5-1b"
+     ]
+    },
+    {
+     "id": "M5-2",
+     "title": "PLIC: device library and host form",
+     "status": "done",
+     "deps": [
+      "M3-gate"
+     ]
+    },
+    {
+     "id": "M5-3",
+     "title": "normal, curvature",
+     "status": "pending",
+     "deps": [
+      "M5-2",
+      "M5-4",
+      "M5-1c"
+     ]
+    },
+    {
+     "id": "M5-4",
+     "title": "manifest and initialisation host step",
+     "status": "running",
+     "deps": [
+      "M3-gate"
+     ]
+    },
+    {
+     "id": "M5-5",
+     "title": "passes P0 and P1",
+     "status": "pending",
+     "deps": [
+      "M5-3",
+      "M5-1a"
+     ]
+    },
+    {
+     "id": "M5-6",
+     "title": "passes P2, P3, P4, exact mass total",
+     "status": "pending",
+     "deps": [
+      "M5-5"
+     ]
+    },
+    {
+     "id": "M5-7",
+     "title": "bring-up fragment",
+     "status": "pending",
+     "deps": [
+      "M5-5"
+     ]
+    },
+    {
+     "id": "M5-8",
+     "title": "blocks: VAL-4, VAL-5, VAL-20",
+     "status": "pending",
+     "deps": [
+      "M5-6"
+     ]
+    },
+    {
+     "id": "M5-9",
+     "title": "Python front end",
+     "status": "pending",
+     "deps": [
+      "M5-5"
+     ]
+    },
+    {
+     "id": "M5-10",
+     "title": "gate cases on the device",
+     "status": "pending",
+     "deps": [
+      "M5-6",
+      "M5-7"
+     ]
+    }
+   ]
   }
  ],
  "decisions": [
@@ -948,6 +1150,26 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M3-73",
+   "text": "The plot script `val_osc.py` draws the moving average across the phase fold (two stray horizontal lines) Fix: Cosmetic; to fix in the plot script"
+  },
+  {
+   "id": "IMPL-M3-72",
+   "text": "Host work of moving bodies: 51 to 75 % of the wall time in `body_move_seconds` on the 2D gate case (1.0 ms per move at D = 20, 2.3 ms at D = 40, a... Fix: A 3D measurement follows; the remedy (device-side re-voxelisation or batched moves) is behind the M3 gate (D-090)"
+  },
+  {
+   "id": "IMPL-M3-71",
+   "text": "The clang build of `olbx_l1_tests` failed after M3-11a added `DriverOptions::periodic` (three M1 tests with positional initialisers); hidden becaus... Fix: Rule: a package that changes a public struct builds ALL targets on clang before it is accepted (`docs/briefs/RULES.md`, build section)"
+  },
+  {
+   "id": "IMPL-M3-70",
+   "text": "The torque of a body that travelled more than half a periodic box from its start point was wrong (error up to 38 relative to the largest term from... Fix: Torque point: the integer point nearest the wrapped body centre at each voxelisation (exact in f32), kept per row; the host shifts to R(t) by minim..."
+  },
+  {
+   "id": "IMPL-M3-69",
+   "text": "The Morison fit used force samples every 5 steps, which alias with the re-voxelisation steps (about every 9 steps): on every fifth sample C_d at D... Fix: The fit uses the force of every step (or interval means); spec 10 oscillating-cylinder row amended"
+  },
+  {
    "id": "IMPL-M3-68",
    "text": "The exit code of `olbx-run --help` is not fixed by the table of ruling 80 (0 completed, 1 case error, 2 usage error, 3 stopped, 4 numerical) Fix: Ruled: `--help` and `-h` print the usage to stdout and exit 0; the bare word `help` is a missing case file (exit 1). Found by the independent verif..."
   },
@@ -958,26 +1180,6 @@ const INLINE = {
   {
    "id": "IMPL-M3-66",
    "text": "`ckpt::repartition` did not check the sizes of stored sparse payloads and user lists, and a repartition left a user list without its cells (\"CORE-2... Fix: Sizes checked (IO-20); an owned rule entry that no stored entry covers is refused; the `ModuleRegistry` argument is required"
-  },
-  {
-   "id": "IMPL-M3-65",
-   "text": "Two moving bodies could come closer than the stencil, so a cell could be a neighbour of both in one move Fix: Bodies closer than 2 cells (Chebyshev, periodic images included) are refused: at finalisation InvalidArgument IO-6, at a re-voxelisation a numerica..."
-  },
-  {
-   "id": "IMPL-M3-64",
-   "text": "`r_max` was measured from P, which underestimates the displacement of a translated body and lets the threshold be exceeded Fix: `r_max` from P + X(0), plus half a cell diagonal"
-  },
-  {
-   "id": "IMPL-M3-63",
-   "text": "Force and torque of a moving body used arms without the minimum image and a fixed R Fix: Torque about R(t), arms by minimum image, R of the force body set to the wrapped voxelisation point; translation invariance in a periodic box is a..."
-  },
-  {
-   "id": "IMPL-M3-62",
-   "text": "A body across a periodic face at step 0 was voxelised without the minimum image, unlike later moves Fix: Voxelised with the minimum image at step 0 as at later moves"
-  },
-  {
-   "id": "IMPL-M3-61",
-   "text": "Callable names could repeat over bodies and roles (position, angle), so a restart could hand one callable to two roles Fix: Names unique over bodies and roles; a duplicate is refused at declaration (IO-19)"
   }
  ]
 };
