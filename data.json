@@ -845,7 +845,7 @@
      "title": "thermal outlet",
      "status": "pending",
      "deps": [
-      "M4-1"
+      "M4-2"
      ]
     },
     {
@@ -868,7 +868,7 @@
     {
      "id": "M4-6",
      "title": "Lagrangian kind and services on one block",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M4-0"
      ]
@@ -876,7 +876,7 @@
     {
      "id": "M4-7",
      "title": "particle pass: interpolation, advection, deactivation",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M4-6"
      ]
@@ -923,7 +923,7 @@
     {
      "id": "M5-1b",
      "title": "per-group cell-type access, race check",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M4-0"
      ]
@@ -931,7 +931,7 @@
     {
      "id": "M5-1c",
      "title": "module passes with text and library",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M5-1b"
      ]
@@ -947,7 +947,7 @@
     {
      "id": "M5-3",
      "title": "normal, curvature",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M5-2",
       "M5-4",
