@@ -101,7 +101,7 @@ const INLINE = {
  "updated": "2026-11-18",
  "branch": "m1",
  "tests": {
-  "commit": "m1 after M1-14a",
+  "commit": "m1 after M1-14c",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
@@ -664,11 +664,11 @@ const INLINE = {
     {
      "id": "M1-14c",
      "title": "momentum bias and MRT channel investigation",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-13a"
      ],
-     "stage": "closing: port results"
+     "note": "the cause of the 32-bit momentum bias (open point 10-O4): the binary32 lattice weights give 3 S2 = 1 + 2^-27 on all four lattices / so the collision adds rate x 2^-27 x j per cell and step (rate omega for SRT / omega minus for TRT / 0 for MRT); a host port that is bit-identical to the devices and device tests under label m114 confirm it on the CPU runtime and the RTX 5050. No binary weight table removes it (a proof). The MRT channel levels of 02-VAL-P2 and the Couette imbalance are explained as round-off levels. Stage c3 gives host results only for three projection candidates as a remedy; no device has run a remedy. By decision D-088 the remedy is tested on devices / decided and implemented in package M2-0. Nothing in production changed"
     },
     {
      "id": "M1-14b",
@@ -944,7 +944,7 @@ const INLINE = {
   },
   {
    "id": "IMPL-M1-202",
-   "text": "a force-driven SRT channel of 256 cells at tau 0.52 with a centre velocity of 0.05 needs a force of 4.1e-8, far below the 1e-5 of the small-force w... Fix: CORE-11 warns for this force today; the remedy is decided at the gate with decision D-086 (the investigator recommends the projection, 75 percent s..."
+   "text": "a force-driven SRT channel of 256 cells at tau 0.52 with a centre velocity of 0.05 needs a force of 4.1e-8, far below the 1e-5 of the small-force w... Fix: CORE-11 warns for this force today. The remedy is decided in package M2-0 (decisions D-086 and D-088), not at the M1 gate. Needed there (two Opus r..."
   },
   {
    "id": "IMPL-M1-200",
