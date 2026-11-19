@@ -572,30 +572,18 @@
      "note": "the cause of the 32-bit momentum bias (open point 10-O4): the binary32 lattice weights give 3 S2 = 1 + 2^-27 on all four lattices / so the collision adds rate x 2^-27 x j per cell and step (rate omega for SRT / omega minus for TRT / 0 for MRT); a host port that is bit-identical to the devices and device tests under label m114 confirm it on the CPU runtime and the RTX 5050. No binary weight table removes it (a proof). The MRT channel levels of 02-VAL-P2 and the Couette imbalance are explained as round-off levels. Stage c3 gives host results only for three projection candidates as a remedy; no device has run a remedy. By decision D-088 the remedy is tested on devices / decided and implemented in package M2-0. Nothing in production changed"
     },
     {
-     "id": "M1-14b",
-     "title": "measurements: quiet-machine campaign (S0, S1, S3, S6) and report",
-     "status": "running",
-     "deps": [
-      "M1-14a",
-      "M1-14c",
-      "M1-13d",
-      "M1-16"
-     ],
-     "stage": "campaign run"
-    },
-    {
      "id": "M1-gate",
-     "title": "gate: L0 to L3",
-     "status": "pending",
+     "title": "gate: L0 to L3 (correctness)",
+     "status": "running",
      "deps": [
       "M1-1",
       "M1-8b",
       "M1-10",
       "M1-11b",
-      "M1-14b",
       "M1-13d",
       "M1-16"
-     ]
+     ],
+     "stage": "gate runs"
     }
    ]
   },
@@ -604,20 +592,13 @@
    "title": "M2: multi-device",
    "packages": [
     {
-     "id": "M2-0",
-     "title": "32-bit bias remedy: device tests, decision, re-freeze",
-     "status": "pending",
-     "deps": [
-      "M1-gate"
-     ]
-    },
-    {
      "id": "DN-3",
      "title": "design: cut-link tables",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M1-gate"
-     ]
+     ],
+     "stage": "design"
     },
     {
      "id": "M2-1",
@@ -670,20 +651,12 @@
      ]
     },
     {
-     "id": "M2-7",
-     "title": "scaling proxy; deferred M1-14 sections",
-     "status": "pending",
-     "deps": [
-      "M2-6"
-     ]
-    },
-    {
      "id": "M2-gate",
      "title": "gate: VAL-4, VAL-20",
      "status": "pending",
      "deps": [
       "M2-5",
-      "M2-7"
+      "M2-6"
      ]
     }
    ]
@@ -697,7 +670,7 @@
      "title": "units",
      "status": "pending",
      "deps": [
-      "M2-gate"
+      "M1-gate"
      ]
     },
     {
@@ -705,7 +678,7 @@
      "title": "field accessors",
      "status": "pending",
      "deps": [
-      "M2-gate"
+      "M1-gate"
      ]
     },
     {
@@ -745,7 +718,8 @@
      "title": "checkpoint, restart",
      "status": "pending",
      "deps": [
-      "M3-6"
+      "M3-6",
+      "M2-gate"
      ]
     },
     {
@@ -787,11 +761,35 @@
     },
     {
      "id": "M3-gate",
-     "title": "gate: VAL-5, VAL-16",
+     "title": "gate: VAL-5, cavity and cylinder from Python",
      "status": "pending",
      "deps": [
       "M3-10",
       "M3-11"
+     ]
+    },
+    {
+     "id": "M1-14b",
+     "title": "measurements: quiet-machine campaign, all sections (after the M3 gate, D-090)",
+     "status": "pending",
+     "deps": [
+      "M3-gate"
+     ]
+    },
+    {
+     "id": "M2-0",
+     "title": "32-bit bias remedy: device tests, decision, re-freeze (after the M3 gate, D-090)",
+     "status": "pending",
+     "deps": [
+      "M3-gate"
+     ]
+    },
+    {
+     "id": "M2-7",
+     "title": "scaling proxy; deferred M1-14 sections (after the M3 gate, D-090)",
+     "status": "pending",
+     "deps": [
+      "M3-gate"
      ]
     }
    ]
@@ -833,6 +831,10 @@
  ],
  "findings": [
   {
+   "id": "IMPL-M1-206",
+   "text": "no throughput item is measured in M1 after the M0 gate: the items Q1 to Q5, Q8, Q9 and Q13 to Q16 of the campaign, the regression VAL-17 against th... Fix: one sitting of bench/m114/campaign.ps1 with all sections on a quiet RTX 5050 after the M3 gate; until then the spec states of VAL-12 to VAL-17 are..."
+  },
+  {
    "id": "IMPL-M1-205",
    "text": "the campaign of M1-14 runs S0, S1, S3, S6 and S11 only; the measurements behind IMPL-M1-63 (argument lookup per launch, S2), IMPL-M1-81 (setup time... Fix: the deferred sections are a second sitting of bench/m114/campaign.ps1 in package M2-7; the remedy rows are decided in package M2-0"
   },
@@ -859,10 +861,6 @@
   {
    "id": "IMPL-M1-196",
    "text": "a binary32 emulation of the fragments on the D2Q9 momentum box of VAL-7 reproduces the drift (8.96e-9 per step) and its scaling with omega minus, b... Fix: emulation only (the designer is about 85 percent sure it holds on a device); refuted by stage c1 of M1-14c: a port that is bit-identical to the dev..."
-  },
-  {
-   "id": "IMPL-M1-195",
-   "text": "VAL-17 compares with the 7-day median; when the last benchmark is older than 7 days (the M0 rows at the M1 gate) the window is empty and the rule s... Fix: without a run in the window the baseline is the median of the last gate on the same device and driver; a driver change starts a new baseline and th..."
   }
  ]
 }
