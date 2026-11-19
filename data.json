@@ -751,15 +751,14 @@
     {
      "id": "M3-9",
      "title": "C++ API, Python, CLI",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M3-3",
       "M3-4",
       "M3-5",
       "M3-7",
       "M3-8"
-     ],
-     "stage": "case files and runner accepted, in integration"
+     ]
     },
     {
      "id": "M3-10",
