@@ -819,7 +819,7 @@ const INLINE = {
      "deps": [
       "M3-2"
      ],
-     "stage": "reductions and probes accepted, in integration; statistics after the gate"
+     "stage": "reductions and probes accepted, merge with M3-11; statistics after the gate"
     },
     {
      "id": "M3-6",
@@ -832,12 +832,11 @@ const INLINE = {
     {
      "id": "M3-7",
      "title": "checkpoint, restart",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M3-6",
       "M2-gate"
-     ],
-     "stage": "same partition done; other partition (M3-7b) next"
+     ]
     },
     {
      "id": "M3-8",
@@ -875,7 +874,7 @@ const INLINE = {
       "M3-3",
       "M3-7"
      ],
-     "stage": "device part accepted; front end in implementation"
+     "stage": "device part and front end reviewed; gate case rerun after the last fixes"
     },
     {
      "id": "M3-gate",
@@ -949,36 +948,36 @@ const INLINE = {
  ],
  "findings": [
   {
-   "id": "IMPL-M3-57",
-   "text": "IO-6 (d) needs EXT-50 for a second population set, which does not exist Fix: A moving body with a second population set is refused at setup until EXT-50 exists"
+   "id": "IMPL-M3-68",
+   "text": "The exit code of `olbx-run --help` is not fixed by the table of ruling 80 (0 completed, 1 case error, 2 usage error, 3 stopped, 4 numerical) Fix: Ruled: `--help` and `-h` print the usage to stdout and exit 0; the bare word `help` is a missing case file (exit 1). Found by the independent verif..."
   },
   {
-   "id": "IMPL-M3-56",
-   "text": "A restart accepted a changed case file without notice Fix: Refused when the SHA-256 differs from the stored one unless `--allow-changed-case`; a changed Python script recorded by hash gives a warning"
+   "id": "IMPL-M3-67",
+   "text": "A `FAIL_REGULAR_EXPRESSION` with a single backslash made three ctest entries report failure although all their cases passed Fix: The pattern is written with an escaped backslash as in `tests/l3/CMakeLists.txt` (`\"test cases: +0 +\\\\"
   },
   {
-   "id": "IMPL-M3-55",
-   "text": "Integers of a case file were not checked: `shape = [4294967330, 34]` ran as 34 x 34 Fix: Numbers finite; u32 values integral and in 0 to 4294967295; a double used as an integer exactly representable"
+   "id": "IMPL-M3-66",
+   "text": "`ckpt::repartition` did not check the sizes of stored sparse payloads and user lists, and a repartition left a user list without its cells (\"CORE-2... Fix: Sizes checked (IO-20); an owned rule entry that no stored entry covers is refused; the `ModuleRegistry` argument is required"
   },
   {
-   "id": "IMPL-M3-54",
-   "text": "Brief decision 6(iii) formed `rho_a` in binary64, against spec 03 section 5.1 item 2 (FP32) and the `x2_03` oracle Fix: `rho_a` in FP32: neighbours of kind `fluid` in ascending direction index, sequential sum, one division; one shared host function for a block and a..."
+   "id": "IMPL-M3-65",
+   "text": "Two moving bodies could come closer than the stencil, so a cell could be a neighbour of both in one move Fix: Bodies closer than 2 cells (Chebyshev, periodic images included) are refused: at finalisation InvalidArgument IO-6, at a re-voxelisation a numerica..."
   },
   {
-   "id": "IMPL-M3-53",
-   "text": "A refusal inside `BlockGroup::move_body` left the group in its failure state Fix: All blocks validate before any write; a refused move changes nothing and leaves the group usable"
+   "id": "IMPL-M3-64",
+   "text": "`r_max` was measured from P, which underestimates the displacement of a translated body and lets the threshold be exceeded Fix: `r_max` from P + X(0), plus half a cell diagonal"
   },
   {
-   "id": "IMPL-M3-52",
-   "text": "The manifest of `body.moving` did not declare the pass that writes `u` in `kind:moving_wall` (ARCH-35, ARCH-42), against decision 5 of the brief Fix: The manifest declares it"
+   "id": "IMPL-M3-63",
+   "text": "Force and torque of a moving body used arms without the minimum image and a fixed R Fix: Torque about R(t), arms by minimum image, R of the force body set to the wrapped voxelisation point; translation invariance in a periodic box is a..."
   },
   {
-   "id": "IMPL-M3-51",
-   "text": "A textually included file was named `.cpp`, so the source glob compiled it as an empty unit Fix: Included files are named `.inl` (`driver_bodies.inl`; `driver_segments_front.inl` with M3-12)"
+   "id": "IMPL-M3-62",
+   "text": "A body across a periodic face at step 0 was voxelised without the minimum image, unlike later moves Fix: Voxelised with the minimum image at step 0 as at later moves"
   },
   {
-   "id": "IMPL-M3-50",
-   "text": "`body_cells` payload ids outside 1..3 were skipped silently Fix: Refused at setup (IO-6)"
+   "id": "IMPL-M3-61",
+   "text": "Callable names could repeat over bodies and roles (position, angle), so a restart could hand one callable to two roles Fix: Names unique over bodies and roles; a duplicate is refused at declaration (IO-19)"
   }
  ]
 };
