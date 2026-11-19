@@ -594,16 +594,15 @@
     {
      "id": "DN-3",
      "title": "design: cut-link tables",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M1-gate"
-     ],
-     "stage": "design"
+     ]
     },
     {
      "id": "M2-1",
      "title": "partitioner, padded blocks",
-     "status": "pending",
+     "status": "done",
      "deps": [
       "M1-gate"
      ]
@@ -611,7 +610,7 @@
     {
      "id": "M2-2",
      "title": "exchange plan, pack/unpack",
-     "status": "pending",
+     "status": "done",
      "deps": [
       "DN-3",
       "M2-1"
@@ -620,7 +619,7 @@
     {
      "id": "M2-3",
      "title": "transports",
-     "status": "pending",
+     "status": "done",
      "deps": [
       "M2-1"
      ]
@@ -628,10 +627,11 @@
     {
      "id": "M2-4",
      "title": "scheduler on blocks",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M2-2"
-     ]
+     ],
+     "stage": "implementation"
     },
     {
      "id": "M2-5",
@@ -644,11 +644,12 @@
     {
      "id": "M2-6",
      "title": "VAL-4 suite",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M2-3",
       "M2-4"
-     ]
+     ],
+     "stage": "suite written, waits for M2-4"
     },
     {
      "id": "M2-gate",
@@ -668,7 +669,7 @@
     {
      "id": "M3-1",
      "title": "units",
-     "status": "pending",
+     "status": "done",
      "deps": [
       "M1-gate"
      ]
@@ -676,7 +677,7 @@
     {
      "id": "M3-2",
      "title": "field accessors",
-     "status": "pending",
+     "status": "done",
      "deps": [
       "M1-gate"
      ]
@@ -684,7 +685,7 @@
     {
      "id": "M3-3",
      "title": "shapes, expressions",
-     "status": "pending",
+     "status": "done",
      "deps": [
       "M3-2"
      ]
@@ -692,7 +693,7 @@
     {
      "id": "M3-4",
      "title": "mesh voxeliser",
-     "status": "pending",
+     "status": "done",
      "deps": [
       "M3-1"
      ]
@@ -708,7 +709,7 @@
     {
      "id": "M3-6",
      "title": "VTKHDF output",
-     "status": "pending",
+     "status": "done",
      "deps": [
       "M3-2"
      ]
@@ -716,16 +717,17 @@
     {
      "id": "M3-7",
      "title": "checkpoint, restart",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M3-6",
       "M2-gate"
-     ]
+     ],
+     "stage": "same partition done; other partition pending"
     },
     {
      "id": "M3-8",
      "title": "run control, manifest",
-     "status": "pending",
+     "status": "done",
      "deps": [
       "M3-2"
      ]
@@ -733,14 +735,15 @@
     {
      "id": "M3-9",
      "title": "C++ API, Python, CLI",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M3-3",
       "M3-4",
       "M3-5",
       "M3-7",
       "M3-8"
-     ]
+     ],
+     "stage": "C++ API in review fixes; Python bindings"
     },
     {
      "id": "M3-10",
@@ -831,36 +834,36 @@
  ],
  "findings": [
   {
-   "id": "IMPL-M1-206",
-   "text": "no throughput item is measured in M1 after the M0 gate: the items Q1 to Q5, Q8, Q9 and Q13 to Q16 of the campaign, the regression VAL-17 against th... Fix: one sitting of bench/m114/campaign.ps1 with all sections on a quiet RTX 5050 after the M3 gate; until then the spec states of VAL-12 to VAL-17 are..."
+   "id": "IMPL-M3-37",
+   "text": "The front end did not fix the torque point of a force body, the meaning of an exact `init` read-back, the streaming choice of the gate freeze, the... Fix: Torque point: the mean of the cell centres of the body (lattice coordinates, computed once at finalisation; CORE-24 with R given by the front end);..."
   },
   {
-   "id": "IMPL-M1-205",
-   "text": "the campaign of M1-14 runs S0, S1, S3, S6 and S11 only; the measurements behind IMPL-M1-63 (argument lookup per launch, S2), IMPL-M1-81 (setup time... Fix: the deferred sections are a second sitting of bench/m114/campaign.ps1 in package M2-7; the remedy rows are decided in package M2-0"
+   "id": "IMPL-M3-36",
+   "text": "The rule of IMPL-M3-5 merged crossings by orientation after a closed point-in-triangle test: every face at a vertex on a column then \"contains\" the... Fix: IO-5: a consistent tie rule (an edge function exactly 0 is decided by the column shifted symbolically to `(u0 + eps, v0 + eps^2)`; each shared edge..."
   },
   {
-   "id": "IMPL-M1-204",
-   "text": "VAL-17 and the method of M1-14 want the OpenCL C version with every benchmark number, but the device report of the backend (ARCH-5) carries the pla... Fix: in M1-14 the tool olbx_kinfo, which is outside the layers, reports it once per device and the campaign records it; the device report of the backend..."
+   "id": "IMPL-M3-35",
+   "text": "IO-23 did not say over which interval throughput and remaining time are computed; after a restart they were wrong Fix: From the rate of the present reporting window"
   },
   {
-   "id": "IMPL-M1-203",
-   "text": "after the re-freeze the thresholds in force live in tests/l3/data/frozen.toml, and the tables of chapter 02 section 10 (thresholds of 02-VAL-C1, C2... Fix: VAL-10 names the file as the source in force; the chapter tables are regenerated from the file at the M1 gate, after the decision on a remedy (D-08..."
+   "id": "IMPL-M3-34",
+   "text": "IO-25 left the script copy, path form, caller tables and a locked manifest file open Fix: Per-run copy of the script, a rerun records its own; absolute run directory; caller-supplied bodies add keys only; the replace is retried, failure..."
   },
   {
-   "id": "IMPL-M1-202",
-   "text": "a force-driven SRT channel of 256 cells at tau 0.52 with a centre velocity of 0.05 needs a force of 4.1e-8, far below the 1e-5 of the small-force w... Fix: CORE-11 warns for this force today. The remedy is decided in package M2-0 (decisions D-086 and D-088), not at the M1 gate. Needed there (two Opus r..."
+   "id": "IMPL-M3-33",
+   "text": "IO-20 did not say whether a restore recomputes the tag bits of the cell types Fix: The tag bits are state: the raw words are stored and restored unchanged, a restore does not recompute them; the front end checks configuration, sto..."
   },
   {
-   "id": "IMPL-M1-200",
-   "text": "the 32-bit momentum bias of VAL-7 (open point 10-O4, IMPL-M1-175) is carried by the binary32 lattice weights: 3 times the sum of W c_x^2 is 1 + 2^-... Fix: device confirmation in stage c2; 10-O4 and the VAL-7 note are edited after it; the remedy is decided at the gate (decision D-086)"
+   "id": "IMPL-M3-32",
+   "text": "IO-19 did not cover non-finite numbers in `checkpoint.toml`, a self-check, the cell-type bit map on load, the checks of the datasets, or a damaged... Fix: Non-finite values as TOML `nan`, `inf`, `-inf` (NaN payload not kept, a narrowing of \"the same binary64 value\"); the writer parses its own `checkpo..."
   },
   {
-   "id": "IMPL-M1-197",
-   "text": "the control ruled for CORE-8 at L3 (IMPL-M1-193: the TRT channel from rest with a magic parameter of 1/4 above 1.2 times the baseline) passed with... Fix: the control is replaced (brief M1-13 ruling 31): the default 3/16 by bit equality in every build, and the effect of the parameter from the analytic..."
+   "id": "IMPL-M3-31",
+   "text": "IO-22 lost a write error at the final flush; a checkpoint written twice for one step had no safe replacement; after a restart from step s a later c... Fix: IO-22: files closed with checked results and flushed to disk before the rename, failure is IO-22 and nothing is renamed; the old `ckpt_<s>` is set..."
   },
   {
-   "id": "IMPL-M1-196",
-   "text": "a binary32 emulation of the fragments on the D2Q9 momentum box of VAL-7 reproduces the drift (8.96e-9 per step) and its scaling with omega minus, b... Fix: emulation only (the designer is about 85 percent sure it holds on a device); refuted by stage c1 of M1-14c: a port that is bit-identical to the dev..."
+   "id": "IMPL-M3-30",
+   "text": "IO-25 did not say who creates the output directory, which bytes the case hash covers, or how a damaged manifest is avoided Fix: The manifest writer creates the output directory, copies the case script once and records the hash of the copy, and parses its own output before th..."
   }
  ]
 }
