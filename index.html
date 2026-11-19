@@ -668,11 +668,11 @@ const INLINE = {
      "deps": [
       "M1-13a"
      ],
-     "stage": "remedy tests"
+     "stage": "closing: port results"
     },
     {
      "id": "M1-14b",
-     "title": "measurements: quiet-machine campaign and report",
+     "title": "measurements: quiet-machine campaign (S0, S1, S3, S6) and report",
      "status": "pending",
      "deps": [
       "M1-14a",
@@ -701,6 +701,14 @@ const INLINE = {
    "id": "M2",
    "title": "M2: multi-device",
    "packages": [
+    {
+     "id": "M2-0",
+     "title": "32-bit bias remedy: device tests, decision, re-freeze",
+     "status": "pending",
+     "deps": [
+      "M1-gate"
+     ]
+    },
     {
      "id": "DN-3",
      "title": "design: cut-link tables",
@@ -761,7 +769,7 @@ const INLINE = {
     },
     {
      "id": "M2-7",
-     "title": "scaling proxy",
+     "title": "scaling proxy; deferred M1-14 sections",
      "status": "pending",
      "deps": [
       "M2-6"
@@ -923,6 +931,10 @@ const INLINE = {
  ],
  "findings": [
   {
+   "id": "IMPL-M1-205",
+   "text": "the campaign of M1-14 runs S0, S1, S3, S6 and S11 only; the measurements behind IMPL-M1-63 (argument lookup per launch, S2), IMPL-M1-81 (setup time... Fix: the deferred sections are a second sitting of bench/m114/campaign.ps1 in package M2-7; the remedy rows are decided in package M2-0"
+  },
+  {
    "id": "IMPL-M1-204",
    "text": "VAL-17 and the method of M1-14 want the OpenCL C version with every benchmark number, but the device report of the backend (ARCH-5) carries the pla... Fix: in M1-14 the tool olbx_kinfo, which is outside the layers, reports it once per device and the campaign records it; the device report of the backend..."
   },
@@ -949,10 +961,6 @@ const INLINE = {
   {
    "id": "IMPL-M1-195",
    "text": "VAL-17 compares with the 7-day median; when the last benchmark is older than 7 days (the M0 rows at the M1 gate) the window is empty and the rule s... Fix: without a run in the window the baseline is the median of the last gate on the same device and driver; a driver change starts a new baseline and th..."
-  },
-  {
-   "id": "IMPL-M1-194",
-   "text": "the M1 gate of chapter 11 has no performance item although M1 replaces the prototype schedule by the scheduler and adds modules to every program; a... Fix: the gate of M1 names VAL-17 for the two parity cases against the medians of the M0 gate (measured in M1-14, item Q1)"
   }
  ]
 };
