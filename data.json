@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-19",
+ "updated": "2026-11-20",
  "branch": "m1",
  "tests": {
   "commit": "next at verification run 8 (3408e66, 2026-11-19), tagged m3-gate",
@@ -769,8 +769,8 @@
     },
     {
      "id": "M3-11",
-     "title": "moving bodies; gate case passes, host-work package M3-11c in work",
-     "status": "running",
+     "title": "moving bodies",
+     "status": "done",
      "deps": [
       "M3-3",
       "M3-7"
@@ -915,7 +915,7 @@
     {
      "id": "M5-1a",
      "title": "scheduler step boundary, tag with phase, force-pass selection",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M3-gate"
      ]
@@ -1017,6 +1017,10 @@
  ],
  "decisions": [
   {
+   "id": "D-099",
+   "text": "(a) Start-up hang (IMPL-M1-207a): the remedy is the early load of the Intel runtime's `tbb12.dll` in the backend (`prepare_process`, by the full path in the directory of a registered ICD only), plu..."
+  },
+  {
    "id": "D-087",
    "text": "Amendment of D-084 (quiet machine). The list of GPU compute processes is judged by image name only: a process counts when its name is in the list of build, test and solver programs; the desktop pro..."
   },
@@ -1043,44 +1047,16 @@
   {
    "id": "D-074",
    "text": "M1-6 is built as one package. The half-force preparation of CORE-35 is a manifest pass of the streaming modules, selected by the new `when` key of `[[pass]]`, and its kernel is the last section of..."
-  },
-  {
-   "id": "D-071",
-   "text": "The bit-identity matrix of every build covers each collision operator and each storage type on every hydrodynamic lattice in at least one combination, in both wall modes; the full cross product run..."
   }
  ],
  "findings": [
   {
-   "id": "IMPL-M3-73",
-   "text": "The plot script `val_osc.py` draws the moving average across the phase fold (two stray horizontal lines) Fix: Cosmetic; to fix in the plot script"
+   "id": "IMPL-M5-2",
+   "text": "Tolerances in `tests/l0/m5_2` and `tests/l1/m5_2` that the spec does not state, chosen by the test author: Fix: see the list below"
   },
   {
-   "id": "IMPL-M3-72",
-   "text": "Host work of moving bodies: 51 to 75 % of the wall time in `body_move_seconds` on the 2D gate case (1.0 ms per move at D = 20, 2.3 ms at D = 40, a... Fix: A 3D measurement follows; the remedy (device-side re-voxelisation or batched moves) is behind the M3 gate (D-090)"
-  },
-  {
-   "id": "IMPL-M3-71",
-   "text": "The clang build of `olbx_l1_tests` failed after M3-11a added `DriverOptions::periodic` (three M1 tests with positional initialisers); hidden becaus... Fix: Rule: a package that changes a public struct builds ALL targets on clang before it is accepted (`docs/briefs/RULES.md`, build section)"
-  },
-  {
-   "id": "IMPL-M3-70",
-   "text": "The torque of a body that travelled more than half a periodic box from its start point was wrong (error up to 38 relative to the largest term from... Fix: Torque point: the integer point nearest the wrapped body centre at each voxelisation (exact in f32), kept per row; the host shifts to R(t) by minim..."
-  },
-  {
-   "id": "IMPL-M3-69",
-   "text": "The Morison fit used force samples every 5 steps, which alias with the re-voxelisation steps (about every 9 steps): on every fifth sample C_d at D... Fix: The fit uses the force of every step (or interval means); spec 10 oscillating-cylinder row amended"
-  },
-  {
-   "id": "IMPL-M3-68",
-   "text": "The exit code of `olbx-run --help` is not fixed by the table of ruling 80 (0 completed, 1 case error, 2 usage error, 3 stopped, 4 numerical) Fix: Ruled: `--help` and `-h` print the usage to stdout and exit 0; the bare word `help` is a missing case file (exit 1). Found by the independent verif..."
-  },
-  {
-   "id": "IMPL-M3-67",
-   "text": "A `FAIL_REGULAR_EXPRESSION` with a single backslash made three ctest entries report failure although all their cases passed Fix: The pattern is written with an escaped backslash as in `tests/l3/CMakeLists.txt` (`\"test cases: +0 +\\\\"
-  },
-  {
-   "id": "IMPL-M3-66",
-   "text": "`ckpt::repartition` did not check the sizes of stored sparse payloads and user lists, and a repartition left a user list without its cells (\"CORE-2... Fix: Sizes checked (IO-20); an owned rule entry that no stored entry covers is refused; the `ModuleRegistry` argument is required"
+   "id": "IMPL-M5-1",
+   "text": "The forward volume of cases (3) and (4) of section 7.2.1, written in the undivided form `(d^3 - (d-n1)^3 - (d-n2)^3 [- (d-n3)^3]) / (6 n1 n2 n3)`,... Fix: Section 7.2.2, new bullet after the case (2) bullet: \"Cases (3) and (4) are evaluated in the form divided by $n_1$, like case (2) (IMPL-M5-1): with..."
   }
  ]
 }
