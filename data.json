@@ -819,7 +819,7 @@
     {
      "id": "M4-0",
      "title": "manifest grammar: generated passes, framework writers, lagrangian entry",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M3-gate"
      ]
@@ -957,7 +957,7 @@
     {
      "id": "M5-4",
      "title": "manifest and initialisation host step",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M3-gate"
      ]
