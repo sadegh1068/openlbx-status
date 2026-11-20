@@ -843,7 +843,7 @@
     {
      "id": "M4-3",
      "title": "thermal outlet",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M4-2"
      ]
@@ -851,7 +851,7 @@
     {
      "id": "M4-4",
      "title": "thermal on blocks, restart, Rayleigh-Benard",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M4-2",
       "M4-3"
@@ -860,7 +860,7 @@
     {
      "id": "M4-5",
      "title": "thermal with moving bodies",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M4-4"
      ]
@@ -974,7 +974,7 @@
     {
      "id": "M5-6",
      "title": "passes P2, P3, P4, exact mass total",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M5-5"
      ]
@@ -982,7 +982,7 @@
     {
      "id": "M5-7",
      "title": "bring-up fragment",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M5-5"
      ]
@@ -990,7 +990,7 @@
     {
      "id": "M5-8",
      "title": "blocks: VAL-4, VAL-5, VAL-20",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M5-6"
      ]
@@ -1017,6 +1017,18 @@
  ],
  "decisions": [
   {
+   "id": "D-114",
+   "text": "(a) M4-4 is accepted (`871e7b5`): fix round done, 16 of 16 block cases and 24 of 24 targets on both presets; 05-VAL-T2 on the RTX 5050 in this tree. The tiers `olbx_l2_matrix` and `olbx_l2_long` ar..."
+  },
+  {
+   "id": "D-113",
+   "text": "(a) M5-7 is accepted (`179a6be`): fix round done, 24 and 14 cases pass on both presets; the pinned hash row of `free_surface` is re-pinned once on `integration`. (b) M4-4: implementation `93a4d9d`;..."
+  },
+  {
+   "id": "D-111",
+   "text": "(a) M5-7: review verdict \"accept with fixes\" (finding IMPL-M5-10). Ruling R4-04-23 is corrected: the access check did record a load-out call in fragment text. New rule (ARCH-42 item (e)): in a fuse..."
+  },
+  {
    "id": "D-107",
    "text": "(a) Verification run 10 of `integration` (`7248c83`) is taken as passed: both presets build with 0 warnings; every entry of the labels l0, l1, l2 and py passes on the CPU runtime with both presets;..."
   },
@@ -1035,18 +1047,6 @@
   {
    "id": "D-087",
    "text": "Amendment of D-084 (quiet machine). The list of GPU compute processes is judged by image name only: a process counts when its name is in the list of build, test and solver programs; the desktop pro..."
-  },
-  {
-   "id": "D-086",
-   "text": "The 32-bit momentum bias is carried by the binary32 lattice weights (the first moment of the float equilibrium is (1 + 2^-27) j; finding IMPL-M1-200). No remedy is made inside M1. The remedy (weigh..."
-  },
-  {
-   "id": "D-083",
-   "text": "Whether the density of the equilibrium is formed from the unrounded sum (finding IMPL-M0-38, a change of CORE-5) is decided at the M1 gate with the numbers of M1-14 (item Q25), and, if adopted, imp..."
-  },
-  {
-   "id": "D-080",
-   "text": "The rows of the matrix keep one program set with `observe.force` in every row configuration (M1-12d), although such a program builds about 2.7 times slower on the CPU runtime (finding IMPL-M1-181)."
   }
  ],
  "findings": [
