@@ -1097,7 +1097,7 @@ const INLINE = {
     {
      "id": "M5-9",
      "title": "Python front end",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M5-5"
      ]
@@ -1105,7 +1105,7 @@ const INLINE = {
     {
      "id": "M5-10",
      "title": "gate cases on the device",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M5-6",
       "M5-7"
@@ -1115,6 +1115,14 @@ const INLINE = {
   }
  ],
  "decisions": [
+  {
+   "id": "D-122",
+   "text": "(a) M4-10 part 1 (front end for thermal and particles) is accepted at `655332b`: fixes F1 to F10 of the review done; every target passes on both presets (`olbx_m4_10_api` 30, `olbx_m4_10_case` 9, `..."
+  },
+  {
+   "id": "D-121",
+   "text": "(a) `integration` holds M5-6, M5-7 and M5-8 with the fix round (`297fbaf`); the `free_surface` row of the program-text test and the pass list of the assembler test were re-pinned in the merge; all..."
+  },
   {
    "id": "D-120",
    "text": "(a) M5-8 is accepted (`c0d74b9`): the fix round changed tests only (periodic cuts with the free surface, section 11.9 (a) and (b), added and passing); its merge into `integration` is in work. (b) M..."
@@ -1138,17 +1146,21 @@ const INLINE = {
   {
    "id": "D-113",
    "text": "(a) M5-7 is accepted (`179a6be`): fix round done, 24 and 14 cases pass on both presets; the pinned hash row of `free_surface` is re-pinned once on `integration`. (b) M4-4: implementation `93a4d9d`;..."
-  },
-  {
-   "id": "D-111",
-   "text": "(a) M5-7: review verdict \"accept with fixes\" (finding IMPL-M5-10). Ruling R4-04-23 is corrected: the access check did record a load-out call in fragment text. New rule (ARCH-42 item (e)): in a fuse..."
-  },
-  {
-   "id": "D-107",
-   "text": "(a) Verification run 10 of `integration` (`7248c83`) is taken as passed: both presets build with 0 warnings; every entry of the labels l0, l1, l2 and py passes on the CPU runtime with both presets;..."
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M5-14",
+   "text": "Python front end of the free surface. (a) `mass_total()` returned `fluid_mass` from a density of an older time level, or copied the density to the... Fix: D-121 (e), (f), with D-120 (e): (a) `mass_total()` brings the density up on the device without a copy to the host; under `policy = \"strict\"` it rai..."
+  },
+  {
+   "id": "IMPL-M5-11",
+   "text": "The sphere-drop case of M5-5 failed (2.16e-6 against the bound 1.5e-7). Oracle fault, not a code defect: the fix round of M5-3 improved the PLIC vo... Fix: D-111 (b), D-116 (a): the port follows the device, both oracle files are regenerated, and the bounds stay (loosening them would hide the next such..."
+  },
+  {
+   "id": "IMPL-M5-10",
+   "text": "The access-check exemption for `<s>_LOAD_OUT` was too wide: ruling R4-04-23 said the access check records nothing for a load-out call in fragment t... Fix: D-111 (a): ARCH-42 item (e): in a fused fragment `<s>_LOAD_OUT` is admitted, and not recorded, only if every flavour of the fragment is `moments-on..."
+  },
   {
    "id": "IMPL-M5-7",
    "text": "(a) P0 does not add the static per-cell force field (FS-27, 04 sections 3.5 and 4.2). (b) The manifest grammar of 01 section 6.1 has no spelling fo... Fix: D-105 (a) and (b): `[[pass]]` takes `when` (ARCH-12); `when` accepts a module name as `requires` does; P0 in two rows with `when = \"force.static\"`..."
@@ -1168,10 +1180,6 @@ const INLINE = {
   {
    "id": "IMPL-M5-2",
    "text": "Tolerances in `tests/l0/m5_2` and `tests/l1/m5_2` that the spec does not state, chosen by the test author: Fix: see the list below"
-  },
-  {
-   "id": "IMPL-M5-1",
-   "text": "The forward volume of cases (3) and (4) of section 7.2.1, written in the undivided form `(d^3 - (d-n1)^3 - (d-n2)^3 [- (d-n3)^3]) / (6 n1 n2 n3)`,... Fix: Section 7.2.2, new bullet after the case (2) bullet: \"Cases (3) and (4) are evaluated in the form divided by $n_1$, like case (2) (IMPL-M5-1): with..."
   }
  ]
 };
