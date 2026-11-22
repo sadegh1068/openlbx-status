@@ -98,7 +98,7 @@ button{white-space:nowrap}
 <div class="foot" id="foot"></div>
 <script>
 const INLINE = {
- "updated": "2026-11-20",
+ "updated": "2026-11-22",
  "branch": "m1",
  "tests": {
   "commit": "next at verification run 10 (864c5a8, 2026-11-20)",
@@ -959,7 +959,7 @@ const INLINE = {
     {
      "id": "M4-5",
      "title": "thermal with moving bodies",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M4-4"
      ]
@@ -991,7 +991,7 @@ const INLINE = {
     {
      "id": "M4-9",
      "title": "particles on blocks and restart",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M4-8"
      ]
@@ -999,7 +999,7 @@ const INLINE = {
     {
      "id": "M4-10",
      "title": "front end, threshold freeze, gate",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M4-5",
       "M4-9"
@@ -1089,7 +1089,7 @@ const INLINE = {
     {
      "id": "M5-8",
      "title": "blocks: VAL-4, VAL-5, VAL-20",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M5-6"
      ]
@@ -1097,7 +1097,7 @@ const INLINE = {
     {
      "id": "M5-9",
      "title": "Python front end",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M5-5"
      ]
@@ -1116,6 +1116,22 @@ const INLINE = {
  ],
  "decisions": [
   {
+   "id": "D-120",
+   "text": "(a) M5-8 is accepted (`c0d74b9`): the fix round changed tests only (periodic cuts with the free surface, section 11.9 (a) and (b), added and passing); its merge into `integration` is in work. (b) M..."
+  },
+  {
+   "id": "D-118",
+   "text": "(a) M4-9 is merged into `integration` (`f3b5f5f`): four conflicts, two in the scheduler, resolved by an Opus agent that kept both sides (M4-4: one declaration pointer for a declared or a synthetic..."
+  },
+  {
+   "id": "D-116",
+   "text": "(a) The repair of `integration` is committed (`f0a7023`): the 32-bit port of the PLIC fold follows the device, both oracle files are regenerated, the sphere-drop case passes with unchanged bounds (..."
+  },
+  {
+   "id": "D-115",
+   "text": "(a) M5-8: the tests are written (`8a7d1cc`). The free surface already runs on 2, 2 x 2 and 2 x 2 x 2 blocks through the existing generic block code: VAL-4 (60 steps, every field and both views bit-..."
+  },
+  {
    "id": "D-114",
    "text": "(a) M4-4 is accepted (`871e7b5`): fix round done, 16 of 16 block cases and 24 of 24 targets on both presets; 05-VAL-T2 on the RTX 5050 in this tree. The tiers `olbx_l2_matrix` and `olbx_l2_long` ar..."
   },
@@ -1130,22 +1146,6 @@ const INLINE = {
   {
    "id": "D-107",
    "text": "(a) Verification run 10 of `integration` (`7248c83`) is taken as passed: both presets build with 0 warnings; every entry of the labels l0, l1, l2 and py passes on the CPU runtime with both presets;..."
-  },
-  {
-   "id": "D-105",
-   "text": "Rulings of the afternoon wave. (a) M5-5, FS-27 (IMPL-M5-7): pass P0 adds the static per-cell force field at the own cell to the uniform body force when the field exists. Manifest: `[[pass]]` takes..."
-  },
-  {
-   "id": "D-104",
-   "text": "Ruling on IMPL-M5-4 (three cases of `olbx_m5_3_l1` above their thresholds). No code defect; the production code of M5-3 stays. (a) Wall cases: the gate becomes a bound per cell, error of the curvat..."
-  },
-  {
-   "id": "D-099",
-   "text": "(a) Start-up hang (IMPL-M1-207a): the remedy is the early load of the Intel runtime's `tbb12.dll` in the backend (`prepare_process`, by the full path in the directory of a registered ICD only), plu..."
-  },
-  {
-   "id": "D-087",
-   "text": "Amendment of D-084 (quiet machine). The list of GPU compute processes is judged by image name only: a process counts when its name is in the list of build, test and solver programs; the desktop pro..."
   }
  ],
  "findings": [
