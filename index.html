@@ -179,7 +179,7 @@ const INLINE = {
     "note": "refused at open: the device compiler fails the store-address probe (ARCH-49)"
    }
   ],
-  "note": "Run 11 of the merged head: every executable passes on the CPU runtime with both compilers and on the RTX 5050. The M1 to M5 gates pass for correctness and are tagged; M4 adds thermal flow and particles, M5 the free surface. Performance work follows on a quiet machine."
+  "note": "Run 11 of the merged head: every executable passes on the CPU runtime with both compilers and on the RTX 5050. The M1 to M5 gates pass for correctness and are tagged. After the gate: a drop at rest with surface tension is calm up to radius 32 and grows unstable at large radius; this is a limit of the method and is stated in the specification. M6 (graphics) is in work; performance work follows on a quiet machine."
  },
  "milestones": [
   {
@@ -1124,11 +1124,149 @@ const INLINE = {
       "M5-6",
       "M5-7"
      ]
+    },
+    {
+     "id": "M5-11a",
+     "title": "kernel fix on other lattices and 16-bit storage",
+     "status": "done",
+     "deps": [
+      "M5-10"
+     ]
+    },
+    {
+     "id": "M5-11b",
+     "title": "large drop case behind a switch (R = 128, reported)",
+     "status": "done",
+     "deps": [
+      "M5-10"
+     ]
+    },
+    {
+     "id": "M5-11c",
+     "title": "examination of the curvature error; comparison of a drop at rest",
+     "status": "done",
+     "deps": [
+      "M5-10"
+     ]
+    },
+    {
+     "id": "M5-11e",
+     "title": "free surface refused with relaxed floating-point options",
+     "status": "done",
+     "deps": [
+      "M5-11a"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "M6",
+   "title": "M6: in-situ graphics (optional component)",
+   "packages": [
+    {
+     "id": "M6-0",
+     "title": "chapter review, corrections, brief",
+     "status": "done",
+     "deps": [
+      "M5-10",
+      "M4-10"
+     ]
+    },
+    {
+     "id": "M6-1a",
+     "title": "solver side: frame consumers, wider halo on request, build option",
+     "status": "done",
+     "deps": [
+      "M6-0"
+     ]
+    },
+    {
+     "id": "M6-6a",
+     "title": "image files: QOI and PNG writers",
+     "status": "done",
+     "deps": [
+      "M6-0"
+     ]
+    },
+    {
+     "id": "M6-1b",
+     "title": "render core: own program per block, read-only binding, frame buffers",
+     "status": "running",
+     "deps": [
+      "M6-1a"
+     ]
+    },
+    {
+     "id": "M6-2",
+     "title": "camera, rasteriser, wall faces, compositing",
+     "status": "pending",
+     "deps": [
+      "M6-1b"
+     ]
+    },
+    {
+     "id": "M6-3",
+     "title": "isosurface by marching cubes",
+     "status": "pending",
+     "deps": [
+      "M6-2"
+     ]
+    },
+    {
+     "id": "M6-6b",
+     "title": "front end, case file, image output",
+     "status": "pending",
+     "deps": [
+      "M6-1b",
+      "M6-6a"
+     ]
+    },
+    {
+     "id": "M6-4a",
+     "title": "ray traversal and hits",
+     "status": "pending",
+     "deps": [
+      "M6-3"
+     ]
+    },
+    {
+     "id": "M6-5",
+     "title": "tracers",
+     "status": "pending",
+     "deps": [
+      "M6-2"
+     ]
+    },
+    {
+     "id": "M6-4b",
+     "title": "ray shading",
+     "status": "pending",
+     "deps": [
+      "M6-4a"
+     ]
+    },
+    {
+     "id": "M6-7",
+     "title": "gate: image tests on CPU and GPU",
+     "status": "pending",
+     "deps": [
+      "M6-4b",
+      "M6-5",
+      "M6-6b"
+     ]
     }
    ]
   }
  ],
  "decisions": [
+  {
+   "id": "D-136",
+   "text": "(a) M5-11a is accepted after one review round (`c14eebe` on `wp/m5-11a`): 17 cases pass on dev and clang; fix D is bit-exact on D3Q15 and D3Q27 with f32, f16s and f16c and on D3Q19 with f16s and f1..."
+  },
+  {
+   "id": "D-133",
+   "text": "M5-11a, moving-drop cases: the late-drift bound 2e-5 of the rest-state test D4 does not apply to a moving interface. The four moving cases (drop with u = (0.05, 0.03, 0.02), D3Q19 with f32, f16s, f..."
+  },
   {
    "id": "D-129",
    "text": "(a) The M4 gate (thermal, particles) and the M5 gate (free surface) pass for correctness. The gate commit is `07fa3c3`: it adds `bench/reports/M4.md` and `bench/reports/M5.md` to the run 11 head `f..."
@@ -1152,20 +1290,24 @@ const INLINE = {
   {
    "id": "D-118",
    "text": "(a) M4-9 is merged into `integration` (`f3b5f5f`): four conflicts, two in the scheduler, resolved by an Opus agent that kept both sides (M4-4: one declaration pointer for a declared or a synthetic..."
-  },
-  {
-   "id": "D-116",
-   "text": "(a) The repair of `integration` is committed (`f0a7023`): the 32-bit port of the PLIC fold follows the device, both oracle files are regenerated, the sphere-drop case passes with unchanged bounds (..."
-  },
-  {
-   "id": "D-115",
-   "text": "(a) M5-8: the tests are written (`8a7d1cc`). The free surface already runs on 2, 2 x 2 and 2 x 2 x 2 blocks through the existing generic block code: VAL-4 (60 steps, every field and both views bit-..."
   }
  ],
  "findings": [
   {
+   "id": "IMPL-M5-27",
+   "text": "The window mean of 11.2.2 at $R = 32$ depends on the centre offset (2.36, 4.16, 3.84 %); two of three realisations are above the frozen threshold 3... Fix: No threshold is raised without knowing whether the level is inherent. The protocol changes at the next freeze: at least 3 centre offsets per radius..."
+  },
+  {
+   "id": "IMPL-M5-26",
+   "text": "The means of 11.2.2 on the merged head (0.3205, 1.533, 2.207 % at $R = 8$, 16, 32) differ from the values frozen on the branch `wp/m5-10` (0.3217,... Fix: Explained (D-138 (a)): the branch lacked one line of `fs_plic.clh` (the form `V = (V0 < 0.5f) ? V0 : 1.0f - V0` of the M5-3 fix round, commit `139c..."
+  },
+  {
+   "id": "IMPL-M5-24",
+   "text": "The order control of the M5-5 test `test_m55_p0_order` (D3Q19, `f32`) rests on 1 or 2 of 720 cells, because its populations are at most 1e-3. The f... Fix: The new rig of M5-11 replaces the control for the other combinations (M5-11a); M5-11e adds D3Q19 with `f32` to the bit check A1 (D-136 (b))"
+  },
+  {
    "id": "IMPL-M5-23",
-   "text": "(a) 11.2.2 at $R = 16$: the error level rises inside the run. Window halves 1.40 % (steps $5\\times10^4$ to $7.45\\times10^4$, 50 samples) and 1.64 %... Fix: Recorded for the gate report, not examined (D-127 (d)): both effects are inside their thresholds (52 % margin at $R = 16$; band 0.044 against 3 per..."
+   "text": "(a) 11.2.2 at $R = 16$: the error level rises inside the run. Window halves 1.40 % (steps $5\\times10^4$ to $7.45\\times10^4$, 50 samples) and 1.64 %... Fix: Recorded for the gate report (D-127 (d)): both effects are inside their thresholds (52 % margin at $R = 16$; band 0.044 against 3 percentage points..."
   },
   {
    "id": "IMPL-M5-20",
@@ -1182,18 +1324,6 @@ const INLINE = {
   {
    "id": "IMPL-M5-17",
    "text": "The rule of 04 sections 4.1.4 and 4.4 (tolerance $\\epsilon$ in the marking only, P4' clamping to $[0, \\rho]$) is a defect: a mass clamped to $[0, \\... Fix: D-123 (c), fix C: band $lo = -\\epsilon\\rho$ (exactly $+0$ for $\\epsilon = 0$), $hi = (1+\\epsilon)\\rho$ in the interface row; excess outside the ban..."
-  },
-  {
-   "id": "IMPL-M5-16",
-   "text": "The interface row of P4' did not conserve: with $m < \\rho < 0$ the clamp to $[0, \\rho]$ and the excess $m$ added $\\rho$ to the total. The jumps of... Fix: D-123 (b), fix B: $m_{\\text{new}} = \\min(\\max(m, lo), hi)$, excess $= m - m_{\\text{new}}$, which conserves $m_{\\text{new}} + \\text{excess} = m$ for..."
-  },
-  {
-   "id": "IMPL-M5-14",
-   "text": "Python front end of the free surface. (a) `mass_total()` returned `fluid_mass` from a density of an older time level, or copied the density to the... Fix: D-121 (e), (f), with D-120 (e): (a) `mass_total()` brings the density up on the device without a copy to the host; under `policy = \"strict\"` it rai..."
-  },
-  {
-   "id": "IMPL-M5-11",
-   "text": "The sphere-drop case of M5-5 failed (2.16e-6 against the bound 1.5e-7). Oracle fault, not a code defect: the fix round of M5-3 improved the PLIC vo... Fix: D-111 (b), D-116 (a): the port follows the device, both oracle files are regenerated, and the bounds stay (loosening them would hide the next such..."
   }
  ]
 };
