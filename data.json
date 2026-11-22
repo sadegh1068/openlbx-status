@@ -1,51 +1,65 @@
 {
- "updated": "2026-11-22",
+ "updated": "2026-11-23",
  "branch": "m1",
  "tests": {
-  "commit": "next at verification run 10 (864c5a8, 2026-11-20)",
+  "commit": "main at verification run 11 (07fa3c3, 2026-11-23)",
   "compilers": "MSVC 14.44 and clang-cl 21",
   "rows": [
    {
     "level": "L0 host",
     "device": "none",
-    "cases": 657,
-    "assertions": 387219,
+    "cases": 1119,
+    "assertions": 723288,
     "failed": 0,
-    "skipped": 0
+    "skipped": 1
    },
    {
     "level": "L1 device",
     "device": "Intel CPU runtime (i7-14700K)",
-    "cases": 336,
-    "assertions": 2323395,
+    "cases": 907,
+    "assertions": 28215009,
     "failed": 0,
-    "skipped": 1
+    "skipped": 3
    },
    {
     "level": "L1 device",
     "device": "NVIDIA RTX 5050",
-    "cases": 336,
-    "assertions": 2324151,
+    "cases": 651,
+    "assertions": 27755601,
     "failed": 0,
-    "skipped": 1
+    "skipped": 2
    },
    {
-    "level": "L2 blocks",
-    "device": "RTX 5050 and CPU runtime in one group",
-    "cases": 1,
-    "assertions": 225539,
+    "level": "L2 properties and blocks",
+    "device": "Intel CPU runtime (i7-14700K)",
+    "cases": 107,
+    "assertions": 233446,
     "failed": 0,
-    "skipped": 0,
-    "note": "bit-identical to the single block"
+    "skipped": 26
    },
    {
-    "level": "L3 gate cases from Python",
+    "level": "L2 properties and blocks",
     "device": "NVIDIA RTX 5050",
-    "cases": 8,
+    "cases": 89,
+    "assertions": 229018,
+    "failed": 0,
+    "skipped": 0
+   },
+   {
+    "level": "L3 physical cases",
+    "device": "NVIDIA RTX 5050",
+    "cases": 51,
+    "assertions": 362831,
+    "failed": 0,
+    "skipped": 23
+   },
+   {
+    "level": "Python front end",
+    "device": "Intel CPU runtime (i7-14700K)",
+    "cases": 328,
     "assertions": 0,
     "failed": 0,
-    "skipped": 0,
-    "note": "lid-driven cavity (Re 100, 1000), cylinder 2D-1 and the oscillating cylinder at frozen thresholds"
+    "skipped": 0
    },
    {
     "level": "L1 device",
@@ -66,7 +80,7 @@
     "note": "refused at open: the device compiler fails the store-address probe (ARCH-49)"
    }
   ],
-  "note": "Run 8 of the merged head: every label passes on the CPU runtime and the RTX 5050 with both compilers. The M1, M2 and M3 gates pass for correctness and are tagged; M4 (thermal, particles) and M5 (free surface) are in work; performance work follows on a quiet machine."
+  "note": "Run 11 of the merged head: every executable passes on the CPU runtime with both compilers and on the RTX 5050. The M1 to M5 gates pass for correctness and are tagged; M4 adds thermal flow and particles, M5 the free surface. Performance work follows on a quiet machine."
  },
  "milestones": [
   {
@@ -900,7 +914,7 @@
     {
      "id": "M4-10",
      "title": "front end, threshold freeze, gate",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M4-5",
       "M4-9"
@@ -1006,7 +1020,7 @@
     {
      "id": "M5-10",
      "title": "gate cases on the device",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M5-6",
       "M5-7"
@@ -1016,6 +1030,14 @@
   }
  ],
  "decisions": [
+  {
+   "id": "D-129",
+   "text": "(a) The M4 gate (thermal, particles) and the M5 gate (free surface) pass for correctness. The gate commit is `07fa3c3`: it adds `bench/reports/M4.md` and `bench/reports/M5.md` to the run 11 head `f..."
+  },
+  {
+   "id": "D-125",
+   "text": "(a) Fix D is accepted (`efe0d48` on `wp/m5-10`, on top of `99ddb0a` with fixes A, B and C). P0 fluid rows: `rho_t` is the sum of the incoming populations in the order of the moments provider plus 1..."
+  },
   {
    "id": "D-122",
    "text": "(a) M4-10 part 1 (front end for thermal and particles) is accepted at `655332b`: fixes F1 to F10 of the review done; every target passes on both presets (`olbx_m4_10_api` 30, `olbx_m4_10_case` 9, `..."
@@ -1039,17 +1061,33 @@
   {
    "id": "D-115",
    "text": "(a) M5-8: the tests are written (`8a7d1cc`). The free surface already runs on 2, 2 x 2 and 2 x 2 x 2 blocks through the existing generic block code: VAL-4 (60 steps, every field and both views bit-..."
-  },
-  {
-   "id": "D-114",
-   "text": "(a) M4-4 is accepted (`871e7b5`): fix round done, 16 of 16 block cases and 24 of 24 targets on both presets; 05-VAL-T2 on the RTX 5050 in this tree. The tiers `olbx_l2_matrix` and `olbx_l2_long` ar..."
-  },
-  {
-   "id": "D-113",
-   "text": "(a) M5-7 is accepted (`179a6be`): fix round done, 24 and 14 cases pass on both presets; the pinned hash row of `free_surface` is re-pinned once on `integration`. (b) M4-4: implementation `93a4d9d`;..."
   }
  ],
  "findings": [
+  {
+   "id": "IMPL-M5-23",
+   "text": "(a) 11.2.2 at $R = 16$: the error level rises inside the run. Window halves 1.40 % (steps $5\\times10^4$ to $7.45\\times10^4$, 50 samples) and 1.64 %... Fix: Recorded for the gate report, not examined (D-127 (d)): both effects are inside their thresholds (52 % margin at $R = 16$; band 0.044 against 3 per..."
+  },
+  {
+   "id": "IMPL-M5-20",
+   "text": "With $\\rho < 0$ the fill-level formula of the interface row gives $\\varphi = 1$ for a cell with negative mass. Interface cells reach a negative den... Fix: D-124 (d): recorded, no rule set"
+  },
+  {
+   "id": "IMPL-M5-19",
+   "text": "The velocity clamp of 04 section 9.4 acts per component at $c_s$ and so admits $\\lvert\\vec u\\rvert$ up to $\\sqrt3\\,c_s = 1$, where the D3Q19 equili... Fix: D-124 (d): recorded, no change. Candidate: a clamp of the magnitude; not tested; the gate has no cases for it. Fix B keeps the mass balance exact m..."
+  },
+  {
+   "id": "IMPL-M5-18",
+   "text": "With fixes A to C the algorithm conserves, but the exact total still drifts in near-rest flows: relaxed drop $R = 32$ over $6\\times10^4$ steps $D$... Fix: D-124 (c), D-125 (a), (b), fix D: a fluid cell carries its excess over the density between P0 and P4'. P0: $m := (m - \\rho_t) + (S_{\\text{mex}} + S..."
+  },
+  {
+   "id": "IMPL-M5-17",
+   "text": "The rule of 04 sections 4.1.4 and 4.4 (tolerance $\\epsilon$ in the marking only, P4' clamping to $[0, \\rho]$) is a defect: a mass clamped to $[0, \\... Fix: D-123 (c), fix C: band $lo = -\\epsilon\\rho$ (exactly $+0$ for $\\epsilon = 0$), $hi = (1+\\epsilon)\\rho$ in the interface row; excess outside the ban..."
+  },
+  {
+   "id": "IMPL-M5-16",
+   "text": "The interface row of P4' did not conserve: with $m < \\rho < 0$ the clamp to $[0, \\rho]$ and the excess $m$ added $\\rho$ to the total. The jumps of... Fix: D-123 (b), fix B: $m_{\\text{new}} = \\min(\\max(m, lo), hi)$, excess $= m - m_{\\text{new}}$, which conserves $m_{\\text{new}} + \\text{excess} = m$ for..."
+  },
   {
    "id": "IMPL-M5-14",
    "text": "Python front end of the free surface. (a) `mass_total()` returned `fluid_mass` from a density of an older time level, or copied the density to the... Fix: D-121 (e), (f), with D-120 (e): (a) `mass_total()` brings the density up on the device without a copy to the host; under `policy = \"strict\"` it rai..."
@@ -1057,30 +1095,6 @@
   {
    "id": "IMPL-M5-11",
    "text": "The sphere-drop case of M5-5 failed (2.16e-6 against the bound 1.5e-7). Oracle fault, not a code defect: the fix round of M5-3 improved the PLIC vo... Fix: D-111 (b), D-116 (a): the port follows the device, both oracle files are regenerated, and the bounds stay (loosening them would hide the next such..."
-  },
-  {
-   "id": "IMPL-M5-10",
-   "text": "The access-check exemption for `<s>_LOAD_OUT` was too wide: ruling R4-04-23 said the access check records nothing for a load-out call in fragment t... Fix: D-111 (a): ARCH-42 item (e): in a fused fragment `<s>_LOAD_OUT` is admitted, and not recorded, only if every flavour of the fragment is `moments-on..."
-  },
-  {
-   "id": "IMPL-M5-7",
-   "text": "(a) P0 does not add the static per-cell force field (FS-27, 04 sections 3.5 and 4.2). (b) The manifest grammar of 01 section 6.1 has no spelling fo... Fix: D-105 (a) and (b): `[[pass]]` takes `when` (ARCH-12); `when` accepts a module name as `requires` does; P0 in two rows with `when = \"force.static\"`..."
-  },
-  {
-   "id": "IMPL-M5-5",
-   "text": "`fs_plic.clh` folded the fill level with `0.5f - fabs(V0 - 0.5f)`, which rounds to multiples of 3e-8 and loses fill levels below about 1e-7 (offset... Fix: `float V = (V0 < 0.5f) ? V0 : 1.0f - V0;` (bit-identical for `V0 >= 0.25`)"
-  },
-  {
-   "id": "IMPL-M5-4",
-   "text": "Three cases of `olbx_m5_3_l1` are above thresholds that were frozen from sphere measurements only: kernel wall case maximum 4.15e-5 against `kDevMa... Fix: open: isolate the cause with a double-precision host evaluation of the same stencils before any threshold moves; a threshold changes only by the VA..."
-  },
-  {
-   "id": "IMPL-M5-3",
-   "text": "The pass text of a module cannot use an array `nb[k]` of neighbour cells: the generated helpers give only `nb_at(dx, dy, dz)` Fix: A loop over the lattice directions in module text is written `nb_at(CX[k], CY[k], CZ[k])`; chapter 04 examples that show `nb[k]` are read in that form"
-  },
-  {
-   "id": "IMPL-M5-2",
-   "text": "Tolerances in `tests/l0/m5_2` and `tests/l1/m5_2` that the spec does not state, chosen by the test author: Fix: see the list below"
   }
  ]
 }
