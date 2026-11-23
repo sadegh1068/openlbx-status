@@ -179,7 +179,7 @@ const INLINE = {
     "note": "refused at open: the device compiler fails the store-address probe (ARCH-49)"
    }
   ],
-  "note": "Run 11 of the merged head: every executable passes on the CPU runtime with both compilers and on the RTX 5050. The M1 to M5 gates pass for correctness and are tagged. After the gate: a drop at rest with surface tension is calm up to radius 32 and grows unstable at large radius; this is a limit of the method and is stated in the specification. M6 (graphics) is in work; performance work follows on a quiet machine."
+  "note": "Run 13 of the merged head: every executable passes on the CPU runtime with both compilers, in the build without graphics, and on the RTX 5050. The M1 to M5 gates pass for correctness and are tagged. M6 (graphics) is in work: the render core, the camera and the rasteriser are complete; isosurface, tracers, ray tracing and the front end are in work. Performance work follows on a quiet machine."
  },
  "milestones": [
   {
@@ -1191,7 +1191,7 @@ const INLINE = {
     {
      "id": "M6-1b",
      "title": "render core: own program per block, read-only binding, frame buffers",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M6-1a"
      ]
@@ -1199,7 +1199,7 @@ const INLINE = {
     {
      "id": "M6-2",
      "title": "camera, rasteriser, wall faces, compositing",
-     "status": "pending",
+     "status": "done",
      "deps": [
       "M6-1b"
      ]
@@ -1207,7 +1207,7 @@ const INLINE = {
     {
      "id": "M6-3",
      "title": "isosurface by marching cubes",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M6-2"
      ]
@@ -1215,7 +1215,7 @@ const INLINE = {
     {
      "id": "M6-6b",
      "title": "front end, case file, image output",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M6-1b",
       "M6-6a"
@@ -1224,7 +1224,7 @@ const INLINE = {
     {
      "id": "M6-4a",
      "title": "ray traversal and hits",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M6-3"
      ]
@@ -1232,7 +1232,7 @@ const INLINE = {
     {
      "id": "M6-5",
      "title": "tracers",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M6-2"
      ]
