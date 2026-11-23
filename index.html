@@ -179,7 +179,7 @@ const INLINE = {
     "note": "refused at open: the device compiler fails the store-address probe (ARCH-49)"
    }
   ],
-  "note": "Run 13 of the merged head: every executable passes on the CPU runtime with both compilers, in the build without graphics, and on the RTX 5050. The M1 to M5 gates pass for correctness and are tagged. M6 (graphics) is in work: the render core, the camera and the rasteriser are complete; isosurface, tracers, ray tracing and the front end are in work. Performance work follows on a quiet machine."
+  "note": "Run 13 of the merged head: every executable passes on the CPU runtime with both compilers, in the build without graphics, and on the RTX 5050. The M1 to M5 gates pass for correctness and are tagged. M6 (graphics) is in work: render core, camera and rasteriser, isosurface, tracers and ray traversal are complete and tested on the CPU runtime; ray shading and the front end are in their last round; the merged state gets its GPU runs at the next check. Performance work follows on a quiet machine."
  },
  "milestones": [
   {
@@ -1207,7 +1207,7 @@ const INLINE = {
     {
      "id": "M6-3",
      "title": "isosurface by marching cubes",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M6-2"
      ]
@@ -1224,7 +1224,7 @@ const INLINE = {
     {
      "id": "M6-4a",
      "title": "ray traversal and hits",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M6-3"
      ]
@@ -1232,7 +1232,7 @@ const INLINE = {
     {
      "id": "M6-5",
      "title": "tracers",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M6-2"
      ]
@@ -1240,7 +1240,7 @@ const INLINE = {
     {
      "id": "M6-4b",
      "title": "ray shading",
-     "status": "pending",
+     "status": "running",
      "deps": [
       "M6-4a"
      ]
@@ -1259,6 +1259,10 @@ const INLINE = {
   }
  ],
  "decisions": [
+  {
+   "id": "D-152",
+   "text": "M6-4b after the review (verdict: accept after fixes; implementation `552d691` on `wp/m6-4b`; optics, normals and the explicit stack confirmed correct, the optics by a host run of the reviewer on 1..."
+  },
   {
    "id": "D-136",
    "text": "(a) M5-11a is accepted after one review round (`c14eebe` on `wp/m5-11a`): 17 cases pass on dev and clang; fix D is bit-exact on D3Q15 and D3Q27 with f32, f16s and f16c and on D3Q19 with f16s and f1..."
@@ -1286,10 +1290,6 @@ const INLINE = {
   {
    "id": "D-120",
    "text": "(a) M5-8 is accepted (`c0d74b9`): the fix round changed tests only (periodic cuts with the free surface, section 11.9 (a) and (b), added and passing); its merge into `integration` is in work. (b) M..."
-  },
-  {
-   "id": "D-118",
-   "text": "(a) M4-9 is merged into `integration` (`f3b5f5f`): four conflicts, two in the scheduler, resolved by an Opus agent that kept both sides (M4-4: one declaration pointer for a declared or a synthetic..."
   }
  ],
  "findings": [
