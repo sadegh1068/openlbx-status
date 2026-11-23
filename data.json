@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23",
+ "updated": "2026-11-24",
  "branch": "m1",
  "tests": {
   "commit": "main at verification run 11 (07fa3c3, 2026-11-23)",
@@ -1116,7 +1116,7 @@
     {
      "id": "M6-6b",
      "title": "front end, case file, image output",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M6-1b",
       "M6-6a"
@@ -1141,25 +1141,47 @@
     {
      "id": "M6-4b",
      "title": "ray shading",
-     "status": "running",
+     "status": "done",
      "deps": [
       "M6-4a"
      ]
     },
     {
+     "id": "M6-6c",
+     "title": "ray tracing through the front end",
+     "status": "done",
+     "deps": [
+      "M6-4b",
+      "M6-6b"
+     ]
+    },
+    {
      "id": "M6-7",
-     "title": "gate: image tests on CPU and GPU",
-     "status": "pending",
+     "title": "gate: image tests on CPU and GPU, passed",
+     "status": "done",
      "deps": [
       "M6-4b",
       "M6-5",
-      "M6-6b"
+      "M6-6b",
+      "M6-6c"
      ]
     }
    ]
   }
  ],
  "decisions": [
+  {
+   "id": "D-155",
+   "text": "Wiring step M6-6c after the merge with ray shading and after its review (verdict: accept after minor fixes, no major finding); check 14b on head `ad76a41`. (a) The optics keys reach the shading: `d..."
+  },
+  {
+   "id": "D-154",
+   "text": "Check 14a passed on integration head `7e6ef65` (M6-2, M6-3, M6-5, M6-4a, M6-6b merged): no failed test case. (a) Solver regression on the CPU runtime: 15 executables pass with the same counts on `d..."
+  },
+  {
+   "id": "D-153",
+   "text": "M6-4b accepted with its fix round (`1feb477` on `wp/m6-4b`); integration merged with ray shading (`53af479`); wiring step M6-6c implemented (`279f23a` on `wp/m6-6c`). (a) Fix round measured: coplan..."
+  },
   {
    "id": "D-152",
    "text": "M6-4b after the review (verdict: accept after fixes; implementation `552d691` on `wp/m6-4b`; optics, normals and the explicit stack confirmed correct, the optics by a host run of the reviewer on 1..."
@@ -1179,18 +1201,6 @@
   {
    "id": "D-125",
    "text": "(a) Fix D is accepted (`efe0d48` on `wp/m5-10`, on top of `99ddb0a` with fixes A, B and C). P0 fluid rows: `rho_t` is the sum of the incoming populations in the order of the moments provider plus 1..."
-  },
-  {
-   "id": "D-122",
-   "text": "(a) M4-10 part 1 (front end for thermal and particles) is accepted at `655332b`: fixes F1 to F10 of the review done; every target passes on both presets (`olbx_m4_10_api` 30, `olbx_m4_10_case` 9, `..."
-  },
-  {
-   "id": "D-121",
-   "text": "(a) `integration` holds M5-6, M5-7 and M5-8 with the fix round (`297fbaf`); the `free_surface` row of the program-text test and the pass list of the assembler test were re-pinned in the merge; all..."
-  },
-  {
-   "id": "D-120",
-   "text": "(a) M5-8 is accepted (`c0d74b9`): the fix round changed tests only (periodic cuts with the free surface, section 11.9 (a) and (b), added and passing); its merge into `integration` is in work. (b) M..."
   }
  ],
  "findings": [
