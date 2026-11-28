@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-24",
+ "updated": "2026-11-28",
  "branch": "m1",
  "tests": {
   "commit": "main at verification run 11 (07fa3c3, 2026-11-23)",
@@ -80,7 +80,7 @@
     "note": "refused at open: the device compiler fails the store-address probe (ARCH-49)"
    }
   ],
-  "note": "Run 13 of the merged head: every executable passes on the CPU runtime with both compilers, in the build without graphics, and on the RTX 5050. The M1 to M5 gates pass for correctness and are tagged. M6 (graphics) is in work: render core, camera and rasteriser, isosurface, tracers and ray traversal are complete and tested on the CPU runtime; ray shading and the front end are in their last round; the merged state gets its GPU runs at the next check. Performance work follows on a quiet machine."
+  "note": "Run 13 of the merged head: every executable passes on the CPU runtime with both compilers, in the build without graphics, and on the RTX 5050. The M1 to M5 gates pass for correctness and are tagged. M6 (graphics) is in work: render core, camera and rasteriser, isosurface, tracers and ray traversal are complete and tested on the CPU runtime; ray shading and the front end are in their last round; the merged state gets its GPU runs at the next check. Performance work follows on a quiet machine. Open boundary merged 2026-11-28 (main f6b7ab3): host tests 37 of 37 executables pass with both compilers, device tests 47 of 47 plus the open-boundary suite (27 cases), Python 553 passed."
  },
  "milestones": [
   {
@@ -1167,9 +1167,59 @@
      ]
     }
    ]
+  },
+  {
+   "id": "X1",
+   "title": "After M6: performance and open boundaries",
+   "packages": [
+    {
+     "id": "PERF-X1",
+     "title": "block exchange without host wait per message, merged",
+     "status": "done",
+     "deps": [
+      "M6-7"
+     ]
+    },
+    {
+     "id": "PERF-X2",
+     "title": "merged pack and unpack per block, merged (2 to 22 times faster exchange)",
+     "status": "done",
+     "deps": [
+      "PERF-X1"
+     ]
+    },
+    {
+     "id": "OBC-1",
+     "title": "open boundary, host side (characteristic boundary, front ends, refusals), merged",
+     "status": "done",
+     "deps": [
+      "PERF-X2"
+     ]
+    },
+    {
+     "id": "OBC-2",
+     "title": "open boundary, device side (two passes after the step), merged; 3D twin jet stable 400 h/U",
+     "status": "done",
+     "deps": [
+      "OBC-1"
+     ]
+    },
+    {
+     "id": "SGW-1",
+     "title": "WALE subgrid model: design and spec draft done, implementation next",
+     "status": "pending",
+     "deps": [
+      "OBC-2"
+     ]
+    }
+   ]
   }
  ],
  "decisions": [
+  {
+   "id": "D-166",
+   "text": "Package PERF-X2 merged: `integration` = `next` = `main` = `8a9fc5f` (step A `18b4b3a`, step B `571aa3d`, follow-ups `8a9fc5f`; spec corrections C-73, C-74). The stop of D-157 and D-160 holds for al..."
+  },
   {
    "id": "D-155",
    "text": "Wiring step M6-6c after the merge with ray shading and after its review (verdict: accept after minor fixes, no major finding); check 14b on head `ad76a41`. (a) The optics keys reach the shading: `d..."
@@ -1185,22 +1235,6 @@
   {
    "id": "D-152",
    "text": "M6-4b after the review (verdict: accept after fixes; implementation `552d691` on `wp/m6-4b`; optics, normals and the explicit stack confirmed correct, the optics by a host run of the reviewer on 1..."
-  },
-  {
-   "id": "D-136",
-   "text": "(a) M5-11a is accepted after one review round (`c14eebe` on `wp/m5-11a`): 17 cases pass on dev and clang; fix D is bit-exact on D3Q15 and D3Q27 with f32, f16s and f16c and on D3Q19 with f16s and f1..."
-  },
-  {
-   "id": "D-133",
-   "text": "M5-11a, moving-drop cases: the late-drift bound 2e-5 of the rest-state test D4 does not apply to a moving interface. The four moving cases (drop with u = (0.05, 0.03, 0.02), D3Q19 with f32, f16s, f..."
-  },
-  {
-   "id": "D-129",
-   "text": "(a) The M4 gate (thermal, particles) and the M5 gate (free surface) pass for correctness. The gate commit is `07fa3c3`: it adds `bench/reports/M4.md` and `bench/reports/M5.md` to the run 11 head `f..."
-  },
-  {
-   "id": "D-125",
-   "text": "(a) Fix D is accepted (`efe0d48` on `wp/m5-10`, on top of `99ddb0a` with fixes A, B and C). P0 fluid rows: `rho_t` is the sum of the incoming populations in the order of the moments provider plus 1..."
   }
  ],
  "findings": [
