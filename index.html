@@ -1305,16 +1305,61 @@ const INLINE = {
     },
     {
      "id": "SGW-1",
-     "title": "WALE subgrid model: design and spec draft done, implementation next",
-     "status": "pending",
+     "title": "WALE host side",
+     "status": "done",
      "deps": [
       "OBC-2"
+     ]
+    },
+    {
+     "id": "SGW-2",
+     "title": "WALE device pass",
+     "status": "done",
+     "deps": [
+      "SGW-1"
+     ]
+    },
+    {
+     "id": "SGW-3",
+     "title": "WALE with open faces",
+     "status": "done",
+     "deps": [
+      "SGW-2"
+     ],
+     "note": "L3: Taylor-Green peak pass, channel SRT pass; twin jet needs a regularised collision"
+    },
+    {
+     "id": "REG-1",
+     "title": "Regularised collision",
+     "status": "running",
+     "deps": [
+      "SGW-3"
      ]
     }
    ]
   }
  ],
  "decisions": [
+  {
+   "id": "D-185",
+   "text": "WALE L3 case 2, channel Re_tau 180 (566 x 92 x 189, H = 45, f16s, C_w 0.5, tau 0.5041, 494100 steps per row, local GPU idle; data `build\\dev\\test-output\\wale_l3_channel_2026-11-28\\`, plot viewed):..."
+  },
+  {
+   "id": "D-184",
+   "text": "Diagnosis (Opus, read-only) of D-183: about 80 % expected numerics (13-Q2), about 10 % defect. The NOTES location (5, 23, 0) is only the lowest-x NaN in scan order; NaN fronts (one cell per step) p..."
+  },
+  {
+   "id": "D-183",
+   "text": "WALE L3 case 3, twin jet (D-176 set-up, only the subgrid model changed to WALE C_w 0.5; data `build\\dev\\test-output\\wale_l3_twinjet_2026-11-28\\`): both rows DIVERGE (h = 10 f32 health failure at st..."
+  },
+  {
+   "id": "D-180",
+   "text": "WALE review (Opus) of SGW-1 + SGW-2 (`1d1b57a`): ready for SGW-3, no code blocker; operator, wall stencil, rate (tau = tau0 + 3 nu_t on the even rate under TRT), lag and state correct; host twin an..."
+  },
+  {
+   "id": "D-179",
+   "text": "WALE tests committed on `wp/wale` (`7b38276`): `tests/l0/sgw_1/`, `tests/l1/sgw_2/`, `tests/l1/sgw_3/`, `test_wale_keys.py`, four plot scripts, `wale_ref.hpp` declarations, targets `olbx_sgw_1_l0`,..."
+  },
   {
    "id": "D-166",
    "text": "Package PERF-X2 merged: `integration` = `next` = `main` = `8a9fc5f` (step A `18b4b3a`, step B `571aa3d`, follow-ups `8a9fc5f`; spec corrections C-73, C-74). The stop of D-157 and D-160 holds for al..."
@@ -1326,14 +1371,6 @@ const INLINE = {
   {
    "id": "D-154",
    "text": "Check 14a passed on integration head `7e6ef65` (M6-2, M6-3, M6-5, M6-4a, M6-6b merged): no failed test case. (a) Solver regression on the CPU runtime: 15 executables pass with the same counts on `d..."
-  },
-  {
-   "id": "D-153",
-   "text": "M6-4b accepted with its fix round (`1feb477` on `wp/m6-4b`); integration merged with ray shading (`53af479`); wiring step M6-6c implemented (`279f23a` on `wp/m6-6c`). (a) Fix round measured: coplan..."
-  },
-  {
-   "id": "D-152",
-   "text": "M6-4b after the review (verdict: accept after fixes; implementation `552d691` on `wp/m6-4b`; optics, normals and the explicit stack confirmed correct, the optics by a host run of the reviewer on 1..."
   }
  ],
  "findings": [
